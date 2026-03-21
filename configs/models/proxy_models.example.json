@@ -1,0 +1,17 @@
+{
+  "models": [
+    {
+      "name": "proxy_low_cost",
+      "provider": "replace_me",
+      "model_id": "replace_me",
+      "notes": "Low-cost proxy model for broad sweeps."
+    },
+    {
+      "name": "proxy_teacher",
+      "provider": "replace_me",
+      "model_id": "replace_me",
+      "notes": "Stronger analysis model for rule drafting, not final adjudication."
+    }
+  ]
+}
+

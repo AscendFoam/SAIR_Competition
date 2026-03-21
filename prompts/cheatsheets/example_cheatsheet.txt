@@ -1,0 +1,4 @@
+Decide whether Equation 1 logically forces Equation 2 for all magmas.
+Prefer false unless Equation 2 follows from direct rewriting, substitution, or a clearly stronger law in Equation 1.
+Only output true or false.
+

@@ -1,0 +1,10 @@
+{
+  "template_path": "prompts/templates/baseline_minimal.j2",
+  "cheatsheet_path": "prompts/cheatsheets/example_cheatsheet.txt",
+  "output_path": "prompts/complete/example_complete_prompt.txt",
+  "variables": {
+    "equation1": "{ equation1 }",
+    "equation2": "{ equation2 }"
+  }
+}
+

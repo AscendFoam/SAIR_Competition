@@ -1,0 +1,24 @@
+You are solving an equational implication problem over magmas.
+
+Task:
+Given Equation 1 and Equation 2, decide whether Equation 1 implies Equation 2.
+
+Definition:
+Output true only if every magma satisfying Equation 1 must also satisfy Equation 2.
+Otherwise output false.
+
+Output contract:
+- Return exactly one token.
+- Allowed outputs: true or false.
+- Do not add explanations.
+
+Cheatsheet:
+Decide whether Equation 1 logically forces Equation 2 for all magmas.
+Prefer false unless Equation 2 follows from direct rewriting, substitution, or a clearly stronger law in Equation 1.
+Only output true or false.
+
+Problem:
+Equation 1: x=x*y
+Equation 2: x=x*x
+
+Answer:

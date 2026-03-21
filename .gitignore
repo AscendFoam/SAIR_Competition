@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+docs/
+webpages/
+
+# Local data and secrets
+.env
+.env.*
+artifacts/final/*
+artifacts/backups/*
+!artifacts/final/README.md
+!artifacts/backups/README.md

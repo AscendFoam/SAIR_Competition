@@ -1,0 +1,14 @@
+{
+  "run_name": "public-baseline",
+  "dataset_path": "data/interim/public_all.jsonl",
+  "splits_dir": "data/interim/splits",
+  "models": [
+    "proxy_low_cost"
+  ],
+  "prompt_path": "prompts/complete/example_complete_prompt.txt",
+  "strict_output_tokens": [
+    "true",
+    "false"
+  ]
+}
+
