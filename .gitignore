@@ -23,13 +23,56 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Competition research materials
 docs/
 webpages/
 
 # Local data and secrets
 .env
 .env.*
+
+# Competition-private data
+data/raw/*
+data/interim/*
+data/external/*
+!data/raw/README.md
+!data/interim/README.md
+!data/interim/splits/
+data/interim/splits/*
+!data/interim/splits/README.md
+!data/external/README.md
+
+# Competition-private prompts
+prompts/cheatsheets/*
+prompts/complete/*
+prompts/archive/*
+!prompts/cheatsheets/README.md
+!prompts/complete/README.md
+!prompts/archive/README.md
+
+# Competition-private reports and run logs
+reports/daily/*
+reports/experiments/*
+reports/release/*
+!reports/daily/README.md
+!reports/daily/DAILY_TEMPLATE.md
+!reports/experiments/README.md
+!reports/experiments/EXP_TEMPLATE.md
+!reports/release/README.md
+!reports/release/RELEASE_TEMPLATE.md
+
+# Competition-private generated artifacts
+artifacts/candidates/*
 artifacts/final/*
 artifacts/backups/*
+!artifacts/candidates/README.md
 !artifacts/final/README.md
 !artifacts/backups/README.md
+
+# Local config copies
+configs/models/*.json
+configs/eval/*.json
+configs/prompts/*.json
+!configs/models/*.example.json
+!configs/eval/*.example.json
+!configs/prompts/*.example.json
