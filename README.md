@@ -9,25 +9,6 @@ This repository is the engineering workspace for the SAIR equational-theories co
 - Keep data, prompts, configs, reports, and code separated
 - Prepare a minimal CLI for prompt composition and local evaluation utilities
 
-## Repository layout
-
-```text
-.
-├─ artifacts/
-├─ configs/
-├─ data/
-├─ docs/
-├─ prompts/
-├─ reports/
-├─ src/
-├─ tests/
-└─ webpages/
-```
-
-See the plan document for the project strategy:
-
-- `docs/SAIR代数推理竞赛工程化实验计划.md`
-
 ## Quick start
 
 1. Create a virtual environment.
