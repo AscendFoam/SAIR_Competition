@@ -7,6 +7,8 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+pytest_tmp/
+pytest-cache-files-*/
 .coverage
 htmlcov/
 .venv/
@@ -62,6 +64,8 @@ reports/release/*
 !reports/release/RELEASE_TEMPLATE.md
 
 # Competition-private generated artifacts
+artifacts/pytest_cache/
+artifacts/pytest_tmp/
 artifacts/candidates/*
 artifacts/final/*
 artifacts/backups/*

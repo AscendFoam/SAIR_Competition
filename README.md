@@ -40,6 +40,56 @@ sair build-complete-prompt `
   prompts/complete/example_complete_prompt.txt
 ```
 
+## Public data workflow
+
+After placing official public files into `data/raw/`, run:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli prepare-public-data --raw-dir data/raw --interim-dir data/interim
+python -m sair_competition.cli make-splits --dataset-path data/interim/public_all.jsonl --output-dir data/interim/splits
+python -m sair_competition.cli run-baseline-eval --dataset-path data/interim/splits/holdout.jsonl --output-dir artifacts/candidates/baseline_holdout
+```
+
+If you are using conda:
+
+```powershell
+conda run -n DLEnv cmd /c "set PYTHONPATH=src&& python -m sair_competition.cli prepare-public-data --raw-dir data/raw --interim-dir data/interim"
+conda run -n DLEnv cmd /c "set PYTHONPATH=src&& python -m sair_competition.cli make-splits --dataset-path data/interim/public_all.jsonl --output-dir data/interim/splits"
+conda run -n DLEnv cmd /c "set PYTHONPATH=src&& python -m sair_competition.cli run-baseline-eval --dataset-path data/interim/splits/holdout.jsonl --output-dir artifacts/candidates/baseline_holdout"
+```
+
+## Complete prompt experiments
+
+Run a complete prompt against a local split with an OpenAI-compatible API:
+
+```powershell
+& 'C:\ProgramData\anaconda3\envs\DLEnv\python.exe' -m sair_competition.cli run-complete-prompt-eval `
+  --dataset-path data/interim/splits/smoke.jsonl `
+  --prompt-path prompts/complete/example_complete_prompt.txt `
+  --output-dir artifacts/candidates/complete_prompt_smoke `
+  --dotenv-path .env `
+  --model deepseek-chat `
+  --limit 8
+```
+
+Then analyze the resulting predictions:
+
+```powershell
+& 'C:\ProgramData\anaconda3\envs\DLEnv\python.exe' -m sair_competition.cli analyze-errors `
+  --predictions-path artifacts/candidates/complete_prompt_smoke/predictions.jsonl `
+  --output-dir artifacts/candidates/complete_prompt_smoke_analysis
+```
+
+## Cache behavior
+
+Repository-local pytest cache and temp files are configured to live under `artifacts/`:
+
+- `artifacts/pytest_cache/`
+- `artifacts/pytest_tmp/`
+
+These paths are ignored by git to avoid root-level clutter.
+
 ## Notes
 
 - `data/raw/` is for untouched official files.

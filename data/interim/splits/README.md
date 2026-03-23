@@ -8,6 +8,6 @@ Recommended split set:
 - `dev.jsonl`
 - `holdout.jsonl`
 - `audit.jsonl`
+- `manifest.json`
 
 Once created, keep these files stable to avoid evaluation drift.
-
