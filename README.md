@@ -81,6 +81,18 @@ Then analyze the resulting predictions:
   --output-dir artifacts/candidates/complete_prompt_smoke_analysis
 ```
 
+Compare several candidate runs and write a compact experiment report:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli compare-candidates `
+  --candidate-dir artifacts/candidates/P1_1_1_strict_first_draft_smoke `
+  --candidate-dir artifacts/candidates/P1_2_0_smoke_iter1 `
+  --candidate-dir artifacts/candidates/P1_3_0_smoke_iter2 `
+  --baseline-dir artifacts/candidates/P1_1_1_strict_first_draft_smoke `
+  --output-dir reports/experiments/smoke_prompt_compare
+```
+
 ## Cache behavior
 
 Repository-local pytest cache and temp files are configured to live under `artifacts/`:

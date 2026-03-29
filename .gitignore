@@ -5,6 +5,9 @@ __pycache__/
 *.pyd
 .Python
 .pytest_cache/
+.pytest_cache*/
+.pytest_tmp/
+.pytest_tmp*/
 .mypy_cache/
 .ruff_cache/
 pytest_tmp/
@@ -26,7 +29,6 @@ Thumbs.db
 .vscode/
 
 # Competition research materials
-docs/
 webpages/
 
 # Local data and secrets
@@ -66,6 +68,7 @@ reports/release/*
 # Competition-private generated artifacts
 artifacts/pytest_cache/
 artifacts/pytest_tmp/
+artifacts/.pytest_tmp/
 artifacts/candidates/*
 artifacts/final/*
 artifacts/backups/*
@@ -77,6 +80,8 @@ artifacts/backups/*
 configs/models/*.json
 configs/eval/*.json
 configs/prompts/*.json
+configs/prompts/*.jsonl
 !configs/models/*.example.json
 !configs/eval/*.example.json
 !configs/prompts/*.example.json
+!configs/prompts/*.example.jsonl

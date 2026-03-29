@@ -7,6 +7,7 @@ from .data.public_data import prepare_public_dataset
 from .data.splits import make_frozen_splits
 from .analysis.error_taxonomy import ERROR_TAXONOMY
 from .analysis.error_report import analyze_prediction_errors
+from .analysis.experiment_report import compare_candidate_runs
 from .eval.baseline_runner import run_baseline_suite
 from .eval.local_runner import run_complete_prompt_eval
 from .eval.metrics import compute_metrics
@@ -193,6 +194,20 @@ def analyze_errors_command(predictions_path: Path, output_dir: Path) -> int:
     return 0
 
 
+def compare_candidates_command(
+    candidate_dirs: list[str],
+    output_dir: Path,
+    baseline_dir: str | None,
+) -> int:
+    summary = compare_candidate_runs(
+        candidate_dirs=candidate_dirs,
+        output_dir=output_dir,
+        baseline_dir=baseline_dir,
+    )
+    print(json_dumps(summary))
+    return 0
+
+
 def json_dumps(payload: dict) -> str:
     import json
 
@@ -248,6 +263,11 @@ def build_parser() -> argparse.ArgumentParser:
     analyze = subparsers.add_parser("analyze-errors", help="Analyze prediction rows from a baseline or API eval.")
     analyze.add_argument("--predictions-path", required=True)
     analyze.add_argument("--output-dir", required=True)
+
+    compare = subparsers.add_parser("compare-candidates", help="Compare multiple candidate experiment runs.")
+    compare.add_argument("--candidate-dir", action="append", dest="candidate_dirs", required=True)
+    compare.add_argument("--output-dir", required=True)
+    compare.add_argument("--baseline-dir", default=None)
 
     subparsers.add_parser("show-error-taxonomy", help="Show the default error taxonomy.")
     subparsers.add_parser("demo-metrics", help="Print a demo metrics object.")
@@ -307,6 +327,12 @@ def main() -> int:
         return analyze_errors_command(
             predictions_path=Path(args.predictions_path),
             output_dir=Path(args.output_dir),
+        )
+    if args.command == "compare-candidates":
+        return compare_candidates_command(
+            candidate_dirs=args.candidate_dirs,
+            output_dir=Path(args.output_dir),
+            baseline_dir=args.baseline_dir,
         )
     if args.command == "show-error-taxonomy":
         return show_error_taxonomy()
