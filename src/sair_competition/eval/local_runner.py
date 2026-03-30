@@ -67,6 +67,8 @@ def run_complete_prompt_eval(
                 "prompt_path": str(prompt_path),
                 "model": settings.model,
                 "provider": settings.provider_name,
+                "family_tags": row.get("family_tags") or [],
+                "family_signals": row.get("family_signals") or {},
             }
         )
 

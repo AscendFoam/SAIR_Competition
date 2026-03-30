@@ -1,0 +1,3 @@
+{"problem_id": "p1", "equation1": "x = (y * z)", "equation2": "x = (a * b)", "answer": true, "prediction": false, "parsed": true, "source": "normal", "family_tags": ["EQ1_SINGLETON_COLLAPSE_LHS_TO_BINARY", "EQ1_SINGLETON_COLLAPSE_WITH_TARGET_SHARED_LHS"]}
+{"problem_id": "p2", "equation1": "x = (u * v)", "equation2": "x = (c * d)", "answer": true, "prediction": false, "parsed": true, "source": "hard2", "family_tags": ["EQ1_SINGLETON_COLLAPSE_LHS_TO_BINARY"]}
+{"problem_id": "p3", "equation1": "(x * y) = z", "equation2": "(a * b) = c", "answer": true, "prediction": true, "parsed": true, "source": "normal", "family_tags": ["EQ1_DISJOINT_SIDES_VAR_BINARY"]}

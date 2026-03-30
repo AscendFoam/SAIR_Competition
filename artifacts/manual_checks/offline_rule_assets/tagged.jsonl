@@ -1,0 +1,2 @@
+{"problem_id": "p1", "equation1": "x=(y*z)", "equation2": "x=(a*b)", "answer": true, "family_tags": ["EQ1_SINGLETON_COLLAPSE_LHS_TO_BINARY", "EQ1_SINGLETON_COLLAPSE_WITH_TARGET_SHARED_LHS"]}
+{"problem_id": "p2", "equation1": "x=(u*v)", "equation2": "x=(c*d)", "answer": true, "family_tags": ["EQ1_SINGLETON_COLLAPSE_LHS_TO_BINARY"]}

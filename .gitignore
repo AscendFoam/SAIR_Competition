@@ -67,8 +67,12 @@ reports/release/*
 
 # Competition-private generated artifacts
 artifacts/pytest_cache/
+artifacts/pytest_cache*/
 artifacts/pytest_tmp/
+artifacts/pytest_tmp*/
 artifacts/.pytest_tmp/
+artifacts/.pytest_tmp*/
+artifacts/pytest-cache-files-*/
 artifacts/candidates/*
 artifacts/final/*
 artifacts/backups/*

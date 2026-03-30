@@ -8,10 +8,17 @@ from .data.splits import make_frozen_splits
 from .analysis.error_taxonomy import ERROR_TAXONOMY
 from .analysis.error_report import analyze_prediction_errors
 from .analysis.experiment_report import compare_candidate_runs
+from .analysis.family_slice import attach_family_tags_to_predictions
+from .analysis.offline_rule_assets import (
+    attach_offline_rule_assets,
+    audit_offline_rule_assets,
+    build_offline_rule_assets,
+)
 from .eval.baseline_runner import run_baseline_suite
 from .eval.local_runner import run_complete_prompt_eval
 from .eval.metrics import compute_metrics
 from .eval.parser import parse_bool_output
+from .features.family_tagger import FAMILY_TAG_TAXONOMY, tag_problem_families
 from .paths import REPO_ROOT
 from .prompting.compose import build_complete_prompt
 
@@ -101,6 +108,16 @@ def show_error_taxonomy() -> int:
     print("=" * 14)
     for code, description in ERROR_TAXONOMY.items():
         print(f"{code:<18} {description}")
+    return 0
+
+
+def show_family_tag_taxonomy() -> int:
+    """Print the default structural family tags used for offline labeling."""
+
+    print("Family Tag Taxonomy")
+    print("=" * 19)
+    for code, description in FAMILY_TAG_TAXONOMY.items():
+        print(f"{code:<30} {description}")
     return 0
 
 
@@ -194,6 +211,64 @@ def analyze_errors_command(predictions_path: Path, output_dir: Path) -> int:
     return 0
 
 
+def attach_family_tags_command(
+    predictions_path: Path,
+    tagged_dataset_path: Path,
+    output_path: Path,
+) -> int:
+    summary = attach_family_tags_to_predictions(
+        predictions_path=predictions_path,
+        tagged_dataset_path=tagged_dataset_path,
+        output_path=output_path,
+    )
+    print(json_dumps(summary))
+    return 0
+
+
+def build_offline_rule_assets_command(
+    tagged_dataset_path: Path,
+    output_path: Path,
+    error_summary_path: Path | None,
+    report_path: Path | None,
+) -> int:
+    summary = build_offline_rule_assets(
+        tagged_dataset_path=tagged_dataset_path,
+        output_path=output_path,
+        error_summary_path=error_summary_path,
+        report_path=report_path,
+    )
+    print(json_dumps(summary))
+    return 0
+
+
+def attach_offline_rule_assets_command(
+    input_path: Path,
+    rule_assets_path: Path,
+    output_path: Path,
+) -> int:
+    summary = attach_offline_rule_assets(
+        input_path=input_path,
+        rule_assets_path=rule_assets_path,
+        output_path=output_path,
+    )
+    print(json_dumps(summary))
+    return 0
+
+
+def audit_offline_rule_assets_command(
+    predictions_path: Path,
+    rule_assets_path: Path,
+    output_dir: Path,
+) -> int:
+    summary = audit_offline_rule_assets(
+        predictions_path=predictions_path,
+        rule_assets_path=rule_assets_path,
+        output_dir=output_dir,
+    )
+    print(json_dumps(summary))
+    return 0
+
+
 def compare_candidates_command(
     candidate_dirs: list[str],
     output_dir: Path,
@@ -203,6 +278,20 @@ def compare_candidates_command(
         candidate_dirs=candidate_dirs,
         output_dir=output_dir,
         baseline_dir=baseline_dir,
+    )
+    print(json_dumps(summary))
+    return 0
+
+
+def tag_problem_families_command(
+    dataset_path: Path,
+    output_path: Path,
+    summary_dir: Path | None,
+) -> int:
+    summary = tag_problem_families(
+        dataset_path=dataset_path,
+        output_path=output_path,
+        summary_dir=summary_dir,
     )
     print(json_dumps(summary))
     return 0
@@ -264,12 +353,51 @@ def build_parser() -> argparse.ArgumentParser:
     analyze.add_argument("--predictions-path", required=True)
     analyze.add_argument("--output-dir", required=True)
 
+    attach = subparsers.add_parser(
+        "attach-family-tags-to-predictions",
+        help="Backfill family tags into an existing predictions file using a tagged dataset.",
+    )
+    attach.add_argument("--predictions-path", required=True)
+    attach.add_argument("--tagged-dataset-path", required=True)
+    attach.add_argument("--output-path", required=True)
+
+    rule_assets = subparsers.add_parser(
+        "build-offline-rule-assets",
+        help="Build offline rule assets from a tagged dataset and optional tagged error summary.",
+    )
+    rule_assets.add_argument("--tagged-dataset-path", required=True)
+    rule_assets.add_argument("--output-path", required=True)
+    rule_assets.add_argument("--error-summary-path", default=None)
+    rule_assets.add_argument("--report-path", default=None)
+
+    attach_assets = subparsers.add_parser(
+        "attach-offline-rule-assets",
+        help="Attach offline rule-asset ids to rows that already have family tags.",
+    )
+    attach_assets.add_argument("--input-path", required=True)
+    attach_assets.add_argument("--rule-assets-path", required=True)
+    attach_assets.add_argument("--output-path", required=True)
+
+    audit_assets = subparsers.add_parser(
+        "audit-offline-rule-assets",
+        help="Audit a prediction file through the offline rule-asset bundle.",
+    )
+    audit_assets.add_argument("--predictions-path", required=True)
+    audit_assets.add_argument("--rule-assets-path", required=True)
+    audit_assets.add_argument("--output-dir", required=True)
+
     compare = subparsers.add_parser("compare-candidates", help="Compare multiple candidate experiment runs.")
     compare.add_argument("--candidate-dir", action="append", dest="candidate_dirs", required=True)
     compare.add_argument("--output-dir", required=True)
     compare.add_argument("--baseline-dir", default=None)
 
+    tag = subparsers.add_parser("tag-problem-families", help="Annotate a dataset with lightweight structural family tags.")
+    tag.add_argument("--dataset-path", default="data/interim/public_all.jsonl")
+    tag.add_argument("--output-path", required=True)
+    tag.add_argument("--summary-dir", default=None)
+
     subparsers.add_parser("show-error-taxonomy", help="Show the default error taxonomy.")
+    subparsers.add_parser("show-family-tag-taxonomy", help="Show the structural family-tag taxonomy.")
     subparsers.add_parser("demo-metrics", help="Print a demo metrics object.")
     return parser
 
@@ -328,14 +456,47 @@ def main() -> int:
             predictions_path=Path(args.predictions_path),
             output_dir=Path(args.output_dir),
         )
+    if args.command == "attach-family-tags-to-predictions":
+        return attach_family_tags_command(
+            predictions_path=Path(args.predictions_path),
+            tagged_dataset_path=Path(args.tagged_dataset_path),
+            output_path=Path(args.output_path),
+        )
+    if args.command == "build-offline-rule-assets":
+        return build_offline_rule_assets_command(
+            tagged_dataset_path=Path(args.tagged_dataset_path),
+            output_path=Path(args.output_path),
+            error_summary_path=Path(args.error_summary_path) if args.error_summary_path else None,
+            report_path=Path(args.report_path) if args.report_path else None,
+        )
+    if args.command == "attach-offline-rule-assets":
+        return attach_offline_rule_assets_command(
+            input_path=Path(args.input_path),
+            rule_assets_path=Path(args.rule_assets_path),
+            output_path=Path(args.output_path),
+        )
+    if args.command == "audit-offline-rule-assets":
+        return audit_offline_rule_assets_command(
+            predictions_path=Path(args.predictions_path),
+            rule_assets_path=Path(args.rule_assets_path),
+            output_dir=Path(args.output_dir),
+        )
     if args.command == "compare-candidates":
         return compare_candidates_command(
             candidate_dirs=args.candidate_dirs,
             output_dir=Path(args.output_dir),
             baseline_dir=args.baseline_dir,
         )
+    if args.command == "tag-problem-families":
+        return tag_problem_families_command(
+            dataset_path=Path(args.dataset_path),
+            output_path=Path(args.output_path),
+            summary_dir=Path(args.summary_dir) if args.summary_dir else None,
+        )
     if args.command == "show-error-taxonomy":
         return show_error_taxonomy()
+    if args.command == "show-family-tag-taxonomy":
+        return show_family_tag_taxonomy()
     if args.command == "demo-metrics":
         return demo_metrics()
     parser.print_help()

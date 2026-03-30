@@ -1,0 +1,13 @@
+{
+  "input_path": "artifacts\\manual_checks\\offline_rule_assets_verification\\tagged.jsonl",
+  "rule_assets_path": "artifacts\\manual_checks\\offline_rule_assets_verification\\rule_assets.jsonl",
+  "output_path": "artifacts\\manual_checks\\offline_rule_assets_verification\\tagged_with_assets.jsonl",
+  "row_count": 3,
+  "matched_row_count": 3,
+  "unmatched_row_count": 0,
+  "asset_match_counts": {
+    "OA_TRUE_SINGLETON_LHS_TO_BINARY": 2,
+    "OA_TRUE_SINGLETON_WITH_TARGET_SHARED_LHS": 1,
+    "OA_TRUE_DISJOINT_VAR_BINARY": 1
+  }
+}

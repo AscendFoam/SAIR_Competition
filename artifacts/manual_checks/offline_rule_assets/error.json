@@ -1,0 +1,1 @@
+{"family_tag_summary": {"EQ1_SINGLETON_COLLAPSE_LHS_TO_BINARY": {"metrics": {"accuracy": 0.1, "true_accuracy": 0.1}, "error_buckets": {"RULE_MISSING": 9}}, "EQ1_SINGLETON_COLLAPSE_WITH_TARGET_SHARED_LHS": {"metrics": {"accuracy": 0.2, "true_accuracy": 0.2}, "error_buckets": {"RULE_MISSING": 8}}}}

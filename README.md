@@ -51,6 +51,71 @@ python -m sair_competition.cli make-splits --dataset-path data/interim/public_al
 python -m sair_competition.cli run-baseline-eval --dataset-path data/interim/splits/holdout.jsonl --output-dir artifacts/candidates/baseline_holdout
 ```
 
+If you want to start the offline family-labeling line before the next prompt iteration:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli tag-problem-families `
+  --dataset-path data/interim/splits/smoke.jsonl `
+  --output-path data/interim/splits/smoke_tagged.jsonl `
+  --summary-dir reports/experiments/smoke_family_tags
+```
+
+This writes a tagged copy of the split with `family_tags` / `family_signals`, which can then be passed to both baseline and complete-prompt evaluators.
+
+The current tagger is especially tuned to carve out finer slices inside three high-value families:
+
+- singleton collapse
+- disjoint sides
+- constant-operation candidate
+
+That makes it easier to inspect whether a prompt is failing because it misses a specific true-heavy structural subfamily, rather than because it is weak everywhere.
+
+If you already have an older predictions file from before the tagger existed, you can backfill the tags without rerunning the model:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli attach-family-tags-to-predictions `
+  --predictions-path artifacts/candidates/P1_2_3_implicit_guardrail_v2/predictions.jsonl `
+  --tagged-dataset-path data/interim/splits/smoke_tagged.jsonl `
+  --output-path artifacts/candidates/P1_2_3_implicit_guardrail_v2_tagged_slice/predictions.jsonl
+```
+
+Then turn the tagged families plus the tagged error slices into an offline rule-asset bundle:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli build-offline-rule-assets `
+  --tagged-dataset-path data/interim/splits/smoke_tagged.jsonl `
+  --error-summary-path artifacts/candidates/P1_2_3_implicit_guardrail_v2_tagged_slice_analysis/summary.json `
+  --output-path configs/prompts/rule_registry.offline_assets_v2.jsonl `
+  --report-path reports/experiments/offline_rule_assets_smoke/summary.md
+```
+
+This bundle is meant to support offline labeling, analysis, and future programmatic use. It is not a signal to rewrite the `P1_2_3` prompt wording directly.
+
+You can then attach those offline assets back onto tagged rows or tagged predictions:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli attach-offline-rule-assets `
+  --input-path artifacts/candidates/P1_2_3_implicit_guardrail_v2_tagged_slice/predictions.jsonl `
+  --rule-assets-path configs/prompts/rule_registry.offline_assets_v2.jsonl `
+  --output-path artifacts/candidates/P1_2_3_implicit_guardrail_v2_asset_slice/predictions.jsonl
+```
+
+And audit which offline assets still map to missed-true slices on the current mainline:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli audit-offline-rule-assets `
+  --predictions-path artifacts/candidates/P1_2_3_implicit_guardrail_v2_asset_slice/predictions.jsonl `
+  --rule-assets-path configs/prompts/rule_registry.offline_assets_v2.jsonl `
+  --output-dir reports/experiments/offline_rule_asset_audit_smoke
+```
+
+This gives you a prioritized asset-level backlog, so the next step can target tagging, slicing, or future implicit prompt injection without blindly rewriting wording.
+
 If you are using conda:
 
 ```powershell
@@ -80,6 +145,14 @@ Then analyze the resulting predictions:
   --predictions-path artifacts/candidates/complete_prompt_smoke/predictions.jsonl `
   --output-dir artifacts/candidates/complete_prompt_smoke_analysis
 ```
+
+The current workspace also has a dedicated `official_archetype_distillation` prompt track for three strict-adapted branches:
+
+- `balanced`
+- `counterexample-first`
+- `fast-filters`
+
+These are meant to be smoke-tested as side branches, not merged into the `P1_2_3` mainline until they show better parse stability or cleaner error movement.
 
 Compare several candidate runs and write a compact experiment report:
 

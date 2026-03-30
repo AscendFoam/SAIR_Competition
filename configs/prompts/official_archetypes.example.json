@@ -1,0 +1,32 @@
+[
+  {
+    "candidate_id": "P2_0_0_official_balanced_strict_v0",
+    "track": "official_archetype_distillation",
+    "archetype": "balanced",
+    "status": "smoke_ready",
+    "prompt_path": "prompts/complete/P2.0.0_official_balanced_strict_v0.txt",
+    "cheatsheet_path": "prompts/cheatsheets/C2.0.0_official_balanced_strict_v0.txt",
+    "base_template": "prompts/templates/evaluation_strict_v1.jinja2",
+    "notes": "Balanced strict adaptation of the official balanced sample. Compare stability against P1_2_3, do not merge into mainline by default."
+  },
+  {
+    "candidate_id": "P2_0_1_official_counterexample_first_strict_v0",
+    "track": "official_archetype_distillation",
+    "archetype": "counterexample-first",
+    "status": "smoke_ready",
+    "prompt_path": "prompts/complete/P2.0.1_official_counterexample_first_strict_v0.txt",
+    "cheatsheet_path": "prompts/cheatsheets/C2.0.1_official_counterexample_first_strict_v0.txt",
+    "base_template": "prompts/templates/evaluation_strict_v1.jinja2",
+    "notes": "Counterexample-first strict adaptation. Watch for false-bias regression."
+  },
+  {
+    "candidate_id": "P2_0_2_official_fast_filters_strict_v0",
+    "track": "official_archetype_distillation",
+    "archetype": "fast-filters",
+    "status": "smoke_ready",
+    "prompt_path": "prompts/complete/P2.0.2_official_fast_filters_strict_v0.txt",
+    "cheatsheet_path": "prompts/cheatsheets/C2.0.2_official_fast_filters_strict_v0.txt",
+    "base_template": "prompts/templates/evaluation_strict_v1.jinja2",
+    "notes": "Fast-filters strict adaptation. Evaluate parse stability first, then check error migration."
+  }
+]

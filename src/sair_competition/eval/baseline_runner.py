@@ -43,6 +43,8 @@ def run_baseline_suite(
                     "prediction": prediction,
                     "parsed": True,
                     "baseline": predictor.name,
+                    "family_tags": row.get("family_tags") or [],
+                    "family_signals": row.get("family_signals") or {},
                 }
             )
 

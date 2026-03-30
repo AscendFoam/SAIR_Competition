@@ -28,6 +28,8 @@
 - 提交对象不是单纯“规则文本”，而是 `complete prompt`
 - 网页原文说明：`complete prompt = prompt template + cheatsheet text`
 - cheatsheet 上限：`10KB`
+- 除了 `data/raw/prompt_templates.jsonl` 之外，官方还提供了若干 `cheatsheet_xxx.md` 样例文件
+- 这些 `cheatsheet_xxx.md` 样例通常不只是“规则摘要”，而是同时包含任务 framing、占位符、推理步骤与输出契约的 prompt 风格样例
 - 网页叙述部分出现过 `{ equation1 } / { equation2 }` 表述，而提交界面提示中出现过 `{{ equation1 }} / {{ equation2 }}`
 - 因此 placeholder 语法必须以官方 playground 和提交界面实测为准
 - 公开训练/开发题不是 1200，而是：
@@ -60,6 +62,7 @@
 - “官方已经确定强模型/弱模型双轨评测”未在网页快照中得到确认
 - “官方评测模型没有深度思考能力”未得到确认
 - “只需要优化 cheatsheet”表述不完整，工程上应以 `complete prompt` 作为优化对象
+- “官方 cheatsheet 样例可以直接当作本地主线 prompt 使用”也是不完整的理解；更合理的做法是先把它们视为官方 prompt 原型，再做 strict 适配
 - “占用大算力是主线”不成立，Stage 1 更像是 `规则提炼 + prompt 工程 + 评测纪律`
 
 ### 2.3 直接影响实验设计的约束
@@ -174,6 +177,13 @@
 
 - 保留反例思路、证明草稿、law family 分类
 - 即便 Stage 1 不直接用，也不要浪费
+
+#### 侧线 F：官方 prompt 原型的 strict 适配实验
+
+- 将官方 `cheatsheet_balanced`、`cheatsheet_counterexample_first`、`cheatsheet_example_fast_filters` 视作三类“官方 prompt 原型”
+- 不直接拿原文替换当前本地主线 prompt，而是提炼其结构特点，再改写成适合 `true/false` 首行稳定解析的 strict 版本
+- 与现有主线分开编号、分开评测、分开记录，避免把“风格探索”与“主线稳态优化”混在一起
+- 优先把这条线当作对照实验与灵感来源，而不是立即争夺主线
 
 ---
 
@@ -1081,6 +1091,19 @@ Stage 1 的瓶颈不是训练算力，而是：
 - 所有实验都保存 complete prompt
 - 模板与规则分开版本化
 
+### R3.1：误把官方样例 prompt 当作可直接部署的本地 strict prompt
+
+信号：
+
+- 引入官方样例后，输出突然变长，出现 `REASONING`、`PROOF`、`COUNTEREXAMPLE`
+- 解析成功率下降，或 DeepSeek 在 smoke 集上出现新的格式性不稳定
+
+应对：
+
+- 官方样例只作为“结构参考”，不直接进入主线
+- 先做 strict 改写版，再进入固定切分评测
+- 在实验记录中显式区分“官方原型复刻”与“主线 prompt 迭代”
+
 ### R4：公开题过拟合
 
 信号：
@@ -1240,8 +1263,9 @@ Next action:
 3. 以 complete prompt 为优化对象，而不是只盯 cheatsheet
 4. 以固定切分评测为裁决标准，而不是凭直觉修改
 5. 重点建设 FALSE 识别、解析稳定性、压缩质量
-6. 在 `2026-04-10` 官方模型公布后做一次方向校正
-7. 在 `2026-04-11` 后冻结大结构，避免最后一周失控
+6. 把官方样例 prompt 视为高价值参考原型，但只通过受控支线做 strict 蒸馏与适配
+7. 在 `2026-04-10` 官方模型公布后做一次方向校正
+8. 在 `2026-04-11` 后冻结大结构，避免最后一周失控
 
 如果严格按本文档推进，最终你得到的不只是一个提交物，而是一套：
 
