@@ -116,6 +116,38 @@ python -m sair_competition.cli audit-offline-rule-assets `
 
 This gives you a prioritized asset-level backlog, so the next step can target tagging, slicing, or future implicit prompt injection without blindly rewriting wording.
 
+If several top assets keep matching the same rows, deduplicate them into canonical axes first:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli consolidate-offline-rule-axes `
+  --predictions-path artifacts/candidates/P1_2_3_implicit_guardrail_v2_asset_slice/predictions.jsonl `
+  --audit-summary-path reports/experiments/offline_rule_asset_audit_smoke/summary.json `
+  --output-dir reports/experiments/offline_rule_axis_smoke
+```
+
+This collapses exact-overlap assets into one main axis and records child-axis subset relations, so the same missed-true slice is not counted three times under different family names.
+
+Then build a deduplicated review set that assigns each actionable row to its most specific canonical axis:
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli build-offline-rule-review-set `
+  --predictions-path artifacts/candidates/P1_2_3_implicit_guardrail_v2_asset_slice/predictions.jsonl `
+  --consolidation-summary-path reports/experiments/offline_rule_axis_smoke/summary.json `
+  --output-dir reports/experiments/offline_rule_review_set_smoke
+```
+
+The resulting review set is meant to support two next steps:
+
+- expand the family tagger with narrower child buckets
+- prepare future implicit or programmatic positive signals without copying wording back into the prompt
+
+Alongside `review_set.jsonl`, the tool also writes:
+
+- `annotation_checklist.md` for a flat manual checklist
+- `p0_p1_review_template.md` for higher-priority structured review and conclusion backfill
+
 If you are using conda:
 
 ```powershell
@@ -168,12 +200,23 @@ python -m sair_competition.cli compare-candidates `
 
 ## Cache behavior
 
-Repository-local pytest cache and temp files are configured to live under `artifacts/`:
+This repository no longer pins pytest to a fixed workspace temp directory, because stale Windows temp folders under `artifacts/pytest_tmp*` can become permission-broken.
 
-- `artifacts/pytest_cache/`
-- `artifacts/pytest_tmp/`
+The supported local entrypoint is:
 
-These paths are ignored by git to avoid root-level clutter.
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_pytest.ps1 tests/test_offline_rule_review.py -q
+```
+
+This wrapper:
+
+- picks the `DLEnv` Python automatically when available
+- disables external plugin autoload
+- creates a fresh per-run temp directory under `artifacts/manual_checks/pytest_runs/`
+- points `TMP` / `TEMP` at that run-local directory as well
+- keeps `cacheprovider` disabled so pytest does not leave extra cache clutter behind
+
+Bare `pytest` may still inherit unrelated plugins from the broader conda environment, so the wrapper is the recommended path for stable local runs.
 
 ## Notes
 

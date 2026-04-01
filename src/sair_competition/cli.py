@@ -14,6 +14,10 @@ from .analysis.offline_rule_assets import (
     audit_offline_rule_assets,
     build_offline_rule_assets,
 )
+from .analysis.offline_rule_review import (
+    build_offline_rule_review_set,
+    consolidate_offline_rule_axes,
+)
 from .eval.baseline_runner import run_baseline_suite
 from .eval.local_runner import run_complete_prompt_eval
 from .eval.metrics import compute_metrics
@@ -269,6 +273,34 @@ def audit_offline_rule_assets_command(
     return 0
 
 
+def consolidate_offline_rule_axes_command(
+    predictions_path: Path,
+    audit_summary_path: Path,
+    output_dir: Path,
+) -> int:
+    summary = consolidate_offline_rule_axes(
+        predictions_path=predictions_path,
+        audit_summary_path=audit_summary_path,
+        output_dir=output_dir,
+    )
+    print(json_dumps(summary))
+    return 0
+
+
+def build_offline_rule_review_set_command(
+    predictions_path: Path,
+    consolidation_summary_path: Path,
+    output_dir: Path,
+) -> int:
+    summary = build_offline_rule_review_set(
+        predictions_path=predictions_path,
+        consolidation_summary_path=consolidation_summary_path,
+        output_dir=output_dir,
+    )
+    print(json_dumps(summary))
+    return 0
+
+
 def compare_candidates_command(
     candidate_dirs: list[str],
     output_dir: Path,
@@ -386,6 +418,22 @@ def build_parser() -> argparse.ArgumentParser:
     audit_assets.add_argument("--rule-assets-path", required=True)
     audit_assets.add_argument("--output-dir", required=True)
 
+    consolidate_axes = subparsers.add_parser(
+        "consolidate-offline-rule-axes",
+        help="Deduplicate overlapping offline rule assets into canonical axes.",
+    )
+    consolidate_axes.add_argument("--predictions-path", required=True)
+    consolidate_axes.add_argument("--audit-summary-path", required=True)
+    consolidate_axes.add_argument("--output-dir", required=True)
+
+    review_set = subparsers.add_parser(
+        "build-offline-rule-review-set",
+        help="Build a deduplicated review set from canonical offline rule axes.",
+    )
+    review_set.add_argument("--predictions-path", required=True)
+    review_set.add_argument("--consolidation-summary-path", required=True)
+    review_set.add_argument("--output-dir", required=True)
+
     compare = subparsers.add_parser("compare-candidates", help="Compare multiple candidate experiment runs.")
     compare.add_argument("--candidate-dir", action="append", dest="candidate_dirs", required=True)
     compare.add_argument("--output-dir", required=True)
@@ -479,6 +527,18 @@ def main() -> int:
         return audit_offline_rule_assets_command(
             predictions_path=Path(args.predictions_path),
             rule_assets_path=Path(args.rule_assets_path),
+            output_dir=Path(args.output_dir),
+        )
+    if args.command == "consolidate-offline-rule-axes":
+        return consolidate_offline_rule_axes_command(
+            predictions_path=Path(args.predictions_path),
+            audit_summary_path=Path(args.audit_summary_path),
+            output_dir=Path(args.output_dir),
+        )
+    if args.command == "build-offline-rule-review-set":
+        return build_offline_rule_review_set_command(
+            predictions_path=Path(args.predictions_path),
+            consolidation_summary_path=Path(args.consolidation_summary_path),
             output_dir=Path(args.output_dir),
         )
     if args.command == "compare-candidates":

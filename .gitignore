@@ -76,9 +76,11 @@ artifacts/pytest-cache-files-*/
 artifacts/candidates/*
 artifacts/final/*
 artifacts/backups/*
+artifacts/manual_checks/*
 !artifacts/candidates/README.md
 !artifacts/final/README.md
 !artifacts/backups/README.md
+!artifacts/manual_checks/README.md
 
 # Local config copies
 configs/models/*.json
