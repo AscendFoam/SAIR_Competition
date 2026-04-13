@@ -299,6 +299,7 @@ def test_build_offline_rule_review_set_assigns_rows_to_most_specific_axis(tmp_pa
                         "row_count": 1,
                         "rank_index": 2,
                         "priority_score": 3.0,
+                        "main_follow_up_action": "prepare_programmatic_positive_signal",
                         "parent_axis_id": "AXIS_02",
                         "parent_main_axis_rule_id": "OA_TRUE_SINGLETON_WITH_TARGET_SHARED_LHS",
                         "axis_depth": 2,
@@ -324,6 +325,11 @@ def test_build_offline_rule_review_set_assigns_rows_to_most_specific_axis(tmp_pa
     assert rows_by_problem_id["p_shared"]["review_axis_rule_id"] == "OA_TRUE_SINGLETON_WITH_TARGET_SHARED_LHS"
     assert rows_by_problem_id["p_newvar"]["review_axis_rule_id"] == "OA_TRUE_SINGLETON_WITH_TARGET_NEW_VARS"
     assert rows_by_problem_id["p_newvar"]["review_priority"] == "P0"
+    assert rows_by_problem_id["p_newvar"]["suggested_next_action"] == "prepare_programmatic_positive_signal"
+    assert any(
+        "implicit positive programmatic signal" in question
+        for question in rows_by_problem_id["p_newvar"]["annotation_questions"]
+    )
     template_text = (output_dir / "p0_p1_review_template.md").read_text(encoding="utf-8")
     assert "## Session Metadata" in template_text
     assert "`Axis-Level Decision`" in template_text

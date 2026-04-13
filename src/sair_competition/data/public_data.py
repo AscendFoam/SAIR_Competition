@@ -126,6 +126,14 @@ def build_split_manifest(split_rows: dict[str, list[dict]]) -> dict:
 
 
 def _normalize_jsonl_sidecar(input_path: Path, output_path: Path) -> None:
+    """将辅助 JSONL 文件原样拷贝到目标路径。
+
+    如果输入文件不存在则静默跳过。
+
+    Args:
+        input_path: 原始 JSONL 文件路径。
+        output_path: 标准化后的输出路径。
+    """
     if not input_path.exists():
         return
     rows = read_jsonl(input_path)
@@ -133,6 +141,14 @@ def _normalize_jsonl_sidecar(input_path: Path, output_path: Path) -> None:
 
 
 def _normalize_models_csv(input_path: Path, output_path: Path) -> None:
+    """将 CSV 模型注册表文件转换为 JSONL 格式。
+
+    如果输入文件不存在则静默跳过。
+
+    Args:
+        input_path: 原始 CSV 文件路径。
+        output_path: 转换后的 JSONL 输出路径。
+    """
     if not input_path.exists():
         return
 

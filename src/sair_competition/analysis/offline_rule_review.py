@@ -62,6 +62,10 @@ def consolidate_offline_rule_axes(
             "main_axis_rule_id": primary_asset["rule_id"],
             "main_focus_group": primary_asset.get("family_focus_group"),
             "main_primary_tag": primary_asset.get("primary_tag"),
+            "main_status": primary_asset.get("status"),
+            "main_prompt_policy": primary_asset.get("prompt_policy"),
+            "main_follow_up_action": primary_asset.get("follow_up_action"),
+            "main_notes": primary_asset.get("notes"),
             "rank_index": rank_by_rule_id[primary_asset["rule_id"]],
             "merged_rule_ids": [asset["rule_id"] for asset in grouped_assets_sorted],
             "alias_rule_ids": [asset["rule_id"] for asset in grouped_assets_sorted[1:]],
@@ -257,6 +261,15 @@ def build_offline_rule_review_set(
 
 
 def _attach_parent_child_links(canonical_axes: list[dict]) -> None:
+    """通过集合包含关系构建轴间的父子层级。
+
+    Args:
+        canonical_axes: 规范轴列表，每个轴包含 row_keys 等字段。
+            函数会原地修改各轴的 parent_axis_id、child_axis_ids 和 axis_depth 字段。
+
+    Returns:
+        None: 直接修改 canonical_axes 中各轴的层级关系字段。
+    """
     axis_by_id = {axis["axis_id"]: axis for axis in canonical_axes}
     row_sets = {axis["axis_id"]: set(axis["row_keys"]) for axis in canonical_axes}
 
@@ -292,6 +305,15 @@ def _attach_parent_child_links(canonical_axes: list[dict]) -> None:
 
 
 def _axis_depth(axis: dict, axis_by_id: dict[str, dict]) -> int:
+    """沿父链计算轴深度（根轴深度为 0）。
+
+    Args:
+        axis: 目标轴字典，需包含 axis_id 字段。
+        axis_by_id: 以 axis_id 为键的轴字典映射。
+
+    Returns:
+        int: 从当前轴到根轴的层级深度。
+    """
     depth = 0
     current = axis
     seen: set[str] = set()
@@ -307,6 +329,15 @@ def _axis_depth(axis: dict, axis_by_id: dict[str, dict]) -> int:
 
 
 def _axis_lineage(axis: dict, axis_by_id: dict[str, dict]) -> list[dict]:
+    """获取从根到当前轴的完整谱系链。
+
+    Args:
+        axis: 目标轴字典。
+        axis_by_id: 以 axis_id 为键的轴字典映射。
+
+    Returns:
+        list[dict]: 从根轴到当前轴有序排列的轴列表。
+    """
     lineage = [axis]
     current = axis
     seen: set[str] = {axis["axis_id"]}
@@ -321,6 +352,14 @@ def _axis_lineage(axis: dict, axis_by_id: dict[str, dict]) -> list[dict]:
 
 
 def _axis_specificity_sort_key(axis: dict) -> tuple:
+    """返回用于排序的特异性键（深度越深、行数越少越优先）。
+
+    Args:
+        axis: 目标轴字典。
+
+    Returns:
+        tuple: 排序元组，按深度降序、行数升序、排名升序、优先级降序排列。
+    """
     return (
         -_axis_depth_value(axis),
         _axis_row_count(axis),
@@ -330,6 +369,14 @@ def _axis_specificity_sort_key(axis: dict) -> tuple:
 
 
 def _is_actionable_review_row(row: dict) -> bool:
+    """判断行是否为可操作的审查行（answer=True, prediction!=True, error 属于 RULE_MISSING 或 HARD_COMPOSITION）。
+
+    Args:
+        row: 数据行字典，需包含 answer、prediction 等字段。
+
+    Returns:
+        bool: 若该行为可操作的审查行则返回 True，否则返回 False。
+    """
     if row.get("answer") is not True:
         return False
     if row.get("prediction") is True:
@@ -338,6 +385,16 @@ def _is_actionable_review_row(row: dict) -> bool:
 
 
 def _boundary_family_tags(row: dict, axis: dict, axis_by_id: dict[str, dict]) -> list[str]:
+    """返回行中不属于轴谱系覆盖范围的额外家族标签。
+
+    Args:
+        row: 数据行字典，需包含 family_tags 字段。
+        axis: 当前分配的轴字典。
+        axis_by_id: 以 axis_id 为键的轴字典映射。
+
+    Returns:
+        list[str]: 行中存在但未出现在轴谱系触发标签中的家族标签列表。
+    """
     lineage = _axis_lineage(axis, axis_by_id)
     axis_tags = {
         tag
@@ -352,6 +409,14 @@ def _boundary_family_tags(row: dict, axis: dict, axis_by_id: dict[str, dict]) ->
 
 
 def _review_priority(axis: dict) -> str:
+    """根据深度和行数返回审查优先级 P0/P1/P2。
+
+    Args:
+        axis: 目标轴字典，需包含 axis_depth 和 row_count 字段。
+
+    Returns:
+        str: 审查优先级字符串，"P0"（最高）、"P1" 或 "P2"。
+    """
     if _axis_depth_value(axis) >= 2 or _axis_row_count(axis) <= 2:
         return "P0"
     if _axis_depth_value(axis) == 1:
@@ -360,6 +425,18 @@ def _review_priority(axis: dict) -> str:
 
 
 def _suggested_next_action(axis: dict) -> str:
+    """根据轴特征建议下一步动作。
+
+    Args:
+        axis: 目标轴字典，需包含 axis_depth 和 row_count 字段。
+
+    Returns:
+        str: 建议动作字符串，如 "expand_family_tagger"、"collect_more_examples"
+            或 "prepare_programmatic_positive_signal"。
+    """
+    preferred_action = axis.get("main_follow_up_action")
+    if preferred_action:
+        return str(preferred_action)
     if _axis_depth_value(axis) >= 1:
         return "expand_family_tagger"
     if _axis_row_count(axis) <= 2:
@@ -368,6 +445,16 @@ def _suggested_next_action(axis: dict) -> str:
 
 
 def _annotation_questions(row: dict, axis: dict, axis_by_id: dict[str, dict]) -> list[str]:
+    """生成人工标注时的引导问题列表。
+
+    Args:
+        row: 数据行字典。
+        axis: 当前分配的轴字典。
+        axis_by_id: 以 axis_id 为键的轴字典映射。
+
+    Returns:
+        list[str]: 用于引导人工标注审查的问题字符串列表。
+    """
     questions = [
         f"Confirm whether `{axis['main_axis_rule_id']}` should remain the canonical axis for this row.",
     ]
@@ -378,14 +465,26 @@ def _annotation_questions(row: dict, axis: dict, axis_by_id: dict[str, dict]) ->
             + ", ".join(boundary_tags)
             + "."
         )
-    if axis["axis_depth"] >= 1:
+    next_action = _suggested_next_action(axis)
+    if next_action == "prepare_programmatic_positive_signal":
+        questions.append("Check whether this axis should feed an implicit positive programmatic signal instead of prompt wording.")
+    elif axis["axis_depth"] >= 1:
         questions.append("Check whether this child axis is stable enough to promote into the family tagger.")
     else:
-        questions.append("Check whether this axis should feed an implicit positive programmatic signal instead of prompt wording.")
+        questions.append("Check whether this axis should stay as a broader offline asset while collecting more examples.")
     return questions
 
 
 def _build_review_note(row: dict, axis: dict) -> str:
+    """为审查行构建摘要说明文本。
+
+    Args:
+        row: 数据行字典。
+        axis: 当前分配的轴字典。
+
+    Returns:
+        str: 描述该行归属及去重情况的摘要说明字符串。
+    """
     return (
         f"{_row_label(row)} is a missed-true example assigned to `{axis['main_axis_rule_id']}` "
         f"after deduplicating overlapping offline assets."
@@ -399,6 +498,18 @@ def _build_review_bucket_summary(
     axis_by_id: dict[str, dict],
     assigned_axis_by_row_key: dict[str, str],
 ) -> list[dict]:
+    """为每个轴构建审查桶摘要，包含分配行数、边界标签和示例等信息。
+
+    Args:
+        rows: 全部数据行列表。
+        canonical_axes: 规范轴列表。
+        bucket_counter: 以 axis_id 为键的已分配行数计数器。
+        axis_by_id: 以 axis_id 为键的轴字典映射。
+        assigned_axis_by_row_key: 以行键为键、分配的 axis_id 为值的映射。
+
+    Returns:
+        list[dict]: 每个轴对应的审查桶摘要字典列表。
+    """
     row_by_key = {_row_key(row): row for row in rows}
     buckets: list[dict] = []
     for axis in sorted(canonical_axes, key=_axis_specificity_sort_key):
@@ -446,6 +557,14 @@ def _build_review_bucket_summary(
 
 
 def _build_axis_recommendation(canonical_axes: list[dict]) -> dict:
+    """构建轴合并建议，汇总顶部轴的别名数、行数和 true miss 数。
+
+    Args:
+        canonical_axes: 已排序的规范轴列表。
+
+    Returns:
+        dict: 包含 top_axis_rule_ids 列表和 summary 文本的建议字典。
+    """
     if not canonical_axes:
         return {"summary": "No canonical axes were found."}
 
@@ -466,6 +585,14 @@ def _build_axis_recommendation(canonical_axes: list[dict]) -> dict:
 
 
 def _build_review_recommendation(bucket_summary: list[dict]) -> dict:
+    """构建审查优先级建议，按优先级和分配行数排序后给出顶部审查桶。
+
+    Args:
+        bucket_summary: 审查桶摘要列表，每个元素包含 review_priority、assigned_review_rows 等字段。
+
+    Returns:
+        dict: 包含 top_review_axis_rule_ids 列表和 summary 文本的建议字典。
+    """
     active_buckets = [bucket for bucket in bucket_summary if bucket["assigned_review_rows"] > 0]
     if not active_buckets:
         return {"summary": "No actionable review rows were assigned to canonical axes."}
@@ -492,6 +619,14 @@ def _build_review_recommendation(bucket_summary: list[dict]) -> dict:
 
 
 def _axis_summary_to_markdown(summary: dict) -> str:
+    """将轴合并摘要转为 Markdown 格式文本。
+
+    Args:
+        summary: 轴合并摘要字典，包含 canonical_axes、recommendation 等字段。
+
+    Returns:
+        str: 格式化的 Markdown 字符串，包含汇总表格和各轴详细信息。
+    """
     lines = [
         "# Offline Rule Axis Consolidation",
         "",
@@ -538,6 +673,9 @@ def _axis_summary_to_markdown(summary: dict) -> str:
                 f"### {axis['axis_id']} / {axis['main_axis_rule_id']}",
                 "",
                 f"- Main focus group: `{axis['main_focus_group']}`",
+                f"- Main status: `{axis.get('main_status') or 'n/a'}`",
+                f"- Prompt policy: `{axis.get('main_prompt_policy') or 'n/a'}`",
+                f"- Suggested follow-up: `{_suggested_next_action(axis)}`",
                 f"- Merged rules: `{', '.join(axis['merged_rule_ids'])}`",
                 f"- Merged trigger tags: `{', '.join(axis['merged_trigger_tags']) if axis['merged_trigger_tags'] else 'none'}`",
                 f"- Parent axis: `{axis['parent_main_axis_rule_id'] or 'root'}`",
@@ -556,6 +694,14 @@ def _axis_summary_to_markdown(summary: dict) -> str:
 
 
 def _review_checklist_to_markdown(review_rows: list[dict]) -> str:
+    """生成标注清单 Markdown 文本，按优先级分组列出所有审查行。
+
+    Args:
+        review_rows: 审查行列表，每行包含 review_priority、problem_id、annotation_questions 等字段。
+
+    Returns:
+        str: 格式化的 Markdown 标注清单字符串。
+    """
     lines = [
         "# Offline Rule Annotation Checklist",
         "",
@@ -592,6 +738,14 @@ def _review_checklist_to_markdown(review_rows: list[dict]) -> str:
 
 
 def _p0_p1_review_template_to_markdown(review_rows: list[dict]) -> str:
+    """生成 P0/P1 审查模板 Markdown 文本，包含轴级和行级决策框架。
+
+    Args:
+        review_rows: 审查行列表，仅筛选 review_priority 为 P0 或 P1 的行。
+
+    Returns:
+        str: 格式化的 Markdown 审查模板字符串，包含会话元数据、轴级决策和行级审查结构。
+    """
     target_rows = [row for row in review_rows if row["review_priority"] in {"P0", "P1"}]
     grouped_rows: dict[str, dict[str, list[dict]]] = {"P0": defaultdict(list), "P1": defaultdict(list)}
     for row in target_rows:
@@ -698,6 +852,14 @@ def _p0_p1_review_template_to_markdown(review_rows: list[dict]) -> str:
 
 
 def _axis_row_count(axis: dict) -> int:
+    """安全获取轴的行数。
+
+    Args:
+        axis: 轴字典，可能包含 row_count 或 row_keys 字段。
+
+    Returns:
+        int: 轴对应的行数，若 row_count 不存在则从 row_keys 推算。
+    """
     row_count = axis.get("row_count")
     if row_count is not None:
         return int(row_count)
@@ -705,18 +867,51 @@ def _axis_row_count(axis: dict) -> int:
 
 
 def _axis_depth_value(axis: dict) -> int:
+    """安全获取轴深度值。
+
+    Args:
+        axis: 轴字典，可能包含 axis_depth 字段。
+
+    Returns:
+        int: 轴深度值，若字段不存在或为 None 则返回 0。
+    """
     return int(axis.get("axis_depth") or 0)
 
 
 def _axis_rank_index(axis: dict) -> int:
+    """安全获取轴排名索引。
+
+    Args:
+        axis: 轴字典，可能包含 rank_index 字段。
+
+    Returns:
+        int: 排名索引值，若字段不存在或为 None 则返回 0。
+    """
     return int(axis.get("rank_index") or 0)
 
 
 def _axis_priority_score(axis: dict) -> float:
+    """安全获取轴优先级分数。
+
+    Args:
+        axis: 轴字典，可能包含 priority_score 字段。
+
+    Returns:
+        float: 优先级分数，若字段不存在或为 None 则返回 0.0。
+    """
     return float(axis.get("priority_score") or 0.0)
 
 
 def _axis_true_miss_count(axis: dict, axis_rows: list[dict]) -> int:
+    """获取轴中 true miss（answer=True 但 prediction 不为 True）的数量。
+
+    Args:
+        axis: 轴字典，可能包含 true_miss_count 字段。
+        axis_rows: 轴对应的数据行列表，作为备选计算来源。
+
+    Returns:
+        int: true miss 数量，优先使用轴中缓存值，否则从行数据重新计算。
+    """
     true_miss_count = axis.get("true_miss_count")
     if true_miss_count is not None:
         return int(true_miss_count)
@@ -724,6 +919,15 @@ def _axis_true_miss_count(axis: dict, axis_rows: list[dict]) -> int:
 
 
 def _axis_recoverable_error_count(axis: dict, axis_rows: list[dict]) -> int:
+    """获取轴中可恢复错误数（RULE_MISSING 和 HARD_COMPOSITION 类别之和）。
+
+    Args:
+        axis: 轴字典，可能包含 recoverable_error_count 字段。
+        axis_rows: 轴对应的数据行列表，作为备选计算来源。
+
+    Returns:
+        int: 可恢复错误数量，优先使用轴中缓存值，否则从行数据重新计算。
+    """
     recoverable_error_count = axis.get("recoverable_error_count")
     if recoverable_error_count is not None:
         return int(recoverable_error_count)
@@ -735,6 +939,14 @@ def _axis_recoverable_error_count(axis: dict, axis_rows: list[dict]) -> int:
 
 
 def _review_summary_to_markdown(summary: dict) -> str:
+    """将审查集摘要转为 Markdown 格式文本。
+
+    Args:
+        summary: 审查集摘要字典，包含 bucket_summary、recommendation 等字段。
+
+    Returns:
+        str: 格式化的 Markdown 字符串，包含审查桶汇总表格和详细信息。
+    """
     lines = [
         "# Offline Rule Review Set",
         "",
@@ -799,6 +1011,14 @@ def _review_summary_to_markdown(summary: dict) -> str:
 
 
 def _collect_error_buckets(rows: list[dict]) -> Counter[str]:
+    """收集错误类别计数，排除正确预测（CORRECT）的行。
+
+    Args:
+        rows: 数据行列表，每行将通过 infer_error_category 推断错误类别。
+
+    Returns:
+        Counter[str]: 以错误类别名称为键、出现次数为值的计数器。
+    """
     buckets: Counter[str] = Counter()
     for row in rows:
         category = infer_error_category(row)
@@ -809,22 +1029,54 @@ def _collect_error_buckets(rows: list[dict]) -> Counter[str]:
 
 
 def _load_json(path: str | Path) -> dict:
+    """加载 JSON 文件并解析为字典。
+
+    Args:
+        path: JSON 文件路径，支持字符串或 Path 对象。
+
+    Returns:
+        dict: 解析后的 JSON 内容字典。
+    """
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
 def _row_key(row: dict) -> str:
+    """生成行唯一键，优先使用 problem_id，否则拼接 source 和 equation 信息。
+
+    Args:
+        row: 数据行字典，可能包含 problem_id、source、equation1、equation2 字段。
+
+    Returns:
+        str: 该行的唯一标识字符串。
+    """
     if row.get("problem_id"):
         return str(row["problem_id"])
     return f"{row.get('source', 'unknown')}::{row.get('equation1', '')} => {row.get('equation2', '')}"
 
 
 def _row_label(row: dict) -> str:
+    """生成行标签文本，优先使用 problem_id，否则拼接 equation 信息。
+
+    Args:
+        row: 数据行字典，可能包含 problem_id、equation1、equation2 字段。
+
+    Returns:
+        str: 用于展示的行标签字符串。
+    """
     if row.get("problem_id"):
         return str(row["problem_id"])
     return f"{row.get('equation1', '')} => {row.get('equation2', '')}"
 
 
 def _unique_preserving_order(items) -> list[str]:
+    """对可迭代对象去重并保持原始出现顺序。
+
+    Args:
+        items: 可迭代对象，元素将被转为字符串后去重。
+
+    Returns:
+        list[str]: 去重后的字符串列表，保持首次出现的顺序。
+    """
     ordered: list[str] = []
     seen: set[str] = set()
     for item in items:
@@ -839,12 +1091,28 @@ def _unique_preserving_order(items) -> list[str]:
 
 
 def _format_buckets(buckets: dict[str, int]) -> str:
+    """格式化错误桶为字符串，按计数降序和名称升序排列。
+
+    Args:
+        buckets: 以错误类别名称为键、计数为值的字典。
+
+    Returns:
+        str: 格式化后的字符串，如 "RULE_MISSING=3, HARD_COMPOSITION=1"；若为空则返回 "none"。
+    """
     if not buckets:
         return "none"
     return ", ".join(f"{name}={count}" for name, count in sorted(buckets.items(), key=lambda item: (-item[1], item[0])))
 
 
 def _fmt_rate(value: float | None) -> str:
+    """格式化比率为 4 位小数字符串。
+
+    Args:
+        value: 待格式化的数值，可以为 None。
+
+    Returns:
+        str: 保留 4 位小数的字符串；若值为 None 则返回 "n/a"。
+    """
     if value is None:
         return "n/a"
     return f"{value:.4f}"

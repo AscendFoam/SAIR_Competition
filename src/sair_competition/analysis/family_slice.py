@@ -64,6 +64,14 @@ def attach_family_tags_to_predictions(
 
 
 def _equation_key(row: dict) -> tuple[str, str]:
+    """从数据行中提取方程对作为匹配键。
+
+    Args:
+        row: 包含 ``equation1`` 和 ``equation2`` 字段的数据行。
+
+    Returns:
+        ``(equation1, equation2)`` 元组。
+    """
     return (
         str(row.get("equation1") or ""),
         str(row.get("equation2") or ""),

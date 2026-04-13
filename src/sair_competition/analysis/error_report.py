@@ -64,6 +64,24 @@ def analyze_prediction_errors(predictions_path: str | Path, output_dir: str | Pa
 
 
 def infer_error_category(row: dict) -> str:
+    """根据预测行推断错误类别。
+
+    推断规则：
+      - 未成功解析 → "FORMAT"
+      - 预测值与答案相等 → "CORRECT"
+      - 预测为 True、答案为 False，且 eq2 复杂度高于 eq1 → "FALSE_FILTER_WEAK"
+      - 预测为 True、答案为 False（其余情况） → "RULE_CONFLICT"
+      - 预测为 False、答案为 True，且两方程经规范化后相等 → "RULE_MISSING"
+      - 预测为 False、答案为 True，且来源以 "hard" 开头 → "HARD_COMPOSITION"
+      - 预测为 False、答案为 True（其余情况） → "RULE_MISSING"
+      - 其他 → "MODEL_SPECIFIC"
+
+    Args:
+        row: 包含 parsed、prediction、answer、equation1、equation2、source 等字段的预测行字典。
+
+    Returns:
+        错误类别字符串。
+    """
     if not row.get("parsed", True):
         return "FORMAT"
     prediction = row.get("prediction")
@@ -94,6 +112,17 @@ def infer_error_category(row: dict) -> str:
 
 
 def _build_family_tag_summary(rows: list[dict], family_tag_rows: Counter[str]) -> dict[str, dict]:
+    """按家族标签（family tag）构建指标摘要。
+
+    对每个标签统计行数、计算指标、收集错误桶，并按行数降序排列。
+
+    Args:
+        rows: 全部预测行列表。
+        family_tag_rows: 标签到行数计数的映射（Counter）。
+
+    Returns:
+        字典，键为标签名，值为包含 row_count、metrics、error_count、error_buckets 的字典。
+    """
     summary: dict[str, dict] = {}
     for tag, row_count in sorted(family_tag_rows.items(), key=lambda item: (-item[1], item[0])):
         subset = [row for row in rows if tag in set(row.get("family_tags") or [])]
@@ -109,6 +138,18 @@ def _build_family_tag_summary(rows: list[dict], family_tag_rows: Counter[str]) -
 
 
 def _build_focus_group_summary(rows: list[dict]) -> dict[str, dict]:
+    """按关注组（focus group）构建指标摘要。
+
+    遍历 FAMILY_FOCUS_GROUPS 中的每个分组，筛选匹配的行子集，
+    计算该子集的指标与错误桶。
+
+    Args:
+        rows: 全部预测行列表。
+
+    Returns:
+        字典，键为分组名，值为包含 label、row_count、metrics、error_count、
+        error_buckets、tags 的字典。
+    """
     summary: dict[str, dict] = {}
     for group_name, config in FAMILY_FOCUS_GROUPS.items():
         group_tags = set(config["tags"])
@@ -127,6 +168,16 @@ def _build_focus_group_summary(rows: list[dict]) -> dict[str, dict]:
 
 
 def _collect_error_buckets(rows: list[dict]) -> Counter[str]:
+    """收集各行错误类别的计数。
+
+    跳过预测正确的行（CORRECT），仅统计错误类别。
+
+    Args:
+        rows: 预测行列表。
+
+    Returns:
+        错误类别到出现次数的映射。
+    """
     buckets: Counter[str] = Counter()
     for row in rows:
         category = infer_error_category(row)
@@ -137,6 +188,17 @@ def _collect_error_buckets(rows: list[dict]) -> Counter[str]:
 
 
 def _to_markdown(summary: dict) -> str:
+    """将错误分析摘要转换为 Markdown 报告。
+
+    报告包含错误分桶统计、焦点组切片分析、按家族标签的错误分布，
+    以及前 10 条错误样例。
+
+    Args:
+        summary: 由 :func:`analyze_prediction_errors` 生成的摘要字典。
+
+    Returns:
+        格式化的 Markdown 文本。
+    """
     lines = [
         "# Error Analysis Summary",
         "",
@@ -231,6 +293,7 @@ def _to_markdown(summary: dict) -> str:
 
 
 def _fmt_rate(value: float | None) -> str:
+    """将浮点比率格式化为 4 位小数字符串，``None`` 时返回 ``"n/a"``。"""
     if value is None:
         return "n/a"
     return f"{value:.4f}"

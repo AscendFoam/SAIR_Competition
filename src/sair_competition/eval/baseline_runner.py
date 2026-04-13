@@ -61,6 +61,17 @@ def run_baseline_suite(
 
 
 def _select_predictors(predictor_names: list[str] | None) -> list[BaselinePredictor]:
+    """按名称选择预测器子集，或返回全部预测器。
+
+    Args:
+        predictor_names: 预测器名称列表，为 ``None`` 时返回全部。
+
+    Returns:
+        匹配的预测器实例列表。
+
+    Raises:
+        KeyError: 指定名称不存在时抛出。
+    """
     all_predictors = {predictor.name: predictor for predictor in get_baseline_predictors()}
     if not predictor_names:
         return list(all_predictors.values())

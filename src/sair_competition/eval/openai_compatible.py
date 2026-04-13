@@ -11,6 +11,14 @@ from sair_competition.config.env import OpenAICompatibleSettings
 
 @dataclass(slots=True)
 class CompletionResult:
+    """API 聊天补全请求的结果。
+
+    Attributes:
+        raw_output: 模型输出的文本内容。
+        latency_seconds: 请求耗时（秒）。
+        response_json: 完整的 API 响应 JSON。
+    """
+
     raw_output: str
     latency_seconds: float
     response_json: dict
@@ -20,6 +28,11 @@ class OpenAICompatibleClient:
     """Minimal OpenAI-compatible chat completions client."""
 
     def __init__(self, settings: OpenAICompatibleSettings) -> None:
+        """初始化客户端。
+
+        Args:
+            settings: OpenAI 兼容 API 配置对象。
+        """
         self.settings = settings
 
     def complete(
@@ -28,6 +41,22 @@ class OpenAICompatibleClient:
         temperature: float = 0.0,
         max_tokens: int = 512,
     ) -> CompletionResult:
+        """发送聊天补全请求并返回结果。
+
+        使用 ``urllib.request`` 发送 POST 请求到 OpenAI 兼容的
+        ``/v1/chat/completions`` 端点。
+
+        Args:
+            prompt: 用户提示词文本。
+            temperature: 采样温度，默认 0.0（确定性输出）。
+            max_tokens: 最大生成 token 数，默认 512。
+
+        Returns:
+            包含输出文本、延迟和完整响应的 :class:`CompletionResult`。
+
+        Raises:
+            RuntimeError: HTTP 错误、网络错误或响应解析失败时抛出。
+        """
         endpoint = _resolve_chat_completions_url(self.settings.base_url)
         payload = {
             "model": self.settings.model,
@@ -68,6 +97,18 @@ class OpenAICompatibleClient:
 
 
 def _resolve_chat_completions_url(base_url: str) -> str:
+    """根据基础 URL 推断完整的聊天补全端点地址。
+
+    - 以 ``/chat/completions`` 结尾 → 直接使用
+    - 以 ``/v1`` 结尾 → 追加 ``/chat/completions``
+    - 其他 → 追加 ``/v1/chat/completions``
+
+    Args:
+        base_url: API 基础 URL。
+
+    Returns:
+        完整的聊天补全端点 URL。
+    """
     if base_url.endswith("/chat/completions"):
         return base_url
     if base_url.endswith("/v1"):
@@ -76,6 +117,19 @@ def _resolve_chat_completions_url(base_url: str) -> str:
 
 
 def _extract_message_text(response_json: dict) -> str:
+    """从 API 响应 JSON 中提取助手的文本消息。
+
+    支持字符串格式和 OpenAI 多部分内容格式的响应。
+
+    Args:
+        response_json: 完整的 API 响应 JSON。
+
+    Returns:
+        提取的文本内容。
+
+    Raises:
+        RuntimeError: 响应中无 ``choices`` 或 ``content`` 字段时抛出。
+    """
     choices = response_json.get("choices") or []
     if not choices:
         raise RuntimeError("Completion response did not include choices.")

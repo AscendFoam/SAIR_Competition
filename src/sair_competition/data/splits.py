@@ -67,6 +67,15 @@ def make_frozen_splits(
 
 
 def _group_and_shuffle(rows: list[dict], seed: int) -> dict[tuple[str, bool], list[dict]]:
+    """按 (source, answer) 分组并在每组内确定性打乱。
+
+    Args:
+        rows: 待分组的数据行列表。
+        seed: 随机种子，用于确保打乱可复现。
+
+    Returns:
+        以 ``(source, answer)`` 元组为键、行列表为值的字典。
+    """
     grouped: dict[tuple[str, bool], list[dict]] = defaultdict(list)
     for row in rows:
         grouped[(row["source"], bool(row["answer"]))].append(row)
@@ -78,6 +87,22 @@ def _group_and_shuffle(rows: list[dict], seed: int) -> dict[tuple[str, bool], li
 
 
 def _apportion_counts(group_sizes: dict[tuple[str, bool], int], target_total: int) -> dict[tuple[str, bool], int]:
+    """使用最大余额法将目标总数按比例分配到各组。
+
+    先计算每组的确切配额并向下取整，再将剩余名额按小数部分
+    从大到小分配。
+
+    Args:
+        group_sizes: 各组的当前大小。
+        target_total: 需要从这些组中分配的总行数。
+
+    Returns:
+        各组应分配的行数字典。
+
+    Raises:
+        ValueError: 目标总数超过可用行数时抛出。
+        RuntimeError: 分配算法未能精确分配时抛出。
+    """
     if target_total == 0:
         return {key: 0 for key in group_sizes}
 

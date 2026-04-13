@@ -6,6 +6,19 @@ from pathlib import Path
 
 @dataclass(frozen=True, slots=True)
 class OpenAICompatibleSettings:
+    """OpenAI 兼容 API 的不可变配置对象。
+
+    封装调用聊天补全 API 所需的全部参数，包括供应商名称、
+    密钥、基础 URL、模型名称和超时时间。
+
+    Attributes:
+        provider_name: 供应商标识（如 ``"deepseek"``）。
+        api_key: API 认证密钥。
+        base_url: API 基础 URL（不含 ``/chat/completions`` 后缀）。
+        model: 模型名称（如 ``"deepseek-chat"``）。
+        timeout_seconds: 请求超时时间（秒），默认 120。
+    """
+
     provider_name: str
     api_key: str
     base_url: str
@@ -83,6 +96,16 @@ def resolve_openai_compatible_settings(
 
 
 def _first_present(dotenv: dict[str, str], keys: list[str], required: bool = True) -> str | None:
+    """从环境变量字典中按优先级查找第一个非空值。
+
+    Args:
+        dotenv: 环境变量字典。
+        keys: 按优先级排列的变量名列表。
+        required: 是否为必选项（当前实现中不影响行为）。
+
+    Returns:
+        第一个找到的非空值，若均不存在则返回 ``None``。
+    """
     for key in keys:
         value = dotenv.get(key)
         if value:

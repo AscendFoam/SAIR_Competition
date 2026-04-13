@@ -140,6 +140,15 @@ def demo_metrics() -> int:
 
 
 def prepare_public_data_command(raw_dir: Path, interim_dir: Path) -> int:
+    """CLI 命令：标准化公开数据集。
+
+    Args:
+        raw_dir: 原始数据目录路径。
+        interim_dir: 标准化后的中间数据输出目录路径。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = prepare_public_dataset(raw_dir=raw_dir, interim_dir=interim_dir)
     print(json_dumps(summary))
     return 0
@@ -154,6 +163,20 @@ def make_splits_command(
     audit: int,
     seed: int,
 ) -> int:
+    """CLI 命令：创建确定性数据拆分。
+
+    Args:
+        dataset_path: 数据集文件路径。
+        output_dir: 拆分结果输出目录路径。
+        smoke: smoke 拆分的样本数量。
+        dev: dev 拆分的样本数量。
+        holdout: holdout 拆分的样本数量。
+        audit: audit 拆分的样本数量。
+        seed: 随机种子，用于保证拆分的可复现性。
+
+    Returns:
+        int: 成功返回 0。
+    """
     manifest = make_frozen_splits(
         dataset_path=dataset_path,
         output_dir=output_dir,
@@ -175,6 +198,17 @@ def run_baseline_eval_command(
     predictors: list[str] | None,
     prompt_path: Path | None,
 ) -> int:
+    """CLI 命令：运行基线预测器评估。
+
+    Args:
+        dataset_path: 数据集文件路径。
+        output_dir: 评估结果输出目录路径。
+        predictors: 要运行的预测器名称列表，为 None 时运行全部预测器。
+        prompt_path: 自定义 prompt 模板路径，为 None 时使用默认模板。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = run_baseline_suite(
         dataset_path=dataset_path,
         output_dir=output_dir,
@@ -195,6 +229,21 @@ def run_complete_prompt_eval_command(
     temperature: float,
     max_tokens: int,
 ) -> int:
+    """CLI 命令：通过 API 运行完整 prompt 评估。
+
+    Args:
+        dataset_path: 数据集文件路径。
+        prompt_path: 完整 prompt 模板文件路径。
+        output_dir: 评估结果输出目录路径。
+        dotenv_path: 环境变量文件路径，用于加载 API 密钥。
+        model: 模型名称，为 None 时使用默认模型。
+        limit: 限制评估的样本数量，为 None 时不限制。
+        temperature: 生成温度参数。
+        max_tokens: 最大生成 token 数。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = run_complete_prompt_eval(
         dataset_path=dataset_path,
         prompt_path=prompt_path,
@@ -210,6 +259,15 @@ def run_complete_prompt_eval_command(
 
 
 def analyze_errors_command(predictions_path: Path, output_dir: Path) -> int:
+    """CLI 命令：分析预测错误。
+
+    Args:
+        predictions_path: 预测结果文件路径。
+        output_dir: 错误分析报告输出目录路径。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = analyze_prediction_errors(predictions_path=predictions_path, output_dir=output_dir)
     print(json_dumps(summary))
     return 0
@@ -220,6 +278,16 @@ def attach_family_tags_command(
     tagged_dataset_path: Path,
     output_path: Path,
 ) -> int:
+    """CLI 命令：回填家族标签到预测文件。
+
+    Args:
+        predictions_path: 预测结果文件路径。
+        tagged_dataset_path: 已标注家族标签的数据集文件路径。
+        output_path: 回填标签后的输出文件路径。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = attach_family_tags_to_predictions(
         predictions_path=predictions_path,
         tagged_dataset_path=tagged_dataset_path,
@@ -235,6 +303,17 @@ def build_offline_rule_assets_command(
     error_summary_path: Path | None,
     report_path: Path | None,
 ) -> int:
+    """CLI 命令：构建离线规则资产。
+
+    Args:
+        tagged_dataset_path: 已标注家族标签的数据集文件路径。
+        output_path: 离线规则资产输出文件路径。
+        error_summary_path: 错误摘要文件路径，为 None 时不使用。
+        report_path: 报告输出文件路径，为 None 时不生成报告。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = build_offline_rule_assets(
         tagged_dataset_path=tagged_dataset_path,
         output_path=output_path,
@@ -250,6 +329,16 @@ def attach_offline_rule_assets_command(
     rule_assets_path: Path,
     output_path: Path,
 ) -> int:
+    """CLI 命令：附加离线规则资产 ID 到数据行。
+
+    Args:
+        input_path: 已标注家族标签的输入数据文件路径。
+        rule_assets_path: 离线规则资产文件路径。
+        output_path: 附加规则资产后的输出文件路径。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = attach_offline_rule_assets(
         input_path=input_path,
         rule_assets_path=rule_assets_path,
@@ -264,6 +353,16 @@ def audit_offline_rule_assets_command(
     rule_assets_path: Path,
     output_dir: Path,
 ) -> int:
+    """CLI 命令：审计离线规则资产表现。
+
+    Args:
+        predictions_path: 预测结果文件路径。
+        rule_assets_path: 离线规则资产文件路径。
+        output_dir: 审计结果输出目录路径。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = audit_offline_rule_assets(
         predictions_path=predictions_path,
         rule_assets_path=rule_assets_path,
@@ -278,6 +377,16 @@ def consolidate_offline_rule_axes_command(
     audit_summary_path: Path,
     output_dir: Path,
 ) -> int:
+    """CLI 命令：合并重叠离线规则资产为规范轴。
+
+    Args:
+        predictions_path: 预测结果文件路径。
+        audit_summary_path: 审计摘要文件路径。
+        output_dir: 合并结果输出目录路径。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = consolidate_offline_rule_axes(
         predictions_path=predictions_path,
         audit_summary_path=audit_summary_path,
@@ -292,6 +401,16 @@ def build_offline_rule_review_set_command(
     consolidation_summary_path: Path,
     output_dir: Path,
 ) -> int:
+    """CLI 命令：构建去重审查集。
+
+    Args:
+        predictions_path: 预测结果文件路径。
+        consolidation_summary_path: 合并摘要文件路径。
+        output_dir: 审查集输出目录路径。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = build_offline_rule_review_set(
         predictions_path=predictions_path,
         consolidation_summary_path=consolidation_summary_path,
@@ -306,6 +425,16 @@ def compare_candidates_command(
     output_dir: Path,
     baseline_dir: str | None,
 ) -> int:
+    """CLI 命令：对比多个实验候选运行。
+
+    Args:
+        candidate_dirs: 候选实验目录路径列表。
+        output_dir: 对比报告输出目录路径。
+        baseline_dir: 基线实验目录路径，为 None 时不指定基线。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = compare_candidate_runs(
         candidate_dirs=candidate_dirs,
         output_dir=output_dir,
@@ -320,6 +449,16 @@ def tag_problem_families_command(
     output_path: Path,
     summary_dir: Path | None,
 ) -> int:
+    """CLI 命令：为数据集标注家族标签。
+
+    Args:
+        dataset_path: 数据集文件路径。
+        output_path: 标注后的输出文件路径。
+        summary_dir: 摘要输出目录路径，为 None 时不生成摘要。
+
+    Returns:
+        int: 成功返回 0。
+    """
     summary = tag_problem_families(
         dataset_path=dataset_path,
         output_path=output_path,
@@ -330,12 +469,25 @@ def tag_problem_families_command(
 
 
 def json_dumps(payload: dict) -> str:
+    """将字典序列化为格式化的 JSON 字符串。
+
+    Args:
+        payload: 需要序列化的字典。
+
+    Returns:
+        str: 格式化后的 JSON 字符串。
+    """
     import json
 
     return json.dumps(payload, ensure_ascii=False, indent=2)
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """构建 argparse 命令行解析器，注册所有子命令。
+
+    Returns:
+        argparse.ArgumentParser: 配置完成的命令行解析器实例。
+    """
     parser = argparse.ArgumentParser(description="Utilities for the SAIR competition workspace.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -451,6 +603,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
+    """CLI 主入口，解析参数并分发到对应命令函数。
+
+    Returns:
+        int: 成功返回 0，失败返回 1。
+    """
     parser = build_parser()
     args = parser.parse_args()
 

@@ -10,6 +10,25 @@ from sair_competition.paths import REPO_ROOT
 
 @dataclass(slots=True)
 class CandidateSnapshot:
+    """存储一次实验候选运行的快照信息。
+
+    Attributes:
+        candidate_id: 候选运行的唯一标识符（目录名）。
+        candidate_dir: 候选运行所在的目录路径。
+        prompt_path: 所用 prompt 文件的路径。
+        prompt_bytes: prompt 文件的 UTF-8 字节大小，不可用时为 None。
+        model: 使用的模型名称。
+        provider: 模型提供方名称。
+        row_count: 评测数据行数。
+        accuracy: 整体准确率。
+        true_accuracy: 正例准确率，不可用时为 None。
+        false_accuracy: 反例准确率，不可用时为 None。
+        balanced_accuracy: 平衡准确率（正例与反例准确率的均值），不可用时为 None。
+        parse_success_rate: 解析成功率。
+        average_latency_seconds: 平均推理延迟（秒），不可用时为 None。
+        error_buckets: 错误分桶统计，键为错误类型，值为出现次数。
+    """
+
     candidate_id: str
     candidate_dir: str
     prompt_path: str
@@ -26,6 +45,11 @@ class CandidateSnapshot:
     error_buckets: dict[str, int]
 
     def to_dict(self) -> dict:
+        """将快照转换为普通字典。
+
+        Returns:
+            包含所有字段的字典。
+        """
         return asdict(self)
 
 
@@ -69,6 +93,20 @@ def compare_candidate_runs(
 
 
 def _load_candidate_snapshot(candidate_dir: Path) -> CandidateSnapshot:
+    """从候选目录加载元数据并构建候选快照。
+
+    读取目录下的 summary.json 获取指标信息，同时计算平衡准确率、prompt 大小、
+    平均推理延迟和错误分桶。
+
+    Args:
+        candidate_dir: 候选运行所在的目录路径。
+
+    Returns:
+        包含完整指标信息的 CandidateSnapshot 实例。
+
+    Raises:
+        FileNotFoundError: 当 summary.json 不存在时抛出。
+    """
     summary_path = candidate_dir / "summary.json"
     if not summary_path.exists():
         raise FileNotFoundError(f"Candidate summary not found: {summary_path}")
@@ -99,12 +137,31 @@ def _load_candidate_snapshot(candidate_dir: Path) -> CandidateSnapshot:
 
 
 def _balanced_accuracy(true_accuracy: float | None, false_accuracy: float | None) -> float | None:
+    """计算平衡准确率，即正例准确率与反例准确率的算术平均值。
+
+    Args:
+        true_accuracy: 正例准确率，可能为 None。
+        false_accuracy: 反例准确率，可能为 None。
+
+    Returns:
+        正例与反例准确率的平均值；任一参数为 None 时返回 None。
+    """
     if true_accuracy is None or false_accuracy is None:
         return None
     return (true_accuracy + false_accuracy) / 2
 
 
 def _resolve_prompt_size(prompt_path: str) -> int | None:
+    """获取 prompt 文件的 UTF-8 字节大小。
+
+    如果路径为空、文件不存在或路径无效，则返回 None。
+
+    Args:
+        prompt_path: prompt 文件的路径字符串，可以是相对路径（相对于仓库根目录）。
+
+    Returns:
+        文件的 UTF-8 编码字节大小，文件不存在时返回 None。
+    """
     if not prompt_path:
         return None
     path = Path(prompt_path)
@@ -116,6 +173,16 @@ def _resolve_prompt_size(prompt_path: str) -> int | None:
 
 
 def _compute_average_latency(predictions_path: Path) -> float | None:
+    """从预测结果 JSONL 文件中计算平均推理延迟。
+
+    逐行读取 predictions.jsonl，提取 latency_seconds 字段并计算平均值。
+
+    Args:
+        predictions_path: predictions.jsonl 文件的路径。
+
+    Returns:
+        所有有效延迟记录的平均值（秒）；文件不存在或无有效记录时返回 None。
+    """
     if not predictions_path.exists():
         return None
     rows = read_jsonl(predictions_path)
@@ -126,6 +193,17 @@ def _compute_average_latency(predictions_path: Path) -> float | None:
 
 
 def _load_error_buckets(candidate_dir: Path) -> dict[str, int]:
+    """从候选目录对应的分析子目录中加载错误分桶统计。
+
+    查找 {candidate_dir}_analysis/summary.json 文件并读取 error_buckets 字段。
+
+    Args:
+        candidate_dir: 候选运行所在的目录路径。
+
+    Returns:
+        错误分桶字典，键为错误类型名称，值为出现次数；
+        分析目录或 summary.json 不存在时返回空字典。
+    """
     analysis_dir = candidate_dir.parent / f"{candidate_dir.name}_analysis"
     summary_path = analysis_dir / "summary.json"
     if not summary_path.exists():
@@ -138,6 +216,17 @@ def _compute_deltas(
     ranked: list[CandidateSnapshot],
     baseline_snapshot: CandidateSnapshot | None,
 ) -> list[dict]:
+    """计算每个排名候选与基线之间的各项指标差值。
+
+    Args:
+        ranked: 按指标排序后的候选快照列表。
+        baseline_snapshot: 基线候选快照，为 None 时不计算差值。
+
+    Returns:
+        差值字典列表，每个字典包含 candidate_id 以及 accuracy、true_accuracy、
+        false_accuracy、balanced_accuracy 和 parse_success_rate 相对于基线的差值。
+        基线为 None 时返回空列表。
+    """
     if baseline_snapshot is None:
         return []
 
@@ -160,6 +249,15 @@ def _compute_deltas(
 
 
 def _round_delta(left: float | None, right: float | None) -> float | None:
+    """计算两个浮点数的差值并四舍五入到 6 位小数。
+
+    Args:
+        left: 被减数，可能为 None。
+        right: 减数，可能为 None。
+
+    Returns:
+        left - right 四舍五入到 6 位小数的结果；任一参数为 None 时返回 None。
+    """
     if left is None or right is None:
         return None
     return round(left - right, 6)
@@ -169,6 +267,19 @@ def _build_recommendation(
     ranked: list[CandidateSnapshot],
     baseline_snapshot: CandidateSnapshot | None,
 ) -> dict:
+    """构建推荐信息，包含最佳候选的摘要描述。
+
+    选取排名第一的候选作为最佳候选，生成包含关键指标的自然语言摘要；
+    若存在基线，还会附加与基线的差值比较信息。
+
+    Args:
+        ranked: 按指标排序后的候选快照列表。
+        baseline_snapshot: 基线候选快照，为 None 时不进行基线比较。
+
+    Returns:
+        包含 best_candidate_id 和 summary 字段的推荐字典；
+        候选列表为空时返回提示无候选的摘要。
+    """
     if not ranked:
         return {"summary": "No candidate runs were supplied."}
 
@@ -199,18 +310,47 @@ def _build_recommendation(
 
 
 def _fmt_rate(value: float | None) -> str:
+    """将浮点数格式化为保留 4 位小数的字符串。
+
+    Args:
+        value: 待格式化的浮点数，可能为 None。
+
+    Returns:
+        保留 4 位小数的字符串表示；值为 None 时返回 "n/a"。
+    """
     if value is None:
         return "n/a"
     return f"{value:.4f}"
 
 
 def _fmt_signed_rate(value: float | None) -> str:
+    """将浮点数格式化为带正负号前缀、保留 4 位小数的字符串。
+
+    Args:
+        value: 待格式化的浮点数，可能为 None。
+
+    Returns:
+        带符号前缀（+/−）并保留 4 位小数的字符串表示；值为 None 时返回 "n/a"。
+    """
     if value is None:
         return "n/a"
     return f"{value:+.4f}"
 
 
 def _to_markdown(summary: dict) -> str:
+    """将候选比较摘要转换为 Markdown 格式文本。
+
+    生成的 Markdown 包含排名表格、推荐信息、各候选的错误分桶统计，
+    以及与基线的差值对比（若存在基线）。
+
+    Args:
+        summary: 由 compare_candidate_runs 生成的摘要字典，包含
+            candidate_count、baseline_dir、ranked_candidates、
+            deltas_vs_baseline 和 recommendation 等字段。
+
+    Returns:
+        格式化后的 Markdown 字符串。
+    """
     lines = [
         "# Candidate Comparison",
         "",
