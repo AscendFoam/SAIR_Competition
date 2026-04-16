@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import http.client
 import json
+import subprocess
 import time
 import urllib.error
 import urllib.request
@@ -26,6 +28,9 @@ class CompletionResult:
 
 class OpenAICompatibleClient:
     """Minimal OpenAI-compatible chat completions client."""
+
+    max_retries = 3
+    retry_backoff_seconds = 1.0
 
     def __init__(self, settings: OpenAICompatibleSettings) -> None:
         """初始化客户端。
@@ -66,9 +71,11 @@ class OpenAICompatibleClient:
                     "content": prompt,
                 }
             ],
-            "temperature": temperature,
             "max_tokens": max_tokens,
         }
+        payload.update(_provider_payload_extras(self.settings.provider_name, self.settings.model))
+        if not _is_deepseek_reasoner(self.settings.provider_name, self.settings.model):
+            payload["temperature"] = temperature
 
         request = urllib.request.Request(
             endpoint,
@@ -80,18 +87,60 @@ class OpenAICompatibleClient:
             method="POST",
         )
 
+        last_error: Exception | None = None
+        for attempt in range(1, self.max_retries + 1):
+            started = time.perf_counter()
+            try:
+                with urllib.request.urlopen(request, timeout=self.settings.timeout_seconds) as response:
+                    body = response.read().decode("utf-8")
+                latency = time.perf_counter() - started
+                response_json = json.loads(body)
+                raw_output = _extract_message_text(response_json)
+                return CompletionResult(raw_output=raw_output, latency_seconds=latency, response_json=response_json)
+            except urllib.error.HTTPError as exc:
+                detail = exc.read().decode("utf-8", errors="replace")
+                if exc.code not in {408, 429, 500, 502, 503, 504} or attempt >= self.max_retries:
+                    raise RuntimeError(f"HTTP error from completion endpoint: {exc.code} {detail}") from exc
+                last_error = exc
+            except (urllib.error.URLError, TimeoutError, ConnectionResetError, http.client.IncompleteRead) as exc:
+                if attempt >= self.max_retries:
+                    try:
+                        return self._complete_with_curl(endpoint=endpoint, payload=payload)
+                    except RuntimeError:
+                        raise RuntimeError(f"Network error while calling completion endpoint: {exc}") from exc
+                last_error = exc
+
+            time.sleep(self.retry_backoff_seconds * attempt)
+
+        raise RuntimeError(f"Completion request failed after retries: {last_error}")
+
+    def _complete_with_curl(self, endpoint: str, payload: dict) -> CompletionResult:
         started = time.perf_counter()
-        try:
-            with urllib.request.urlopen(request, timeout=self.settings.timeout_seconds) as response:
-                body = response.read().decode("utf-8")
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"HTTP error from completion endpoint: {exc.code} {detail}") from exc
-        except urllib.error.URLError as exc:
-            raise RuntimeError(f"Network error while calling completion endpoint: {exc}") from exc
+        response = subprocess.run(
+            [
+                "curl",
+                "-sS",
+                "--max-time",
+                str(int(self.settings.timeout_seconds)),
+                "-X",
+                "POST",
+                endpoint,
+                "-H",
+                f"Authorization: Bearer {self.settings.api_key}",
+                "-H",
+                "Content-Type: application/json",
+                "-d",
+                json.dumps(payload, ensure_ascii=False),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if response.returncode != 0:
+            raise RuntimeError(response.stderr.strip() or "curl request failed")
 
         latency = time.perf_counter() - started
-        response_json = json.loads(body)
+        response_json = json.loads(response.stdout)
         raw_output = _extract_message_text(response_json)
         return CompletionResult(raw_output=raw_output, latency_seconds=latency, response_json=response_json)
 
@@ -144,3 +193,16 @@ def _extract_message_text(response_json: dict) -> str:
                 parts.append(str(item.get("text", "")))
         return "\n".join(parts).strip()
     raise RuntimeError("Completion response did not include a usable message content field.")
+
+
+def _provider_payload_extras(provider_name: str, model: str) -> dict[str, object]:
+    provider_name = (provider_name or "").lower()
+    if provider_name == "minimax":
+        return {"reasoning_split": True}
+    if _is_deepseek_reasoner(provider_name, model):
+        return {"stream": False}
+    return {}
+
+
+def _is_deepseek_reasoner(provider_name: str, model: str) -> bool:
+    return (provider_name or "").lower() == "deepseek" and "reasoner" in (model or "").lower()

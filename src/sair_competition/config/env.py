@@ -3,6 +3,24 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+DEFAULT_PROVIDER_MODELS = {
+    "deepseek": "deepseek-reasoner",
+    "minimax": "MiniMax-M2.7",
+}
+
+PROVIDER_ENV_PRIORITY = {
+    "deepseek": {
+        "api_key": ["DEEPSEEK_API_KEY", "OPENAI_API_KEY", "LLM_API_KEY"],
+        "base_url": ["DEEPSEEK_BASE_URL", "OPENAI_BASE_URL", "LLM_BASE_URL"],
+        "model": ["DEEPSEEK_MODEL", "OPENAI_MODEL", "LLM_MODEL"],
+    },
+    "minimax": {
+        "api_key": ["MINIMAX_API_KEY", "OPENAI_API_KEY", "LLM_API_KEY"],
+        "base_url": ["MINIMAX_BASE_URL", "OPENAI_BASE_URL", "LLM_BASE_URL"],
+        "model": ["MINIMAX_MODEL", "OPENAI_MODEL", "LLM_MODEL"],
+    },
+}
+
 
 @dataclass(frozen=True, slots=True)
 class OpenAICompatibleSettings:
@@ -34,14 +52,25 @@ def load_dotenv(path: str | Path) -> dict[str, str]:
     if not file_path.exists():
         return env
 
+    comment_context = ""
     for raw_line in file_path.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
-        if not line or line.startswith("#") or "=" not in line:
+        if not line:
+            comment_context = ""
+            continue
+        if line.startswith("#"):
+            comment_context = line[1:].strip().lower()
+            continue
+        if "=" not in line:
             continue
         key, value = line.split("=", 1)
         key = key.strip()
         value = value.strip().strip('"').strip("'")
         env[key] = value
+        provider_alias = _provider_alias_from_comment(comment_context, key)
+        if provider_alias and provider_alias not in env:
+            env[provider_alias] = value
+        comment_context = ""
     return env
 
 
@@ -53,39 +82,33 @@ def resolve_openai_compatible_settings(
     """Resolve API settings from common DeepSeek/OpenAI-compatible environment names."""
 
     dotenv = load_dotenv(dotenv_path)
+    provider_name = provider_name.strip().lower()
+    key_priority = PROVIDER_ENV_PRIORITY.get(provider_name) or {
+        "api_key": ["OPENAI_API_KEY", "LLM_API_KEY"],
+        "base_url": ["OPENAI_BASE_URL", "LLM_BASE_URL"],
+        "model": ["OPENAI_MODEL", "LLM_MODEL"],
+    }
 
     api_key = _first_present(
         dotenv,
-        [
-            "DEEPSEEK_API_KEY",
-            "OPENAI_API_KEY",
-            "LLM_API_KEY",
-        ],
+        key_priority["api_key"],
     )
     base_url = _first_present(
         dotenv,
-        [
-            "DEEPSEEK_BASE_URL",
-            "OPENAI_BASE_URL",
-            "LLM_BASE_URL",
-        ],
+        key_priority["base_url"],
     )
     resolved_model = model or _first_present(
         dotenv,
-        [
-            "DEEPSEEK_MODEL",
-            "OPENAI_MODEL",
-            "LLM_MODEL",
-        ],
+        key_priority["model"],
         required=False,
-    )
+    ) or DEFAULT_PROVIDER_MODELS.get(provider_name)
 
     if not api_key:
-        raise ValueError("No API key found in .env. Expected DEEPSEEK_API_KEY, OPENAI_API_KEY, or LLM_API_KEY.")
+        raise ValueError(f"No API key found in .env for provider={provider_name}.")
     if not base_url:
-        raise ValueError("No base URL found in .env. Expected DEEPSEEK_BASE_URL, OPENAI_BASE_URL, or LLM_BASE_URL.")
+        raise ValueError(f"No base URL found in .env for provider={provider_name}.")
     if not resolved_model:
-        raise ValueError("No model found. Pass --model or set DEEPSEEK_MODEL / OPENAI_MODEL / LLM_MODEL in .env.")
+        raise ValueError(f"No model found for provider={provider_name}.")
 
     return OpenAICompatibleSettings(
         provider_name=provider_name,
@@ -112,4 +135,25 @@ def _first_present(dotenv: dict[str, str], keys: list[str], required: bool = Tru
             return value
     if required:
         return None
+    return None
+
+
+def _provider_alias_from_comment(comment_context: str, key: str) -> str | None:
+    """Infer provider-specific aliases from nearby comment text in .env."""
+
+    provider = None
+    lowered = (comment_context or "").lower()
+    if "deepseek" in lowered:
+        provider = "deepseek"
+    elif "minimax" in lowered:
+        provider = "minimax"
+    if not provider:
+        return None
+
+    if key == "OPENAI_API_KEY":
+        return f"{provider.upper()}_API_KEY"
+    if key == "OPENAI_BASE_URL":
+        return f"{provider.upper()}_BASE_URL"
+    if key == "OPENAI_MODEL":
+        return f"{provider.upper()}_MODEL"
     return None

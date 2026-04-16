@@ -281,3 +281,68 @@ def test_target_lhs_amplification_children_partition_smoke_examples() -> None:
         matched = child_tags.intersection(annotation["family_tags"])
 
         assert matched == expected_tags
+
+
+@pytest.mark.parametrize(
+    ("equation1", "equation2"),
+    [
+        ("x = ((y * (y * z)) * w) * w", "x = x * ((y * z) * (y * w))"),
+        ("x = (y * (z * w)) * (w * u)", "x = ((y * (x * z)) * y) * w"),
+    ],
+)
+def test_target_shared_lhs_no_new_vars_single_reuse_multi_anchor_hits_expected_examples(
+    equation1: str,
+    equation2: str,
+) -> None:
+    annotation = build_family_annotation(equation1, equation2)
+
+    assert "TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR" in annotation["family_tags"]
+    assert "TARGET_SHARED_LHS_NO_NEW_VARS_MULTI_REUSE_SINGLE_ANCHOR" not in annotation["family_tags"]
+    assert annotation["family_signals"]["eq2_rhs_eq1_lhs_var_count"] == 1
+    assert annotation["family_signals"]["eq2_rhs_retained_non_lhs_eq1_var_count"] >= 2
+    assert annotation["family_signals"]["eq2_rhs_new_var_count"] == 0
+
+
+@pytest.mark.parametrize(
+    ("equation1", "equation2"),
+    [
+        ("x = (y * y) * (z * (z * z))", "x = x * (x * (y * (y * x)))"),
+        ("x = y * ((z * (z * z)) * z)", "x = y * ((x * y) * (x * y))"),
+    ],
+)
+def test_target_shared_lhs_no_new_vars_multi_reuse_single_anchor_hits_expected_examples(
+    equation1: str,
+    equation2: str,
+) -> None:
+    annotation = build_family_annotation(equation1, equation2)
+
+    assert "TARGET_SHARED_LHS_NO_NEW_VARS_MULTI_REUSE_SINGLE_ANCHOR" in annotation["family_tags"]
+    assert "TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR" not in annotation["family_tags"]
+    assert annotation["family_signals"]["eq2_rhs_eq1_lhs_var_count"] >= 2
+    assert annotation["family_signals"]["eq2_rhs_retained_non_lhs_eq1_var_count"] == 1
+    assert annotation["family_signals"]["eq2_rhs_new_var_count"] == 0
+
+
+def test_target_shared_lhs_no_new_vars_children_partition_examples() -> None:
+    cases = [
+        (
+            "x = ((y * (y * z)) * w) * w",
+            "x = x * ((y * z) * (y * w))",
+            {"TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR"},
+        ),
+        (
+            "x = (y * y) * (z * (z * z))",
+            "x = x * (x * (y * (y * x)))",
+            {"TARGET_SHARED_LHS_NO_NEW_VARS_MULTI_REUSE_SINGLE_ANCHOR"},
+        ),
+    ]
+
+    child_tags = {
+        "TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR",
+        "TARGET_SHARED_LHS_NO_NEW_VARS_MULTI_REUSE_SINGLE_ANCHOR",
+    }
+    for equation1, equation2, expected_tags in cases:
+        annotation = build_family_annotation(equation1, equation2)
+        matched = child_tags.intersection(annotation["family_tags"])
+
+        assert matched == expected_tags

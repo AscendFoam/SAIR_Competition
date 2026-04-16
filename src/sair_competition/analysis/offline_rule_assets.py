@@ -153,6 +153,23 @@ RULE_ASSET_TEMPLATES: tuple[RuleAssetTemplate, ...] = (
         notes="Clean positive child tag inside the mixed shared-LHS plus new-vars bucket.",
     ),
     RuleAssetTemplate(
+        rule_id="OA_TRUE_TARGET_SHARED_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR",
+        family_focus_group="singleton_collapse",
+        primary_tag="TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR",
+        trigger_tags=("TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR",),
+        rule_text=(
+            "If Equation 2 keeps the same left-hand side, introduces no new variables, reuses the left-hand variable "
+            "exactly once on the right, and retains at least two non-left-hand anchors from Equation 1, keep the case "
+            "as a narrow offline TRUE asset for future programmatic positive signaling."
+        ),
+        rule_type="positive_collapse",
+        notes=(
+            "Preferred shared-LHS no-new-vars residual child. Keep it offline-first, de-duplicate against broader "
+            "shared-LHS macro-assets, and do not inherit direct wording into P1_2_3."
+        ),
+        follow_up_action="prepare_programmatic_positive_signal",
+    ),
+    RuleAssetTemplate(
         rule_id="OA_TRUE_TARGET_LHS_AMPLIFICATION",
         family_focus_group="singleton_collapse",
         primary_tag="TARGET_LHS_AMPLIFICATION",

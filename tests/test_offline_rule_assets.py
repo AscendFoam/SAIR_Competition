@@ -141,6 +141,26 @@ def test_build_offline_rule_assets_includes_target_child_and_amplification_asset
                 ],
             },
             {
+                "problem_id": "p_shared_no_new_1",
+                "equation1": "x = ((y * (y * z)) * w) * w",
+                "equation2": "x = x * ((y * z) * (y * w))",
+                "answer": True,
+                "family_tags": [
+                    "EQ1_SINGLETON_COLLAPSE_WITH_TARGET_SHARED_LHS",
+                    "TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR",
+                ],
+            },
+            {
+                "problem_id": "p_shared_no_new_2",
+                "equation1": "x = y * (z * (w * (z * z)))",
+                "equation2": "x = (y * (z * w)) * x",
+                "answer": True,
+                "family_tags": [
+                    "EQ1_SINGLETON_COLLAPSE_WITH_TARGET_SHARED_LHS",
+                    "TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR",
+                ],
+            },
+            {
                 "problem_id": "p_amp_3",
                 "equation1": "x = (m * n)",
                 "equation2": "x = (((m * x) * x) * x) * n",
@@ -157,6 +177,13 @@ def test_build_offline_rule_assets_includes_target_child_and_amplification_asset
             {
                 "family_tag_summary": {
                     "TARGET_SHARED_LHS_AND_NEW_VARS_SINGLETON_SOURCE": {
+                        "metrics": {
+                            "accuracy": 0.0,
+                            "true_accuracy": 0.0,
+                        },
+                        "error_buckets": {"RULE_MISSING": 2},
+                    },
+                    "TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR": {
                         "metrics": {
                             "accuracy": 0.0,
                             "true_accuracy": 0.0,
@@ -204,6 +231,10 @@ def test_build_offline_rule_assets_includes_target_child_and_amplification_asset
     assert summary["asset_count"] >= 2
     assert rows_by_id["OA_TRUE_TARGET_SHARED_NEW_VARS_SINGLETON_SOURCE"]["support_true_count"] == 2
     assert rows_by_id["OA_TRUE_TARGET_SHARED_NEW_VARS_SINGLETON_SOURCE"]["status"] == "candidate_offline"
+    assert rows_by_id["OA_TRUE_TARGET_SHARED_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR"]["support_true_count"] == 2
+    assert rows_by_id["OA_TRUE_TARGET_SHARED_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR"]["follow_up_action"] == (
+        "prepare_programmatic_positive_signal"
+    )
     assert rows_by_id["OA_TRUE_TARGET_LHS_AMPLIFICATION"]["support_true_count"] == 3
     assert rows_by_id["OA_TRUE_TARGET_LHS_AMPLIFICATION"]["current_mainline_error_buckets"]["RULE_MISSING"] == 3
     assert rows_by_id["OA_TRUE_TARGET_LHS_AMPLIFICATION"]["follow_up_action"] is None

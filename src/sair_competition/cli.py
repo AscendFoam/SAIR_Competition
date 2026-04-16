@@ -14,6 +14,7 @@ from .analysis.offline_rule_assets import (
     audit_offline_rule_assets,
     build_offline_rule_assets,
 )
+from .analysis.positive_signal_candidate import prepare_positive_signal_candidate
 from .analysis.offline_rule_review import (
     build_offline_rule_review_set,
     consolidate_offline_rule_axes,
@@ -224,6 +225,7 @@ def run_complete_prompt_eval_command(
     prompt_path: Path,
     output_dir: Path,
     dotenv_path: Path,
+    provider: str,
     model: str | None,
     limit: int | None,
     temperature: float,
@@ -249,6 +251,7 @@ def run_complete_prompt_eval_command(
         prompt_path=prompt_path,
         output_dir=output_dir,
         dotenv_path=dotenv_path,
+        provider_name=provider,
         model=model,
         limit=limit,
         temperature=temperature,
@@ -468,6 +471,27 @@ def tag_problem_families_command(
     return 0
 
 
+def prepare_positive_signal_candidate_command(
+    tagged_dataset_path: Path,
+    target_tag: str,
+    output_dir: Path,
+    boundary_tags: list[str],
+    rule_assets_path: Path | None,
+    signal_keys: list[str],
+) -> int:
+    """CLI 命令：为候选正信号标签准备离线摘要。"""
+    summary = prepare_positive_signal_candidate(
+        tagged_dataset_path=tagged_dataset_path,
+        target_tag=target_tag,
+        output_dir=output_dir,
+        boundary_tags=boundary_tags,
+        rule_assets_path=rule_assets_path,
+        signal_keys=signal_keys,
+    )
+    print(json_dumps(summary))
+    return 0
+
+
 def json_dumps(payload: dict) -> str:
     """将字典序列化为格式化的 JSON 字符串。
 
@@ -528,6 +552,7 @@ def build_parser() -> argparse.ArgumentParser:
     complete.add_argument("--prompt-path", required=True)
     complete.add_argument("--output-dir", default="artifacts/candidates/complete_prompt_eval")
     complete.add_argument("--dotenv-path", default=".env")
+    complete.add_argument("--provider", default="deepseek")
     complete.add_argument("--model", default=None)
     complete.add_argument("--limit", type=int, default=None)
     complete.add_argument("--temperature", type=float, default=0.0)
@@ -596,6 +621,17 @@ def build_parser() -> argparse.ArgumentParser:
     tag.add_argument("--output-path", required=True)
     tag.add_argument("--summary-dir", default=None)
 
+    candidate = subparsers.add_parser(
+        "prepare-positive-signal-candidate",
+        help="Prepare an offline summary for a candidate structural positive signal.",
+    )
+    candidate.add_argument("--tagged-dataset-path", required=True)
+    candidate.add_argument("--target-tag", required=True)
+    candidate.add_argument("--output-dir", required=True)
+    candidate.add_argument("--boundary-tag", action="append", dest="boundary_tags", default=[])
+    candidate.add_argument("--rule-assets-path", default=None)
+    candidate.add_argument("--signal-key", action="append", dest="signal_keys", default=[])
+
     subparsers.add_parser("show-error-taxonomy", help="Show the default error taxonomy.")
     subparsers.add_parser("show-family-tag-taxonomy", help="Show the structural family-tag taxonomy.")
     subparsers.add_parser("demo-metrics", help="Print a demo metrics object.")
@@ -651,6 +687,7 @@ def main() -> int:
             prompt_path=Path(args.prompt_path),
             output_dir=Path(args.output_dir),
             dotenv_path=Path(args.dotenv_path),
+            provider=args.provider,
             model=args.model,
             limit=args.limit,
             temperature=args.temperature,
@@ -709,6 +746,15 @@ def main() -> int:
             dataset_path=Path(args.dataset_path),
             output_path=Path(args.output_path),
             summary_dir=Path(args.summary_dir) if args.summary_dir else None,
+        )
+    if args.command == "prepare-positive-signal-candidate":
+        return prepare_positive_signal_candidate_command(
+            tagged_dataset_path=Path(args.tagged_dataset_path),
+            target_tag=args.target_tag,
+            output_dir=Path(args.output_dir),
+            boundary_tags=args.boundary_tags,
+            rule_assets_path=Path(args.rule_assets_path) if args.rule_assets_path else None,
+            signal_keys=args.signal_keys,
         )
     if args.command == "show-error-taxonomy":
         return show_error_taxonomy()

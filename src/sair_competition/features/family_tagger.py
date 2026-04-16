@@ -49,6 +49,8 @@ FAMILY_TAG_TAXONOMY = {
     "TARGET_LHS_AMPLIFICATION": "Equation 2 amplifies Equation 1's left-hand singleton variable on the right while retaining a non-left-hand variable anchor from Equation 1.",
     "TARGET_LHS_AMPLIFICATION_MULTI_ANCHOR": "LHS-amplification case where Equation 2 retains at least two non-left-hand anchors from Equation 1 on the right.",
     "TARGET_LHS_AMPLIFICATION_SINGLE_ANCHOR": "LHS-amplification case where Equation 2 retains exactly one non-left-hand anchor from Equation 1 on the right.",
+    "TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR": "Shared-LHS no-new-vars residual case where Equation 2 reuses the left-hand variable exactly once while retaining at least two non-left-hand anchors from Equation 1.",
+    "TARGET_SHARED_LHS_NO_NEW_VARS_MULTI_REUSE_SINGLE_ANCHOR": "Shared-LHS no-new-vars residual case where Equation 2 reuses the left-hand variable at least twice while retaining exactly one non-left-hand anchor from Equation 1.",
 }
 
 
@@ -253,6 +255,28 @@ def build_family_annotation(equation1: str, equation2: str) -> dict[str, object]
         and signals["eq2_rhs_retained_non_lhs_eq1_var_count"] == 1
     ):
         tag_set.add("TARGET_LHS_AMPLIFICATION_SINGLE_ANCHOR")
+    if (
+        "EQ1_SINGLETON_COLLAPSE_WITH_TARGET_SHARED_LHS" in tag_set
+        and "TARGET_LHS_AMPLIFICATION_MULTI_ANCHOR" not in tag_set
+        and "TARGET_LHS_AMPLIFICATION_SINGLE_ANCHOR" not in tag_set
+        and "TARGET_SHARED_LHS_AND_NEW_VARS_SINGLETON_SOURCE" not in tag_set
+        and "TARGET_SHARED_LHS_AND_NEW_VARS_FULL_CARRY_SINGLE_X" not in tag_set
+        and signals["eq2_rhs_new_var_count"] == 0
+        and signals["eq2_rhs_eq1_lhs_var_count"] == 1
+        and signals["eq2_rhs_retained_non_lhs_eq1_var_count"] >= 2
+    ):
+        tag_set.add("TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR")
+    if (
+        "EQ1_SINGLETON_COLLAPSE_WITH_TARGET_SHARED_LHS" in tag_set
+        and "TARGET_LHS_AMPLIFICATION_MULTI_ANCHOR" not in tag_set
+        and "TARGET_LHS_AMPLIFICATION_SINGLE_ANCHOR" not in tag_set
+        and "TARGET_SHARED_LHS_AND_NEW_VARS_SINGLETON_SOURCE" not in tag_set
+        and "TARGET_SHARED_LHS_AND_NEW_VARS_FULL_CARRY_SINGLE_X" not in tag_set
+        and signals["eq2_rhs_new_var_count"] == 0
+        and signals["eq2_rhs_eq1_lhs_var_count"] >= 2
+        and signals["eq2_rhs_retained_non_lhs_eq1_var_count"] == 1
+    ):
+        tag_set.add("TARGET_SHARED_LHS_NO_NEW_VARS_MULTI_REUSE_SINGLE_ANCHOR")
 
     ordered_tags = [tag for tag in FAMILY_TAG_TAXONOMY if tag in tag_set]
     return {

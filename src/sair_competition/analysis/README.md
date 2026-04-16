@@ -13,6 +13,7 @@
 | `family_slice.py` | 家族标签回填到预测文件 |
 | `offline_rule_assets.py` | 离线规则资产构建、附加、审计 |
 | `offline_rule_review.py` | 离线规则轴合并与审查集生成 |
+| `positive_signal_candidate.py` | 为高价值子型生成“程序化正信号候选”准备报告 |
 
 ## 错误分类体系 (`error_taxonomy.py`)
 
@@ -146,6 +147,32 @@ prediction=False, answer=True:
 | `expand_family_tagger` | 轴深度 ≥ 1 |
 | `collect_more_examples` | 行数 ≤ 2 |
 | `prepare_programmatic_positive_signal` | 其他 |
+
+### `positive_signal_candidate.py` — 正信号候选准备
+
+| 函数签名 | 说明 |
+| --- | --- |
+| `prepare_positive_signal_candidate(tagged_dataset_path, target_tag, output_dir, boundary_tags, rule_assets_path, signal_keys) -> dict` | 围绕某个高价值 family tag 生成离线准备报告，输出触发条件快照、命中样本清单、边界样本清单，以及与其他正向资产的重叠关系 |
+
+当前这条链路除了直接围绕现有 family tag 准备候选外，也已经用于推进更窄的 shared-LHS residual 子型，例如：
+
+- `TARGET_SHARED_LHS_NO_NEW_VARS_SINGLE_REUSE_MULTI_ANCHOR`
+- `TARGET_SHARED_LHS_NO_NEW_VARS_MULTI_REUSE_SINGLE_ANCHOR`
+
+其中第一条子型当前已经进入 offline asset 模板层，作为下一步更程序化正信号准备的正式候选；第二条仍保留为 secondary candidate。
+
+#### 主要输出
+
+- `summary.json`
+- `summary.md`
+
+#### 报告内容
+
+- 目标标签在当前切分上的支持数、`true/false` 分布与来源分布
+- 与目标标签相关的结构信号快照
+- 指定 boundary tags 的样本清单与真假分布
+- 与现有 offline rule assets 的重叠情况
+- 一个轻量的离线 readiness 建议
 
 ## 完整分析流水线
 
