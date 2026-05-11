@@ -1,0 +1,189 @@
+# Evaluation Protocol
+
+日期：2026-05-11
+
+## 1. 基本原则
+
+本项目后续实验分为三类：
+
+1. `screening`: 小样本筛选，用于检查 parse stability、true/false collapse 和候选是否值得进入完整评测。
+2. `recomputed benchmark`: 统一配置下的复算，用于论文主结果。
+3. `post-release analysis`: 在已公开 released final evaluation subsets 上做后赛事实证分析。
+
+纪律：
+
+- 不把 `post-release analysis` 包装成赛时未知盲测。
+- 不在 released subsets 上调 prompt。
+- 不只汇报 accuracy，必须同时报告 parse、recall、cost/time 或明确说明无法获得。
+- 每个 run 必须保存 prompt hash、dataset version、model/provider config 和 parser/metrics 版本。
+
+## 2. 数据切分
+
+当前本地固定切分：
+
+- `data/interim/splits/smoke.jsonl`: 快速回归和格式检查。
+- `data/interim/splits/dev.jsonl`: 开发与结构分析。
+- `data/interim/splits/holdout.jsonl`: 本地稳定性检查。
+- `data/interim/splits/audit.jsonl`: 人工审阅与边界案例。
+
+研究中可引用的 released subsets：
+
+- `evaluation_normal`
+- `evaluation_hard`
+- `evaluation_extra_hard`
+- `evaluation_order5`
+
+这些 released subsets 必须统一称为 released final evaluation subsets，并标注为后赛事实证分析。
+
+## 3. Prompt 候选集合
+
+第一批候选优先来自：
+
+1. `P1.2.3_implicit_guardrail_v2`
+2. `P1.2.5_minimal_rule_missing_hard_composition`
+3. `P2.0.0_official_balanced_strict_v0`
+4. `P2.0.1_official_counterexample_first_strict_v0`
+5. `P2.0.2_official_fast_filters_strict_v0`
+6. minimal no-cheatsheet baseline
+7. 可合法复现的 public CE-first prompt
+8. 可合法复现的 public trivial-first prompt
+9. human distilled prompt v0
+10. LLM-assisted distilled prompt v0
+11. feature-aware distilled prompt v0
+12. 可选 public contributor prompt
+
+如果 prompt 原文不可合法存储或复现，只做结构级编码，不纳入直接复算。
+
+## 4. 三阶段评测
+
+### Stage A: Screening
+
+目标：
+
+- 检查 parse success rate。
+- 初步观察 true/false recall。
+- 排除 all-true、all-false、格式不稳和不可复现候选。
+
+建议：
+
+- prompt 数量：`8-12`
+- model：先用低成本 proxy 或当前可用 API
+- repeats：`1`
+- 数据：`smoke` 加 hard 分层子样本
+
+进入下一阶段条件：
+
+- parse success rate 接近 `1.0`
+- 无明显塌缩
+- 至少代表一种有研究意义的结构类型
+
+### Stage B: Full Recomputed Benchmark
+
+目标：
+
+- 形成论文主表。
+- 比较 prompt、model、split 的稳定性。
+
+建议：
+
+- prompt 数量：`3-5`
+- model：官方三模型或最接近组合
+- 数据：本地固定切分和 released final evaluation subsets
+- repeats：`1-3`，按预算决定
+
+必须输出：
+
+- `predictions.jsonl`
+- `raw_outputs.jsonl` 或等价缓存
+- `summary.json`
+- `metrics.csv`
+- `run_config.json`
+- `prompt_hash_manifest.json`
+
+### Stage C: Ablation and Robustness
+
+建议消融：
+
+- `short / medium / near-cap`
+- `trivial-first / CE-first`
+- `strict formatting / relaxed formatting`
+- `with examples / no examples`
+- `false-filter heavy / balanced / true-recall oriented`
+- `universal prompt / model-specific prompt`
+
+目标不是找最高分，而是验证结构因素。
+
+## 5. 指标
+
+必须优先报告：
+
+- `accuracy`
+- `strict_f1`
+- `parse_success_rate`
+- `true_recall`
+- `false_recall`
+- `avg_time_secs`
+- `avg_cost_usd`
+- `repeat_consistency`
+
+本项目新增指标：
+
+- `prompt_bytes`
+- `prompt_tokens_est`
+- `balanced_accuracy`
+- `robustness_gap`
+- `model_transfer_gap`
+- `format_failure_rate`
+- `family_conditional_accuracy`
+- `family_conditional_recall`
+
+如果某个指标无法获得，报告必须说明原因。
+
+## 6. 推荐命令
+
+仓库布局检查：
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli validate-layout
+```
+
+family tagger 示例：
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli tag-problem-families --dataset-path data/interim/splits/dev.jsonl --output-path data/interim/splits/dev_tagged.jsonl --summary-dir reports/experiments/dev_family_tags
+```
+
+complete prompt eval 示例：
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli run-complete-prompt-eval --dataset-path data/interim/splits/smoke.jsonl --prompt-path prompts/complete/<candidate>.txt --output-dir artifacts/candidates/<run_id> --dotenv-path .env --model <model> --temperature 0 --max-tokens 256
+```
+
+错误分析示例：
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli analyze-errors --predictions-path artifacts/candidates/<run_id>/predictions.jsonl --output-dir artifacts/candidates/<run_id>_analysis
+```
+
+候选对比示例：
+
+```powershell
+$env:PYTHONPATH='src'
+python -m sair_competition.cli compare-candidates --candidate-dir artifacts/candidates/<run_a> --candidate-dir artifacts/candidates/<run_b> --output-dir reports/experiments/<comparison_id>
+```
+
+## 7. 结论判定纪律
+
+一个 prompt 方法只有满足以下条件，才可作为论文方法结论：
+
+- 不只在单一模型提升。
+- 不只在单一 split 提升。
+- 不以 parse failure 换取表面分数。
+- 不用 released subsets 调参后宣称盲测泛化。
+- 能解释 true/false tradeoff。
+- 能报告成本与延迟，或明确说明不可获得。
+
