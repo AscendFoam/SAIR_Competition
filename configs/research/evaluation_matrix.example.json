@@ -1,0 +1,144 @@
+{
+  "schema_version": "RESEARCH_EVAL_MATRIX_V1",
+  "generated_on": "2026-05-11",
+  "status": "seed_example_only",
+  "global_rules": {
+    "selection_policy": "Prompt selection should rely on screening and local fixed splits, not on released final evaluation subsets.",
+    "required_run_artifacts": [
+      "run_config.json",
+      "summary.json",
+      "metrics.csv",
+      "prompt_hash_manifest.json"
+    ],
+    "required_metrics": [
+      "accuracy",
+      "strict_f1",
+      "parse_success_rate",
+      "true_recall",
+      "false_recall",
+      "avg_time_secs",
+      "avg_cost_usd",
+      "repeat_consistency"
+    ]
+  },
+  "phases": [
+    {
+      "phase_id": "screening",
+      "label": "screening",
+      "purpose": "Small-sample candidate filtering and parse-stability checks.",
+      "prompt_set": [
+        "local_p1_2_3",
+        "local_p1_2_5",
+        "official_balanced_strict",
+        "official_counterexample_first_strict",
+        "official_fast_filters_strict",
+        "minimal_no_cheatsheet_baseline"
+      ],
+      "dataset_set": [
+        "smoke",
+        "hard_slice_sample"
+      ],
+      "model_provider_configs": [
+        {
+          "model_alias": "proxy_low_cost_model",
+          "provider_route": "to_fill",
+          "temperature": 0,
+          "max_tokens": 256,
+          "reasoning_mode": "default"
+        }
+      ],
+      "repeats": 1,
+      "required_metrics": [
+        "parse_success_rate",
+        "true_recall",
+        "false_recall",
+        "accuracy"
+      ],
+      "leakage_notes": [
+        "Do not use released final evaluation subsets for candidate selection.",
+        "Use screening only to remove collapse, parse failure, or non-reproducible candidates."
+      ]
+    },
+    {
+      "phase_id": "recomputed_benchmark",
+      "label": "recomputed benchmark",
+      "purpose": "Main-table recomputation under unified configs.",
+      "prompt_set": [
+        "screening_shortlist_top_3_to_5"
+      ],
+      "dataset_set": [
+        "dev",
+        "holdout",
+        "audit"
+      ],
+      "model_provider_configs": [
+        {
+          "model_alias": "official_or_near_official_model_a",
+          "provider_route": "to_fill",
+          "temperature": 0,
+          "max_tokens": 256,
+          "reasoning_mode": "default"
+        },
+        {
+          "model_alias": "official_or_near_official_model_b",
+          "provider_route": "to_fill",
+          "temperature": 0,
+          "max_tokens": 256,
+          "reasoning_mode": "default"
+        }
+      ],
+      "repeats": "1-3",
+      "required_metrics": [
+        "accuracy",
+        "strict_f1",
+        "parse_success_rate",
+        "true_recall",
+        "false_recall",
+        "avg_time_secs",
+        "avg_cost_usd",
+        "repeat_consistency"
+      ],
+      "leakage_notes": [
+        "Keep provider route, token cap, and reasoning mode explicit in every run config.",
+        "Do not merge heterogeneous provider routes into one headline result without separate reporting."
+      ]
+    },
+    {
+      "phase_id": "post_release_analysis",
+      "label": "post-release analysis",
+      "purpose": "Empirical robustness analysis on released final evaluation subsets.",
+      "prompt_set": [
+        "frozen_recomputed_shortlist_only"
+      ],
+      "dataset_set": [
+        "evaluation_normal",
+        "evaluation_hard",
+        "evaluation_extra_hard",
+        "evaluation_order5"
+      ],
+      "model_provider_configs": [
+        {
+          "model_alias": "frozen_main_eval_model_set",
+          "provider_route": "to_fill",
+          "temperature": 0,
+          "max_tokens": 256,
+          "reasoning_mode": "default"
+        }
+      ],
+      "repeats": "1-3",
+      "required_metrics": [
+        "accuracy",
+        "strict_f1",
+        "parse_success_rate",
+        "true_recall",
+        "false_recall",
+        "robustness_gap",
+        "model_transfer_gap"
+      ],
+      "leakage_notes": [
+        "Always label this phase as post-release analysis.",
+        "Never tune prompt wording on these subsets and then claim blind generalization."
+      ]
+    }
+  ]
+}

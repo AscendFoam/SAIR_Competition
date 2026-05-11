@@ -1,6 +1,6 @@
 # Evaluation Protocol
 
-日期：2026-05-11
+日期：2026-05-12
 
 ## 1. 基本原则
 
@@ -187,3 +187,12 @@ python -m sair_competition.cli compare-candidates --candidate-dir artifacts/cand
 - 能解释 true/false tradeoff。
 - 能报告成本与延迟，或明确说明不可获得。
 
+## 8. Config Followups from T01 Review
+
+T01 review 已确认 `configs/research/evaluation_matrix.example.json` 是可解析 seed template。后续正式评测配置必须进一步收敛：
+
+- `repeats` 在正式 runner config 中不得使用 `"1-3"` 这种说明性字符串，应改为整数、整数列表或明确 schema。
+- `post-release analysis` 仍只能用于最终鲁棒性分析，不能进入 prompt selection reward。
+- 所有正式 run 仍必须保留 `run_config.json`、`metrics.csv`、`prompt_hash_manifest.json` 和 leakage notes。
+
+这些事项不阻塞 T02；它们进入 T10 `Build screening evaluation matrix` 前的验收条件。

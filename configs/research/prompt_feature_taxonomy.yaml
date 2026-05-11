@@ -1,0 +1,180 @@
+schema_version: TAX_V1_SEED
+generated_on: 2026-05-11
+status: seed_scaffold
+notes:
+  - This taxonomy is a planning scaffold for manual coding and later extractor design.
+  - It describes prompt structure, not problem-family labels.
+  - Fields can be extended after reviewer approval and decision-log capture.
+
+length_features:
+  prompt_bytes_bucket:
+    type: categorical
+    allowed_values:
+      - short
+      - medium
+      - long
+      - near_cap
+    description: Byte-length bucket used before exact tokenizer support is added.
+  prompt_tokens_est_bucket:
+    type: categorical
+    allowed_values:
+      - short
+      - medium
+      - long
+      - near_cap
+    description: Rough token-estimate bucket for cross-prompt comparison.
+  cheatsheet_density:
+    type: categorical
+    allowed_values:
+      - none
+      - light
+      - medium
+      - heavy
+    description: How much of the prompt is occupied by reusable rule or cheatsheet content.
+
+structural_modules:
+  system_goal_framing:
+    type: boolean
+    description: Prompt explicitly frames the task as equational reasoning or theorem-style judgment.
+  verdict_contract:
+    type: categorical
+    allowed_values:
+      - strict
+      - semi_strict
+      - relaxed
+      - unknown
+    description: Strength of the required output format contract.
+  stepwise_reasoning_block:
+    type: boolean
+    description: Prompt asks for ordered checking steps or staged reasoning.
+  examples_block:
+    type: categorical
+    allowed_values:
+      - none
+      - positive_only
+      - negative_only
+      - mixed
+    description: Presence and polarity of in-prompt examples.
+  rule_or_heuristic_block:
+    type: categorical
+    allowed_values:
+      - none
+      - compact
+      - extended
+      - saturated
+    description: Size and explicitness of rule-like or heuristic content.
+  safety_or_guardrail_block:
+    type: boolean
+    description: Prompt adds anti-hallucination or anti-overgeneralization guardrails.
+
+module_order:
+  opening_strategy:
+    type: categorical
+    allowed_values:
+      - trivial_first
+      - counterexample_first
+      - balanced
+      - rules_first
+      - unknown
+    description: The first dominant reasoning strategy introduced by the prompt.
+  verdict_positioning:
+    type: categorical
+    allowed_values:
+      - verdict_last
+      - verdict_with_justification
+      - verdict_first
+      - unknown
+    description: Where the final answer contract appears relative to reasoning instructions.
+  examples_before_rules:
+    type: boolean
+    description: Whether examples appear before rule or heuristic content.
+
+counterexample_strategy:
+  counterexample_requirement:
+    type: categorical
+    allowed_values:
+      - required
+      - encouraged
+      - optional
+      - absent
+    description: Strength of the counterexample search instruction.
+  finite_model_search_hint:
+    type: boolean
+    description: Prompt hints at finite model construction, table search, or explicit assignments.
+  false_filter_orientation:
+    type: categorical
+    allowed_values:
+      - high
+      - medium
+      - low
+      - absent
+    description: How strongly the prompt emphasizes filtering false statements.
+
+true_strategy:
+  proof_like_true_support:
+    type: categorical
+    allowed_values:
+      - strong
+      - medium
+      - weak
+      - absent
+    description: Degree of support for confirming true statements without collapsing to all-true.
+  identity_or_invariant_guidance:
+    type: boolean
+    description: Prompt explicitly suggests algebraic identities, invariants, or equivalence transformations.
+  ambiguity_handling:
+    type: categorical
+    allowed_values:
+      - conservative_false
+      - balanced
+      - conservative_true
+      - unspecified
+    description: How the prompt resolves uncertain or borderline cases.
+
+output_stability:
+  parser_friendliness:
+    type: categorical
+    allowed_values:
+      - high
+      - medium
+      - low
+      - unknown
+    description: Expected ease of downstream verdict parsing.
+  explicit_final_token:
+    type: boolean
+    description: Prompt demands an exact final token or canonical verdict string.
+  formatting_redundancy:
+    type: categorical
+    allowed_values:
+      - none
+      - light
+      - medium
+      - heavy
+    description: Repetition of formatting instructions to improve parse stability.
+
+provenance_and_public_work_relation:
+  provenance_status:
+    type: categorical
+    allowed_values:
+      - official_public
+      - public_reproducible
+      - local_project
+      - social_or_partial
+      - unknown
+    description: Provenance confidence level for corpus use.
+  builds_on_public_work:
+    type: categorical
+    allowed_values:
+      - none_declared
+      - official_only
+      - public_prompt_adaptation
+      - mixed_public_sources
+      - unknown
+    description: Relation to prior public prompts or official artifacts.
+  post_release_relation:
+    type: categorical
+    allowed_values:
+      - pre_release_design
+      - post_release_analysis_only
+      - unknown
+    description: Whether the prompt is treated as a pre-release design asset or only analyzed post release.

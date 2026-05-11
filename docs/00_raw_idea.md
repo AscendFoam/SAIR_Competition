@@ -1,6 +1,6 @@
 # Raw Idea
 
-日期：2026-05-11
+日期：2026-05-12
 
 ## 1. 解决什么问题
 
@@ -61,3 +61,12 @@ Go。
 
 理由：已有仓库资产足以支撑 Phase 0 到 Phase 3，研究问题和非目标清晰，最小实验可在不新增大规模模型成本的前提下启动。
 
+## 7. 当前状态
+
+`T01_research_scaffold` 已通过 reviewer `PASS`：
+
+- research config、prompt corpus、research reports 和 paper 目录脚手架已落地。
+- corpus manifest 明确仍是 `seed_scaffold_not_collected`，没有伪称已收集语料。
+- paper outline v0 已存在，但仍是 planning scaffold，不包含实验结论。
+
+下一步唯一任务是 `T02_paper_outline_contribution_matrix`：把 outline v0 细化为 claim/evidence/contribution 矩阵，再进入真实 corpus candidate register。

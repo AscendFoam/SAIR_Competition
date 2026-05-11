@@ -1,0 +1,67 @@
+{
+  "schema_version": "CORPUS_SOURCE_REGISTRY_V1",
+  "generated_on": "2026-05-11",
+  "status": "seed_example_only",
+  "notes": [
+    "This file is a seed registry template, not a completed corpus inventory.",
+    "Store prompt text locally only when the source and license or ToS allow it.",
+    "When direct storage is not allowed, keep hash, provenance, and feature-only records."
+  ],
+  "source_type_definitions": {
+    "official": "Official SAIR competition resources or officially released artifacts.",
+    "contributor_network": "Officially indexed contributor pages or public contributor listings.",
+    "github": "Public GitHub repositories or gists with reproducible prompt assets.",
+    "paper": "Public papers, reports, or appendices describing prompt structure.",
+    "local": "Local project prompts already present in this repository.",
+    "social": "Social posts or screenshots; do not use as the main statistical source."
+  },
+  "required_fields": [
+    "source_id",
+    "source_type",
+    "source_ref",
+    "visibility",
+    "storage_policy",
+    "post_release_use_allowed"
+  ],
+  "sources": [
+    {
+      "source_id": "official_stage1_public_materials",
+      "source_type": "official",
+      "source_ref": "Official SAIR Stage1 public overview, benchmark data, judge repo, and released final evaluation subsets.",
+      "source_url": "",
+      "visibility": "public",
+      "storage_policy": "store_metadata_and_public_files_only",
+      "license_or_tos_note": "Verify per released asset before mirroring raw text.",
+      "prompt_storage_allowed": "conditional",
+      "recommended_use": "primary corpus backbone and benchmark provenance anchor",
+      "post_release_use_allowed": true,
+      "example_only": true
+    },
+    {
+      "source_id": "repo_local_prompt_history",
+      "source_type": "local",
+      "source_ref": "Local prompt candidates already tracked in prompts/complete within this repository.",
+      "source_url": "",
+      "visibility": "local_project_public_repo",
+      "storage_policy": "store_path_hash_and_feature_summary",
+      "license_or_tos_note": "Repository-owned assets; keep provenance and release notes.",
+      "prompt_storage_allowed": "yes",
+      "recommended_use": "baseline local candidate pool for taxonomy and recomputed runs",
+      "post_release_use_allowed": true,
+      "example_only": true
+    },
+    {
+      "source_id": "public_github_prompt_reconstructions",
+      "source_type": "github",
+      "source_ref": "Public GitHub prompt repositories or gists with legally reusable prompt text.",
+      "source_url": "",
+      "visibility": "public",
+      "storage_policy": "store_metadata_first_then check license before mirroring prompt text",
+      "license_or_tos_note": "Do not copy prompt text unless the repository license and file-level context permit it.",
+      "prompt_storage_allowed": "conditional",
+      "recommended_use": "supplementary public corpus source after provenance review",
+      "post_release_use_allowed": true,
+      "example_only": true
+    }
+  ]
+}

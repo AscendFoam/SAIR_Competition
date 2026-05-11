@@ -1,6 +1,6 @@
 # Architecture
 
-日期：2026-05-11
+日期：2026-05-12
 
 ## 1. 仓库定位
 
@@ -67,7 +67,7 @@ artifacts/research_runs/
   ablations/
 ```
 
-这些目录由 `T01_research_scaffold` 创建，不在 Captain 初始化文档任务中伪造为已完成。
+这些目录已经由 `T01_research_scaffold` 创建，并在 `docs/review/T01_research_scaffold_review.md` 中通过 normal review。当前状态仍是 scaffold，不代表 corpus、taxonomy 或实验结果已经完成。
 
 ## 4. 数据流
 
@@ -159,3 +159,10 @@ Public sources / local prompt files
 
 这些不是当前已完成能力，必须等 worker 实现、测试和 review 后才能在 README 中写成可用命令。
 
+## 7. T01 Review Followups
+
+T01 review 没有 blocking issue。以下架构层事项进入后续任务：
+
+- `configs/research/evaluation_matrix.example.json` 中 `repeats: "1-3"` 是模板表达，正式 runner config schema 必须落成整数或显式 repeat list。
+- `configs/research/prompt_feature_taxonomy.yaml` 与 `docs/02_experiment_plan.md` 第 6.2 节字段存在抽象层级差异，Phase 2 前需要写 mapping note。
+- taxonomy seed 缺少 `compression_style` 和 `ce_search_depth`，Phase 2 manual coding 前决定是否加入。

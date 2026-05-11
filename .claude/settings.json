@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ' *)",
+      "Bash(PYTHONPATH=src python -m sair_competition.cli validate-layout)"
+    ]
+  }
+}

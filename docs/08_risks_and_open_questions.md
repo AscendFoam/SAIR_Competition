@@ -1,6 +1,6 @@
 # Risks and Open Questions
 
-日期：2026-05-11
+日期：2026-05-12
 
 ## Active Risks
 
@@ -126,6 +126,19 @@
 - 公开复现包只放可公开 prompt、代码、结构标签和摘要结果。
 - raw outputs 单独本地归档。
 
+### R11: Seed taxonomy 与实验计划字段漂移
+
+信号：
+
+- `configs/research/prompt_feature_taxonomy.yaml` 的字段名与 `docs/02_experiment_plan.md` 第 6.2 节无法对应。
+- 后续 annotator 不知道 `compression_style`、`ce_search_depth` 等字段是否应标注。
+
+应对：
+
+- T02 在 paper claim/evidence matrix 中记录 taxonomy mapping 是未完成前置条件。
+- T07 前写明 experiment-plan feature 到 YAML field 的 mapping。
+- 若字段保留差异，必须在 taxonomy report 中解释。
+
 ## Open Questions
 
 1. 官方三模型 route 是否仍可复现，若不可复现，采用哪些近似 provider 和模型？
@@ -136,6 +149,8 @@
 6. full eval 的 repeats 预算是多少？
 7. paper 目标先按 workshop、TMLR 还是技术报告组织？
 8. 是否需要同步到 `qcy_project_hub`，以及当前证据等级应记为 L2 还是 L3 候选？
+9. `repeats` 在正式 eval config 中应使用整数、整数列表，还是单独 schema 字段？
+10. `compression_style` 与 `ce_search_depth` 是否进入 TAX_V1，还是只进入人工 audit note？
 
 ## Deferred Items
 
@@ -143,4 +158,4 @@
 - 大规模 prompt evolution。
 - 大规模模型微调。
 - dashboard 或 prompt lint 产品化。
-
+- T01 review 非阻塞事项：`storage_policy` typo、taxonomy mapping、`compression_style`、`ce_search_depth`、正式 eval `repeats` schema。

@@ -1,6 +1,6 @@
 # Handoff
 
-日期：2026-05-11
+日期：2026-05-12
 
 ## 1. 当前项目状态
 
@@ -24,17 +24,24 @@
 
 ## 2. Current Unique Task
 
-`T01_research_scaffold`
+`T02_paper_outline_contribution_matrix`
 
 任务包：
 
-- `docs/tasks/phase_0_research_setup/T01_research_scaffold.md`
+- `docs/tasks/phase_0_research_setup/T02_paper_outline_contribution_matrix.md`
 
 状态：
 
 - Ready for worker。
 - 尚未执行。
-- 尚未 review。
+- T01 已通过 review 并由 Captain 标记完成。
+
+T01 review 判断：
+
+- Verdict: `PASS`
+- Review file: `docs/review/T01_research_scaffold_review.md`
+- Captain action: accepted; `docs/04_task_board.md` 已勾选 T01。
+- Non-blocking followups: T03 清理 `storage_policy` typo；T07 前补 taxonomy mapping、`compression_style` 和 `ce_search_depth` 决策；T10 前收敛 `repeats` schema。
 
 ## 3. 下一位 Worker 需要先读
 
@@ -47,18 +54,17 @@ docs/04_task_board.md
 docs/06_eval_protocol.md
 docs/07_handoff.md
 docs/08_risks_and_open_questions.md
-docs/tasks/phase_0_research_setup/T01_research_scaffold.md
+docs/tasks/phase_0_research_setup/T02_paper_outline_contribution_matrix.md
 ```
 
 ## 4. Worker 执行边界
 
-下一轮 worker 只做 T01：
+下一轮 worker 只做 T02：
 
-- 创建研究目录。
-- 写 seed configs。
-- 写 prompt corpus manifest。
-- 写 paper outline v0。
-- 运行任务包里的验证。
+- 细化 `reports/paper/outline.md`。
+- 新增 contribution list 和 claim/evidence/status matrix。
+- 从既有本地文档抽取研究贡献、证据来源和未支持 claim。
+- 将 T01 review 中 taxonomy mapping 相关提醒写入 paper claim 约束。
 
 不要做：
 
@@ -71,24 +77,23 @@ docs/tasks/phase_0_research_setup/T01_research_scaffold.md
 
 ## 5. Reviewer 重点
 
-T01 reviewer 类型：normal。
+T02 reviewer 类型：normal。
 
 重点检查：
 
-- JSON 文件是否可解析。
-- YAML 是否为人类可读且字段覆盖 `docs/02_experiment_plan.md` 的 taxonomy。
-- manifest 是否明确当前 corpus 为空或 seed 状态，不能伪称已收集完。
-- paper outline 是否写成计划，不写成已有实验结果。
-- 是否越界修改 `src/`、prompt 或历史 artifacts。
+- 是否把 paper claim 分成 supported / planned / unsupported。
+- 是否从本地文档抽取 contribution，而不是凭空扩写。
+- 是否避免把未运行实验写成结果。
+- 是否保留 released subsets 的 `post-release analysis` 限定。
+- 是否越界修改代码、prompt 或 artifacts。
 
-## 6. 完成 T01 后 Captain 要做
+## 6. 完成 T02 后 Captain 要做
 
 如果 review 为 `PASS`：
 
-1. 在 `docs/04_task_board.md` 勾选 `T01`。
+1. 在 `docs/04_task_board.md` 勾选 `T02`。
 2. 更新本文件的当前状态。
-3. 在 `docs/05_decision_log.md` 记录任何关键 schema 决策。
-4. 将 Current Unique Task 切换为 `T02` 或 `T03`，但不直接执行。
+3. 将 Current Unique Task 切换为 `T03`，但不直接执行。
 
 如果 `PASS_WITH_WARNINGS`：
 
@@ -104,8 +109,8 @@ T01 reviewer 类型：normal。
 
 ## 7. 当前未验证事项
 
-- 新研究目录尚未创建。
-- corpus schema 尚未落地到机器可读配置。
-- paper outline v0 尚未创建。
-- T01 之后的任务包尚未详细展开。
-
+- T02 尚未执行。
+- corpus 真实记录尚未采集，manifest 仍为 `seed_scaffold_not_collected`。
+- paper outline 仍缺少 claim/evidence/status 矩阵。
+- screening / recomputed benchmark / post-release analysis 仍未开始执行。
+- T03 之后的任务包尚未详细展开。

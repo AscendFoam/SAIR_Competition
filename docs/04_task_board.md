@@ -1,27 +1,27 @@
 # Task Board
 
-日期：2026-05-11
+日期：2026-05-12
 
 ## Current Unique Task
 
-`T01_research_scaffold`: 创建 Phase 0 研究目录、seed config、prompt corpus manifest 和 paper outline v0。
+`T02_paper_outline_contribution_matrix`: 细化 paper outline v0，抽取 contribution list，并建立 claim/evidence/status 矩阵。
 
 任务包：
 
-- `docs/tasks/phase_0_research_setup/T01_research_scaffold.md`
+- `docs/tasks/phase_0_research_setup/T02_paper_outline_contribution_matrix.md`
 
 状态：Ready for worker，尚未执行。
 
 为什么现在做它：
 
-- `docs/02_experiment_plan.md` 已经完成研究方向切换。
-- 后续所有 corpus、taxonomy、screening 和 paper 工作都依赖统一目录、schema 和 manifest。
-- 该任务只创建研究脚手架和可审计配置，不涉及 API 成本和 prompt 改写，风险低且阻塞后续任务。
+- `T01_research_scaffold` 已通过 review，目录与 seed config 已具备。
+- paper outline v0 已存在，但仍缺少 claim/evidence/status 矩阵和从既有报告抽取的 contribution list。
+- 先约束论文 claim，再做 corpus candidate register，可避免后续收集数据时偏离主研究问题。
 
 ## Milestone 0: Research Repositioning and Repository Setup
 
 - [x] `C00`: Captain 初始化治理文档。
-- [ ] `T01`: Research scaffold and seed configs。
+- [x] `T01`: Research scaffold and seed configs。
 - [ ] `T02`: Paper outline v0 and contribution list extraction。
 - [ ] `T03`: Prompt corpus candidate register v0 and provenance rules。
 
@@ -30,7 +30,14 @@ Exit criteria:
 - `configs/research/`、`data/*/prompt_corpus/`、`reports/research/`、`reports/paper/` 已创建。
 - `prompt_corpus_manifest.json` 存在并能解释当前 corpus 状态。
 - paper outline v0 写清 RQ、contributions 和 section skeleton。
+- paper claim/evidence/status 矩阵写清哪些 claim 已有证据、哪些只是计划。
 - 后续任务不再以“继续 Stage2”或“继续冲榜”为默认主线。
+
+T01 review result:
+
+- Verdict: `PASS`
+- Review file: `docs/review/T01_research_scaffold_review.md`
+- Non-blocking followups: taxonomy mapping、`ce_search_depth` / `compression_style` 字段、正式 eval config 中 `repeats` 类型，将分别进入 T02/T07/T10 后续任务。
 
 ## Milestone 1: Public Corpus and Provenance Cleaning
 
@@ -116,4 +123,3 @@ Exit criteria:
 - Reviewer 给出 `PASS` 后，Captain 才把任务标记为完成。
 - `PASS_WITH_WARNINGS` 的 warning 必须分类为 accepted、deferred 或 rejected。
 - `BLOCK` 时只派修 blocking issue 的小任务。
-

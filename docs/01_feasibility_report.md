@@ -1,6 +1,6 @@
 # Feasibility Report
 
-日期：2026-05-11
+日期：2026-05-12
 
 ## 1. 问题定义
 
@@ -72,3 +72,17 @@ Go，但采用窄启动：
 - Phase 3 之后再决定 API 预算。
 - 任何新方法都必须通过 `docs/06_eval_protocol.md` 的阶段化评测纪律。
 
+## 8. Phase 0 可行性进展
+
+`T01_research_scaffold` 已经通过 review，说明 Phase 0 的仓库脚手架可行：
+
+- 研究目录、seed config、manifest 和 outline 已创建。
+- JSON/YAML scaffold 可解析。
+- 没有越界修改 `src/`、`tests/`、prompt wording 或历史 artifacts。
+
+剩余 Phase 0 关键工作：
+
+1. `T02`: 将 paper outline v0 转成 claim/evidence/contribution 矩阵，约束后续实验不要产生无证据 claim。
+2. `T03`: 建立第一批 prompt candidate register 和 provenance rules。
+
+Review 非阻塞事项会在后续任务吸收：taxonomy 字段映射在 T07 前完成，`repeats` 类型和 source storage typo 在后续 config 收敛时清理。
