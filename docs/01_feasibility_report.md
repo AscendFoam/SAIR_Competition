@@ -80,9 +80,19 @@ Go，但采用窄启动：
 - JSON/YAML scaffold 可解析。
 - 没有越界修改 `src/`、`tests/`、prompt wording 或历史 artifacts。
 
+Phase 0 进展：
+
+1. `T01`: research scaffold 已通过 review。
+2. `T02`: paper outline、contribution list、claim/evidence/status matrix 已通过 review。
+
 剩余 Phase 0 关键工作：
 
-1. `T02`: 将 paper outline v0 转成 claim/evidence/contribution 矩阵，约束后续实验不要产生无证据 claim。
-2. `T03`: 建立第一批 prompt candidate register 和 provenance rules。
+1. `T03`: 建立第一批 prompt candidate register 和 provenance rules。
 
 Review 非阻塞事项会在后续任务吸收：taxonomy 字段映射在 T07 前完成，`repeats` 类型和 source storage typo 在后续 config 收敛时清理。
+
+T02 review 非阻塞事项处理：
+
+- `unsupported_do_not_claim` 未实际使用：deferred 到 T03/T21 前，在 rejected/unsupported claim 区域补充或在论文草稿阶段检查。
+- C7 更像内部项目 justification：accepted，保留为 setup/motivation，不作为论文主贡献。
+- `outline.md` 使用绝对 Windows 链接：deferred 到 T03 的 hygiene fix。

@@ -110,3 +110,39 @@ prompt taxonomy 描述 prompt 结构，family tagger 描述题目结构，两者
 - T01 已创建 paper outline v0，但 outline 仍是高层 scaffold。
 - 先建立 claim/evidence/status 矩阵，可以约束后续 corpus 收集和 taxonomy 标注服务于论文主张。
 - T02 不需要网络和 API 成本，适合作为进入真实数据登记前的低风险收敛任务。
+
+## D007: 接受 T02 review verdict 并进入 T03
+
+日期：2026-05-12
+
+决策：
+
+`docs/review/T02_paper_outline_contribution_matrix_review.md` verdict 为 `PASS`，Captain 接受该结论，标记 `T02_paper_outline_contribution_matrix` 完成，并将 Current Unique Task 切换到 `T03_prompt_corpus_candidate_register`。
+
+理由：
+
+- Reviewer 未发现 blocking issue。
+- T02 输出明确区分 supported、planned、unsupported/forbidden wording，没有把未运行实验写成结果。
+- 修改范围符合任务包，未触碰代码、prompt、configs、data 或 artifacts。
+- paper claim guardrail 已能约束 T03 后续 corpus 收集。
+
+非阻塞事项处理：
+
+- `contribution_list.md` 未实际使用 `unsupported_do_not_claim`：deferred，T03 任务包要求新增 rejected/unsupported claim register 或说明，最终论文草稿前复核。
+- C7 更像内部项目 justification：accepted，保留为 setup/motivation，不作为最终论文主贡献。
+- `outline.md` 绝对 Windows 链接：deferred 到 T03 hygiene fix。
+- abstract tense preference：accepted，无需立即修；后续 paper draft 再统一时态。
+
+## D008: T03 进入 prompt candidate register，而不是直接执行 corpus collection
+
+日期：2026-05-12
+
+决策：
+
+下一任务是建立 `prompt candidate register v0` 和 provenance rules，不直接下载外部 prompt、不跑 API、不进入正式 Phase 1 collection。
+
+理由：
+
+- 当前仍处于 Phase 0，重点是候选边界和来源规则。
+- 先把本地 prompt、官方 archetype、可公开/不可公开候选、结构级记录资格分清楚，可以降低后续版权、归因和数据泄漏风险。
+- T03 可吸收 T02 review 的链接和 unsupported claim 小清理，不需要单开任务。

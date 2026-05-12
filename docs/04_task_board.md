@@ -4,25 +4,25 @@
 
 ## Current Unique Task
 
-`T02_paper_outline_contribution_matrix`: 细化 paper outline v0，抽取 contribution list，并建立 claim/evidence/status 矩阵。
+`T03_prompt_corpus_candidate_register`: 建立第一批 prompt candidate register v0、provenance rules 和 corpus source hygiene。
 
 任务包：
 
-- `docs/tasks/phase_0_research_setup/T02_paper_outline_contribution_matrix.md`
+- `docs/tasks/phase_0_research_setup/T03_prompt_corpus_candidate_register.md`
 
 状态：Ready for worker，尚未执行。
 
 为什么现在做它：
 
-- `T01_research_scaffold` 已通过 review，目录与 seed config 已具备。
-- paper outline v0 已存在，但仍缺少 claim/evidence/status 矩阵和从既有报告抽取的 contribution list。
-- 先约束论文 claim，再做 corpus candidate register，可避免后续收集数据时偏离主研究问题。
+- `T01` 已完成研究脚手架，`T02` 已完成 paper claim/evidence guardrail。
+- Phase 0 还缺第一批 prompt candidate register 和 provenance rules。
+- 先登记本地与可公开候选，再进入 Phase 1 的正式 corpus 清洗，可避免混入不可公开 prompt 或把结构级记录误写成可复算记录。
 
 ## Milestone 0: Research Repositioning and Repository Setup
 
 - [x] `C00`: Captain 初始化治理文档。
 - [x] `T01`: Research scaffold and seed configs。
-- [ ] `T02`: Paper outline v0 and contribution list extraction。
+- [x] `T02`: Paper outline v0 and contribution list extraction。
 - [ ] `T03`: Prompt corpus candidate register v0 and provenance rules。
 
 Exit criteria:
@@ -38,6 +38,12 @@ T01 review result:
 - Verdict: `PASS`
 - Review file: `docs/review/T01_research_scaffold_review.md`
 - Non-blocking followups: taxonomy mapping、`ce_search_depth` / `compression_style` 字段、正式 eval config 中 `repeats` 类型，将分别进入 T02/T07/T10 后续任务。
+
+T02 review result:
+
+- Verdict: `PASS`
+- Review file: `docs/review/T02_paper_outline_contribution_matrix_review.md`
+- Non-blocking followups: `outline.md` 绝对路径链接、`unsupported_do_not_claim` 示例缺失、C7 内部 justification 边界，分别进入 T03/T21 后续约束。
 
 ## Milestone 1: Public Corpus and Provenance Cleaning
 

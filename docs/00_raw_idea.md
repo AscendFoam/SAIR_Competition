@@ -69,4 +69,10 @@ Go。
 - corpus manifest 明确仍是 `seed_scaffold_not_collected`，没有伪称已收集语料。
 - paper outline v0 已存在，但仍是 planning scaffold，不包含实验结论。
 
-下一步唯一任务是 `T02_paper_outline_contribution_matrix`：把 outline v0 细化为 claim/evidence/contribution 矩阵，再进入真实 corpus candidate register。
+`T02_paper_outline_contribution_matrix` 已通过 reviewer `PASS`：
+
+- paper outline v0 已细化为论文设计文档。
+- `reports/paper/contribution_list.md` 已列出贡献、证据需求和当前状态。
+- `reports/paper/claim_evidence_matrix.md` 已把允许措辞和禁止措辞显式化。
+
+下一步唯一任务是 `T03_prompt_corpus_candidate_register`：建立第一批 prompt candidate register v0 和 provenance rules。T03 仍不跑 API，不改 prompt wording，只登记候选、来源边界和可复算资格。

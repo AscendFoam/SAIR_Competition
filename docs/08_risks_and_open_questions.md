@@ -139,6 +139,19 @@
 - T07 前写明 experiment-plan feature 到 YAML field 的 mapping。
 - 若字段保留差异，必须在 taxonomy report 中解释。
 
+### R12: Paper contribution 与内部项目 justification 混淆
+
+信号：
+
+- `C7` 这类“工程资产足以支撑后续科研”的内容被写成论文主贡献。
+- contribution list 没有任何 rejected 或 unsupported claim，导致 guardrail 只剩形式。
+
+应对：
+
+- C7 只作为 setup/motivation，不进入最终 paper main contributions。
+- T03 或 T21 前补一个 `unsupported_do_not_claim` 或 rejected-claim 区域。
+- 论文草稿阶段检查 contribution list 与 claim evidence matrix 是否一致。
+
 ## Open Questions
 
 1. 官方三模型 route 是否仍可复现，若不可复现，采用哪些近似 provider 和模型？
@@ -151,6 +164,8 @@
 8. 是否需要同步到 `qcy_project_hub`，以及当前证据等级应记为 L2 还是 L3 候选？
 9. `repeats` 在正式 eval config 中应使用整数、整数列表，还是单独 schema 字段？
 10. `compression_style` 与 `ce_search_depth` 是否进入 TAX_V1，还是只进入人工 audit note？
+11. T03 candidate register 中，哪些本地 prompt 可直接进入 recompute，哪些只能作为 historical/local contrast？
+12. T02 的 `unsupported_do_not_claim` 状态是通过新增 rejected claim 解决，还是在 T21 paper draft 时解决？
 
 ## Deferred Items
 
@@ -159,3 +174,4 @@
 - 大规模模型微调。
 - dashboard 或 prompt lint 产品化。
 - T01 review 非阻塞事项：`storage_policy` typo、taxonomy mapping、`compression_style`、`ce_search_depth`、正式 eval `repeats` schema。
+- T02 review 非阻塞事项：`outline.md` 绝对路径链接、C7 主贡献边界、`unsupported_do_not_claim` 示例缺失。

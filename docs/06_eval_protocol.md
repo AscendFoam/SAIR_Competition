@@ -196,3 +196,14 @@ T01 review 已确认 `configs/research/evaluation_matrix.example.json` 是可解
 - 所有正式 run 仍必须保留 `run_config.json`、`metrics.csv`、`prompt_hash_manifest.json` 和 leakage notes。
 
 这些事项不阻塞 T02；它们进入 T10 `Build screening evaluation matrix` 前的验收条件。
+
+## 9. Claim Guardrails from T02
+
+T02 已建立 `reports/paper/claim_evidence_matrix.md`。后续所有实验报告和论文草稿必须遵守：
+
+- 没有 T03-T20 证据前，不使用 “we show / we find / improves robustness” 这类结果时态描述。
+- `released final evaluation subsets` 只写作 `post-release analysis`。
+- `P1_2_3` 与 `P1_2_5` 当前只能写作 candidate contrast cases，不能写作已完成统一 protocol 对照结论。
+- feature-aware textual distillation 当前只能写作 method plan，不能写作有效方法。
+
+T03 只建立候选登记和 provenance 边界，不产生 eval evidence。
