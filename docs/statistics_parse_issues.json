@@ -1,0 +1,36 @@
+{
+  "input_path": "docs/statistics.md",
+  "header_block": {
+    "start_line": 1,
+    "end_line": 11,
+    "raw_lines": [
+      "Details",
+      "▾",
+      "Rank",
+      "Team Name",
+      "Team Index",
+      "Score",
+      "Avg Accuracy",
+      "Avg F1",
+      "Parse Rate",
+      "Avg Cost",
+      "Cheatsheet Size"
+    ]
+  },
+  "record_count": 312,
+  "issue_count": 1,
+  "issues": [
+    {
+      "block_index": 313,
+      "start_line": 3757,
+      "end_line": 3758,
+      "issue": "unexpected_block_length",
+      "expected_length": 11,
+      "actual_length": 2,
+      "raw_lines": [
+        "Details",
+        "▾"
+      ]
+    }
+  ]
+}
