@@ -766,3 +766,964 @@
 如果把一句话作为这份文档的结尾，我会写：
 
 > 你的 `P1.2.5` 更像一个便宜的启发式路由器；榜首方案更像一个昂贵但有效的手工特征分类器。前者胜在快，后者胜在判别边界稳定，而比赛成绩最终更奖励后者。
+
+## 13. 追加附录：`P1.2.5`、`rank33`、`rank1` 原文逐段精读
+
+这一附录回答你新提出的问题：不仅要比较三份 prompt 的总体风格，还要尽量贴着原文，按“每行或每段”的粒度分析它们各自到底在做什么。
+
+说明：
+
+- 对较短的 `P1.2.5`，我基本按行块分析。
+- 对较长的 `rank33` 与 `rank1`，我按段落和规则块分析；对于关键规则，再单独拆开。
+- 下面的“好/坏”不是在评价数学正确性本身，而是在评价它们作为 leaderboard cheatsheet 时，对模型行为的约束方式、可执行性、稳定性和成本结构。
+
+## 14. 你的 `P1.2.5` 逐行精读
+
+原文：`prompts/complete/P1.2.5_minimal_rule_missing_hard_composition.txt`
+
+### 14.1 第 1 行
+
+`You are solving an equational implication problem over magmas.`
+
+这一行只是角色设定，作用是把模型拉进题型语境。它有两个特点：
+
+- 好处：非常短，不浪费字节。
+- 局限：它没有指定“怎么解”，只指定“你在解什么”。
+
+也就是说，这一行只建立主题，不建立算法。
+
+### 14.2 第 3-4 行
+
+`Task:`  
+`Determine whether Equation 1 implies Equation 2.`
+
+这两行继续做任务定义，清楚但极简。问题在于：
+
+- 它把任务说清了；
+- 但没有把任务拆成可执行的步骤。
+
+因此模型是否会去做 parse、找不变量、找反例、做重写，完全取决于它自己的内部习惯。
+
+### 14.3 第 6-8 行
+
+`Semantics:`  
+`- Output true if and only if every magma satisfying Equation 1 also satisfies Equation 2.`  
+`- Output false if there exists at least one magma satisfying Equation 1 but not Equation 2.`
+
+这三行是语义金线，定义本身正确，也很重要，因为它在提醒模型：
+
+- `TRUE` 是全称蕴含；
+- `FALSE` 是存在性反例。
+
+但它仍然是“语义层定义”，不是“求解层算法”。  
+也就是：模型被提醒了判定标准，却没有被迫提供判定证据。
+
+### 14.4 第 10-14 行
+
+`Output contract:`  
+`- Return exactly one token on the first line.`  
+`- Allowed outputs: true or false.`  
+`- Do not write labels, markdown, explanations, or extra text before the answer.`  
+`- If you reason internally, do not reveal it.`
+
+这是整份 `P1.2.5` 最关键的一段之一，因为它几乎直接决定了你的“低成本 + 高脆弱性”。
+
+- 第 11-13 行极强地压缩了输出空间，这对 `parse success=100%` 非常有利。
+- 第 14 行把全部推理都推回模型内部，不允许它外显中间结构。
+
+这带来的收益是：
+
+- completion 极短；
+- 格式极稳；
+- 成本极低。
+
+这带来的代价是：
+
+- 没有外显 parse，就没有“被迫算结构”的约束；
+- 没有外显 rule trace，就没有“被迫按规则执行”的约束；
+- 模型可以在一个非常浅的启发式层面提前结束。
+
+从 prompt 工程角度看，这一段不是中性的格式要求，而是在主动鼓励早停。
+
+### 14.5 第 16-25 行
+
+`Use the following cheatsheet if helpful:`  
+`Decision semantics:`  
+`- TRUE means every magma satisfying Equation 1 must also satisfy Equation 2.`  
+`- FALSE means there exists at least one magma satisfying Equation 1 but not Equation 2.`  
+`Output discipline:`  
+`- The final visible answer must be a single token: true or false.`  
+`- Run the mandatory TRUE checks before using any conservative false heuristic.`  
+`- If a mandatory collapse rule fires, answer true immediately and do not let later guardrails override it.`  
+`- If none of the TRUE checks fire and no short derivation is visible, choose false.`
+
+这里真正重要的是后半段。
+
+- `if helpful` 这三个词其实偏弱。它意味着下面规则更像建议，不像硬执行协议。
+- “先跑 mandatory TRUE checks”会把模型决策顺序强行偏向 `TRUE` 侧。
+- “collapse rule fires 就立即 true”给 `TRUE` 开了硬出口。
+- “看不到 short derivation 就 false”给 `FALSE` 开了软出口。
+
+这就是 `P1.2.5` 的核心控制结构：
+
+1. 先找几个高召回 `TRUE` 触发器；
+2. 命中就立即放行；
+3. 否则如果没有短证据，就回落 `FALSE`。
+
+这个结构的优点是快，缺点是高度依赖模型主观判断：
+
+- 什么叫 “mandatory”；
+- 什么叫 “short derivation”；
+- 什么叫 “visible”；
+- 什么时候可以认为没有必要再查。
+
+`rank1` 的强，恰恰就在于它把这些主观词几乎全换成了 typed features 和 rule names。
+
+### 14.6 第 27-32 行：Mandatory TRUE checks
+
+这一块是你整份 prompt 的“正向放行器”。
+
+#### 第 28 行
+
+`Singleton-collapse rule ... Output true immediately ...`
+
+这一行是最强、最安全、也最有价值的 `TRUE` 规则之一。  
+它本质上抓的是“裸变量等于不含该变量的项”导致 singleton collapse。
+
+优点：
+
+- 数学上强；
+- 很多真实真例会被这条救回；
+- 解释力高。
+
+风险：
+
+- 需要模型先正确识别“变量是否出现在另一侧”；
+- 但你没有强制它显式列变量集，因此这步仍是隐式做的。
+
+#### 第 29 行
+
+`Symmetric singleton rule ...`
+
+这是第 28 行的镜像版，属于必要补全。  
+它的存在说明你已经意识到“方向性”不能成为误差源。
+
+这条是好规则，几乎没什么 prompt 级副作用。
+
+#### 第 30 行
+
+`Disjoint-sides collapse rule ...`
+
+这条规则是你 prompt 里“收益高，但也容易过宽”的代表。  
+它试图把“左右变量完全不相交”解释成某种强 collapse 现象。
+
+问题不在动机，而在表达方式：
+
+- 它是自然语言概括，不是带可检查条件的 typed rule；
+- 模型如果没先显式算变量集，很容易在复杂式子里错判“是否 disjoint”；
+- “treat this as collapse law”这种措辞，给了模型很强的放行暗示。
+
+所以这条更像“高召回矿灯”，不像“高精度判别器”。
+
+#### 第 31 行
+
+`Constant-operation rule ... In a constant magma, any equation whose two sides both contain * is true. Output true.`
+
+这条是你 prompt 里最像“小定理模板”的一条。  
+它的意图很清楚：识别某些会强迫运算退化为常值的结构。
+
+优点：
+
+- 一旦成立，后续很多题确实会自动转真；
+- 它解释了为什么 `P1.2.5` 特别擅长救某些 true-heavy 家族。
+
+问题：
+
+- 这条仍然没有一个强制 parse scaffold；
+- “binary term on one side and disjoint variable set on the other side” 这种条件，在隐式判断时仍可能漂移。
+
+#### 第 32 行
+
+`Substitution-instance rule ... output true.`
+
+这是整块里最保守、最标准、最可靠的一条。
+
+- 它几乎就是 syntax-level entailment shortcut；
+- 很适合作为前置快筛。
+
+如果 `P1.2.5` 只有这种规则，它会更保守，也更稳；现在的问题是它把这类安全规则和更宽的 collapse rule 放在同一层，且都设成“立即 true”。
+
+### 14.7 第 34-38 行：Safe FALSE checks
+
+这一段表面上叫 “safe FALSE checks”，但其实并不真的 “safe”；它们大多是合理启发式，不是硬分离器。
+
+#### 第 35 行
+
+`If Equation 2 is clearly stronger ... prefer false.`
+
+最大问题在 `clearly stronger`。  
+这是人类读者能懂、但模型不易稳定执行的表述。
+
+- 什么算 stronger；
+- stronger 是语法更强还是语义更强；
+- 强多少才算 clearly。
+
+所以它更像直觉标签，不像规则。
+
+#### 第 36 行
+
+`If Equation 2 introduces extra symmetry, idempotence, or a more specific shape ... prefer false.`
+
+这条比第 35 行更具体一点，因为它点名了 symmetry / idempotence / specific shape。
+
+但它仍然是“模式提醒”，不是“判别特征”。  
+模型会被提醒去怀疑这类目标式，但不会被迫先算出离散结构量。
+
+#### 第 37 行
+
+`If Equation 1 reuses variables across both sides ... treat this as extra evidence for false ...`
+
+这一行体现出你已经在利用“变量复用”作为结构信号，这比纯口语启发式更接近 feature engineering。
+
+问题是：
+
+- 这里的信号仍被写成 prose；
+- “extra evidence” 不是判决条件；
+- “unless a short exact derivation ... is obvious” 又把决定权退回给模型主观感受。
+
+#### 第 38 行
+
+`If no short rewriting or substitution path is visible after the TRUE checks, prefer false.`
+
+这几乎就是 `P1.2.5` 最大的失分点。
+
+因为它把最难、最不稳定的一步，直接外包给模型：
+
+- 何为 short；
+- 何为 visible；
+- 何为 rewriting path；
+- 何为 enough evidence。
+
+`rank1` 的整个成功，某种意义上就是在避免出现这类句子。  
+它宁可变长，也要把“看不看得出来”换成“特征是否满足”。
+
+### 14.8 第 40-45 行：Reasoning discipline
+
+`- First compare variable sets on each side of Equation 1.`  
+`- Then check whether a side is a lone variable absent from the opposite side.`  
+`- Then check whether Equation 2 is a direct substitution instance or renaming consequence of Equation 1.`  
+`- If Equation 2 keeps the same exposed left-hand side as Equation 1, allow one brief self-composition check before falling back to false.`  
+`- Only after those checks use structural-complexity heuristics.`
+
+这一段其实是 `P1.2.5` 最接近“解题程序”的地方。
+
+它的优点是：
+
+- 先变量集；
+- 再裸变量；
+- 再 substitution；
+- 再 same-LHS composition；
+- 最后再用复杂度启发式。
+
+这个顺序并不差，甚至可以看成一个轻量版 pipeline。
+
+但它的致命不足是：
+
+- 没有强制输出变量集；
+- 没有强制输出裸变量判断；
+- 没有强制输出 same-LHS composition 轨迹；
+- 所以这些步骤都可能被模型跳过或模糊执行。
+
+换句话说，`P1.2.5` 不是完全没有 pipeline，而是 pipeline 没有 externalization。
+
+### 14.9 第 47-52 行：Anti-bias reminders
+
+`- Do not use "Equation 2 has more variables" as a false signal ...`  
+`- Do not default to false just because the equations look different syntactically.`  
+`- A collapse law in Equation 1 can make many seemingly stronger Equation 2 laws automatically true.`  
+`- In same-left-hand-side shared-variable equations, extra depth alone is not enough evidence for false.`  
+`- In shared-variable equations, repeated x * x ... is not enough to justify true.`
+
+这五行很有意思，它们像是你在和模型“打补丁”。
+
+好处：
+
+- 你已经知道模型会犯哪些偏差；
+- 你在主动防止几类常见误判；
+- 这说明 `P1.2.5` 不是随手写的，而是有实验反馈的。
+
+坏处：
+
+- 这些提醒是“不要这样”，不是“应该怎样做”；
+- 它们能抑制部分偏差，但不能替代正向结构判别；
+- 一旦与前面的 `TRUE`/`FALSE` 启发式冲突，模型未必知道谁优先。
+
+所以这块更像 error patch list，不像统一决策体系。
+
+### 14.10 第 54-57 行
+
+`Equation 1: { equation1 }`  
+`Equation 2: { equation2 }`  
+`Final answer:`
+
+这是标准注入位，配合前面的单 token 约束，进一步鼓励模型：
+
+- 快速读题；
+- 快速内部判断；
+- 快速单词输出。
+
+这会让它很适合“省钱 submit”，但不适合“强约束分类器”。
+
+### 14.11 对 `P1.2.5` 的一句话归纳
+
+如果把你的这份 prompt 压缩成一句工程画像，我会写成：
+
+> 它不是一个真正的 rule engine，而是一个“带若干强 true triggers、若干弱 false heuristics、以及单 token 早停输出”的轻量启发式路由器。
+
+这解释了三件事为什么同时出现：
+
+- 成本极低；
+- parse 极稳；
+- 跨模型 F1 很脆。
+
+## 15. `rank33.md` 逐段精读
+
+原文：`docs/model_cheatsheet/rank33.md`
+
+这份 prompt 和你的 `P1.2.5` 相比，已经明显更“solver-like”；但它仍然没有走到 `rank1` 那种 typed classifier 的程度。
+
+### 15.1 第 1-3 行：角色设定与任务绑定
+
+`You are a mathematician specializing in equational theories of magmas.`  
+`Your task is to determine whether Equation 1 ... implies Equation 2 ...`
+
+这一开头比你的 `P1.2.5` 更正式，也更强地把模型绑定到“数学判定者”身份。  
+这类 persona 本身不会直接提高正确率，但会抬高模型对“需要解释、需要证明、需要反例”的预期。
+
+### 15.2 第 8-17 行：Task Definition
+
+这一段做了三件事：
+
+- 定义输入是 `Eq1` 与 `Eq2`；
+- 重申目标是全体 magma 上的蕴含；
+- 最关键的是规定：`TRUE` 时给 proof sketch，`FALSE` 时给 finite counterexample 并验证。
+
+这比 `P1.2.5` 强很多，因为它把“证据义务”引入了求解过程。  
+也就是说，这份 prompt 默认不是让模型凭感觉二分类，而是让它生产 witness。
+
+但它也埋下了成本上涨和 hallucination 风险：
+
+- proof sketch 比单 token 长得多；
+- finite counterexample 需要模型真去构造；
+- 如果模型构不出来，它可能开始编。
+
+### 15.3 第 21-31 行：Canonical Parsing & Normalization
+
+这一段是 `rank33` 很扎实的地方。
+
+- 解析为二叉树；
+- 去掉无关空白；
+- 变量按首次出现做 canonicalization；
+- 比较时考虑 side swap、renaming、alpha-equivalent shape。
+
+这说明作者已经非常清楚：这类题很多命中点，其实是 syntax-level invariant。
+
+和你的 `P1.2.5` 相比，它更像在告诉模型：
+
+- 不要只看表面词形；
+- 要先做结构归一化；
+- 再比较。
+
+不过，这里仍然只有“指示”，没有外显结构槽位。  
+所以模型理论上应该 parse，但并不被迫写出来。
+
+### 15.4 第 35-48 行：Fast Decision Filters
+
+这块把快筛分成了 `Immediate TRUE` 与 `Immediate FALSE`。
+
+`Immediate TRUE` 三条：
+
+- `Eq2` 左右相同；
+- `Eq2` 只是 `Eq1` 的重命名或换边；
+- `Eq1` collapse 到极强/投影型行为。
+
+这三条思路都很正统，比你的 `P1.2.5` 更克制。  
+它没有一上来就大面积暗示“看到某些 pattern 就立刻 true”，而是只给最经典的快筛。
+
+`Immediate FALSE` 两条：
+
+- 找到一个有限 magma 反例；
+- 如果 model checker / candidate search 返回验证反例，就立即 false。
+
+这两条非常强，因为它把 `FALSE` 建立在 witness 上，而不是建立在 “looks stronger” 上。
+
+但它的问题也很明显：
+
+- 它假设模型能像小型搜索器那样工作；
+- 却没有给模型一个具体、廉价、强约束的搜索协议。
+
+所以 `rank33` 比你的 `P1.2.5` 更严谨，但也更依赖模型自身推理质量。
+
+### 15.5 第 52-79 行：Proof-Oriented Strategy
+
+这一段是 `rank33` 的主心骨之一，分三层：
+
+1. substitution/rewrite；
+2. property extraction；
+3. universalization/trivialization。
+
+优点很明显：
+
+- 它给了 `TRUE` 判定一个合理求证顺序；
+- 比你的 `P1.2.5` 更强调“先证，再判真”；
+- 还要求 concise but explicit。
+
+尤其第 58-60 行“从 `Eq1` 建双向 rewrite 规则，尝试把 `L2` 重写到 `R2`”这一点，已经相当接近真正的 theorem-proving workflow。
+
+但它的限制也很清楚：
+
+- 没有限制重写深度如何选择；
+- 没规定什么时候算 reachability 成立；
+- 没要求输出具体的中间 canonical form。
+
+所以它是一份“好方法论”，但不是“硬控制程序”。
+
+### 15.6 第 82-108 行：Counterexample-Oriented Strategy
+
+这一段比你的 `P1.2.5` 强很多，也是 `rank33` 能排到前列的重要原因之一。
+
+它不仅说“优先找反例”，还进一步给出候选家族：
+
+- 所有 `2x2` 表；
+- left-zero / right-zero / constant；
+- projection 与 near-projection；
+- boolean-like 小表；
+- modular-linear forms；
+- random / hill-climbed tables。
+
+这里的价值在于：
+
+- 它把 `FALSE` 变成“有限模型搜索”问题；
+- 它把模型注意力导向若干高收益家族；
+- 它默认要求验证 `Eq1` 全赋值成立、`Eq2` 存在违反赋值。
+
+这就是为什么 `rank33` 比你的 prompt 更像“严肃 solver”。
+
+但它的局限也很真实：
+
+- 它没有像 `rank1` 那样，把最常见的反例家族预压缩成固定 probe；
+- 它仍然期待模型临场“找表 + 验证表”；
+- 这一步既贵，又容易不稳定。
+
+### 15.7 第 111-123 行：Heuristic Signals
+
+这段其实很聪明，因为它明确说：
+
+- heuristics 只是指导，不是替代 proof/counterexample。
+
+列出的信号包括：
+
+- subterm coverage；
+- variable overlap；
+- complexity gradient；
+- rough strength ordering；
+- rewrite reachability overlap。
+
+这比你的 `P1.2.5` 更成熟，因为它区分了：
+
+- “排序信号”；
+- “决定性证据”。
+
+但它也说明这份 prompt 仍然没有离开 “LLM as reasoner” 范式。  
+它是在教模型怎么思考，不是在把 decision surface 写死。
+
+### 15.8 第 127-145 行：Minimal Solve Pipeline + Failure Modes
+
+这一段进一步把 workflow 组织成：
+
+1. parse；
+2. true filter；
+3. rewrite proof；
+4. finite model search；
+5. heuristic ranking；
+6. final verdict。
+
+这是 `rank33` 很强的一点：它不是零散规则堆砌，而是完整 solve pipeline。
+
+后面的 failure modes 也很有价值：
+
+- 不要无 derivation 判真；
+- 不要无 counterexample 判假；
+- 不要把启发式当形式证明；
+- 不要忘 side swap / renaming；
+- 不要输出坏格式。
+
+这类“错误禁止清单”能显著改善严谨性。
+
+### 15.9 第 148-157 行：Output Template
+
+这一段有一个非常值得注意的地方：
+
+- 它要求输出 `VERDICT / MODEL_NAME / REASONING / PROOF / COUNTEREXAMPLE / OUTPUT_RESULT`；
+- 但文末第 173-177 行又只要求 `VERDICT / REASONING / PROOF / COUNTEREXAMPLE`。
+
+也就是说，这份 prompt 内部其实有轻微格式不一致。
+
+这类不一致为什么重要：
+
+- 强模型通常能自己协调过去；
+- 弱一点的模型可能会犹豫到底输出哪套格式；
+- 即便最终 parse 没崩，它也会增加一点执行噪声。
+
+这很可能也是 `rank33` 没有继续向上冲到 `rank1` 那个层级的一个小原因：  
+它的方法论不错，但契约没有 `rank1` 那么“像程序”。
+
+### 15.10 第 161-169 行：Distilled Practice Rule
+
+`When uncertain:`  
+`- Prefer searching for a counterexample first.`  
+`- If no counterexample appears ... attempt a structured proof.`  
+`- Never return a final verdict without one of ...`
+
+这一段等于给 `rank33` 定了一个总的偏好：
+
+- 不确定时先找反例；
+- 反例失败再去做 proof；
+- 没 witness 不许给终局判断。
+
+这让它比你的 `P1.2.5` 少了很多“主观短路”空间。  
+你的 prompt 不确定时会掉进“没看出短推导就 false”；`rank33` 不确定时会掉进“继续找 witness”。
+
+这就是两者的根本差别之一。
+
+### 15.11 第 173-177 行：最终格式约束
+
+这里再次强调：
+
+- `VERDICT` 必须严格；
+- `REASONING` 非空；
+- `PROOF` / `COUNTEREXAMPLE` 二选一承担证据义务。
+
+这说明 `rank33` 最终还是把自己定位成“witness-producing solver”，不是“cheap classifier”。
+
+### 15.12 对 `rank33` 的一句话归纳
+
+如果压成一句话，我会把 `rank33` 定义为：
+
+> 一份强调 parse、proof、counterexample 和验证义务的通用型 formal-solver prompt。
+
+它比你的 `P1.2.5` 强在：
+
+- 更重证据；
+- 更像解题流程；
+- 更少纯口语式 `false` 启发。
+
+它比 `rank1` 弱在：
+
+- 没把结构特征 typed 化；
+- 没把高频真/假模式预编译成 deterministic rule bank；
+- 很多关键步骤仍然依赖模型临场“自己会做”。
+
+## 16. `rank1.md` 逐段精读
+
+原文：`docs/model_cheatsheet/rank1.md`
+
+这份就是榜首风格的核心文本。  
+和前两份相比，它最本质的变化不是“更长”，而是“更像一个手工实现的判别程序”。
+
+### 16.1 第 1-5 行：任务设定 + deterministic classifier
+
+`You are deciding whether source law A ... implies target law B ...`  
+`A magma is ...`  
+`Rules: deterministic classifier. Apply rules in order; stop at the FIRST that fires. Never invent witnesses. If no rule fires, apply the Layer B decision tree at the end.`
+
+第 5 行是全篇灵魂。
+
+因为从这一句开始，模型的身份就不是“会证明/会找反例的数学家”，而是：
+
+- 一个顺序规则系统；
+- 一个 first-match classifier；
+- 一个有 fallback tree 的有限状态决策器。
+
+这和 `rank33` 的差别非常大：
+
+- `rank33` 让模型像 solver；
+- `rank1` 让模型像 classifier。
+
+leaderboard 上后者更成功，说明在这道题里，稳定的结构路由比临场求证更重要。
+
+### 16.2 第 7-11 行：输出契约
+
+`OUTPUT FORMAT — first write the PARSE block and brief rule trace ...`
+
+这一段直接把高成本写进 prompt 了：
+
+- 先写 `PARSE`；
+- 再写 rule trace；
+- 最后写四个固定行。
+
+它的坏处是显然的：
+
+- 贵；
+- 长；
+- completion 多。
+
+但它买来的东西也非常明确：
+
+- 模型必须显式 parse；
+- 模型必须显式承认自己用了哪条 rule；
+- 模型更难偷懒一跳结束。
+
+所以榜首不是“高成本浪费”，而是“高成本换执行约束”。
+
+### 16.3 第 13-33 行：Step 0 Mandatory Parse
+
+这部分是 `rank1` 压过其他 prompt 的第一层核心。
+
+它要求对 `A.L / A.R / B.L / B.R` 四个 side 都写：
+
+- `shape`
+- `vars`
+- `occs`
+- `op`
+- `bare`
+- `lm`
+- `rm`
+- `ldepth`
+- `rdepth`
+
+这一步的意义极大：
+
+- 它把隐式结构理解变成显式结构抽取；
+- 它把后续规则的输入统一成固定 feature slots；
+- 它降低了不同模型对“结构”的自由解释空间。
+
+尤其值得强调的是：
+
+- `lm/rm` 为边界不变量服务；
+- `ldepth/rdepth` 为投影型、路径型、仿射 shortcut 服务；
+- `occs` 为计数与 parity 规则服务；
+- `bare` 为裸变量/乘积分叉提供统一入口。
+
+你的 `P1.2.5` 也在想这些东西，但只是提醒模型“去看一看”；榜首则要求“先把它们都算出来再说”。
+
+### 16.4 第 35-51 行：Step 1 Features
+
+这一段是在 parse 之上再做二级特征压缩。
+
+它定义了：
+
+- `vars(E)`、`size(E)`、`dup(E)`
+- `LP(E)`、`RP(E)`
+- `SET(E)`、`XOR(E)`、`AB(E)`
+- `bare(E)`
+- 若 `bare(E)`，再定义 `kind / shortest_len / occ`
+
+这一步非常像手工 feature engineering。
+
+尤其几个符号值得注意：
+
+- `LP/RP`：左端点、右端点是否保持；
+- `SET`：变量集合守恒；
+- `XOR`：奇偶守恒；
+- `AB`：逐变量计数完全守恒；
+- `kind`：裸变量在 product 侧出现的路径类型；
+- `shortest_len`：最浅出现深度；
+- `occ`：出现次数。
+
+这等于把“看结构”进一步离散化成“看布尔/小整数特征”。  
+一旦做到这一步，后面的规则就不再是 prose，而是 if-condition。
+
+### 16.5 第 53-57 行：Identity / Collapse (TRUE)
+
+`X1` 到 `X3` 是第一层安全真例快筛。
+
+- `X1`: `B.L = B.R` 语法相同，直接真。
+- `X2`: `A` 与 `B` 同构，只差重命名/换边，直接真。
+- `X3`: `A` 是 `x=y` 或者有一侧是裸变量且该变量不在另一侧，直接真。
+
+这三条相当稳，而且和 `P1.2.5` 的强 true triggers 有亲缘关系。  
+区别在于：
+
+- `rank1` 先 parse，再基于结构触发；
+- `P1.2.5` 是口语描述直接触发。
+
+### 16.6 第 59-64 行：Forced Behavior
+
+这一组 `F1-F4` 是榜首非常高价值的规则层。
+
+- `F1`: `x = x*y` 强迫左投影 `a*b=a`，然后看 `LP(B)`。
+- `F2`: `x = y*x` 强迫右投影 `a*b=b`，然后看 `RP(B)`。
+- `F3`: 同左子、异右子，导向 `a*b=f(a)` 型一元依赖，再检查 `leftmost,left-depth`。
+- `F4`: 同右子、异左子，导向 `a*b=g(b)` 型一元依赖，再检查 `rightmost,right-depth`。
+
+这一层的厉害之处在于：
+
+- 它不是一般性的“看起来像 projection”；
+- 它是直接把某些 `Eq1` 模式编译成具体运算行为；
+- 然后用极小的结构不变量去验证 `Eq2`。
+
+这就是高信息密度字节。  
+几行文字，换来的是一整类题的稳定判别。
+
+### 16.7 第 66-89 行：Source Contradiction Motifs (TRUE)
+
+这是榜首最“特征工程化”的部分，也是最像从公开题分布中蒸馏出来的 pattern bank。
+
+先看第 68-74 行，它为这组 motif 定义了额外特征：
+
+- `rhsVars`
+- `rhsCounts`
+- `Lx/Rx`
+- `topShape`
+- `xTop`
+- `xCount`
+- `square`
+
+也就是说，`rank1` 不是停在通用 parse，而是继续为某个高价值题族建专门二级特征。
+
+下面这些规则可以分别看：
+
+- `C1`：`rhsVars=4` 且 `Lx=F, Rx=F`，抓的是大变量数、边界都不贴裸变量的强真型。
+- `C2`：`rhsCounts="113"` 且双边界都不贴 `x`，抓某类高度不平衡计数真例。
+- `C3`：`xTop=left + square + m-v`，这是非常具体的局部树型 detector。
+- `C4`：`112` 计数、双边界不贴 `x`、`xTop=right`、`v-m`，针对特定右侧嵌入模式。
+- `C5`：`1112` 版本的 `C4`，覆盖更宽变量配置。
+- `C6`：三变量、`xTop=right`、`v-m`、`xCount=2`，抓右挂双出现。
+- `C7`：三变量、双边界不贴 `x`、`xTop=left`、`m-v`、`xCount=2`，是 `C6` 的镜像偏左版本。
+- `C8`：三变量、`Lx=T`、`xTop=left`、`m-v`，显式使用左边界贴合。
+- `C9`：`122` 计数、`Lx=T`、`Rx=F`、`xTop=both`、`v-m`，是边界 + 计数 + 顶层切分的组合规则。
+- `C10`：`122` 计数、`Lx=F`、`Rx=T`、`xCount=2`，对应另一种边界粘附模式。
+- `C11`：`113` 计数、双边界不贴 `x`、`xTop=right`、`v-m`。
+- `C12`：`113` 计数、双边界不贴 `x`、`xTop=left`、`m-v`。
+- `C13`：`1112` 计数、`Lx=F`、`Rx=T`，是一个更粗的高频真型。
+- `C14`：当 `B` 也是 bare 型时，若 `rhsCounts="113"` 且 `Rx=T` 且无 square，则直接真。
+
+这整块说明了榜首方案一个非常本质的特征：
+
+- 它不是单纯在写“数学原则”；
+- 它是在写“高频成功子族的特征索引”。
+
+风险当然也有：
+
+- 这类规则更可能带分布特异性；
+- 更像是从赛题生态中蒸馏出的经验模式；
+- 如果换题域，可能掉得比通用 prompt 更快。
+
+但在这次 leaderboard 上，这正是高分来源。
+
+### 16.8 第 91-97 行：Separators (FALSE)
+
+这五条是榜首最漂亮的 `FALSE` machinery 之一。
+
+- `S1`: `LP(A)` 成立但 `LP(B)` 不成立，直接假。
+- `S2`: `RP(A)` 成立但 `RP(B)` 不成立，直接假。
+- `S3`: `SET(A)` 成立但 `SET(B)` 不成立，直接假。
+- `S4`: `XOR(A)` 成立但 `XOR(B)` 不成立，直接假。
+- `S5`: `AB(A)` 成立但 `AB(B)` 不成立，直接假。
+
+这些规则的强处在于：
+
+- 都是明确不变量；
+- 都是 typed condition；
+- 都是单步硬分离器；
+- 完全不像“Eq2 looks stronger”那种模糊话。
+
+如果只挑一块来说明为什么你的 prompt 会输，这五条已经够说明问题了。  
+因为你的 `FALSE` 侧缺的正是这种“无争议硬证据”。
+
+### 16.9 第 99-116 行：Affine Probes (FALSE)
+
+这一段是榜首第二层大杀器。
+
+第 101-102 行先定义了仿射小模型语义：
+
+- `u*v = p*u + q*v + c (mod m)`
+- 若 `A` 在该模型下恒真、`B` 不恒真，则直接假。
+
+这等于把 prompt 内部塞进了一个廉价的、手工挑选的小模型反例探针库。
+
+第 104-106 行的 `A1 shortcut` 更进一步：
+
+- 直接把某类模型下的值简化为 `rightmost_leaf + right_depth mod 3`；
+- 于是无需真正展开整棵求值树，就能快速 falsify。
+
+第 108-111 行的 `A7 shortcut` 也是同一路数：
+
+- 用左右分支数决定系数；
+- 将一类反例检测压缩成路径计数。
+
+第 113-116 行列出 `A1-A10` 探针族：
+
+- `A1-A5` 主要是 mod 3 的不同线性型；
+- `A6-A9` 转到 mod 4；
+- `A10` 用 mod 5。
+
+本质上，这一整块是在做：
+
+- 小模型族覆盖；
+- 低成本反例搜索；
+- 人工选出的高收益 falsifier bank。
+
+`rank33` 想做反例搜索，但把这件事交给模型临场完成；  
+`rank1` 直接把一部分搜索结果预编译成固定 probe。  
+这就是两者的层级差。
+
+### 16.10 第 118-125 行：Heuristic Rejects
+
+这一块虽叫 heuristic，但已经比一般 heuristics 硬得多，因为它完全建立在 typed features 上。
+
+- `H1`: `kind(A)=M` 且变量多，而 `kind(B)=X`，判假。
+- `H2`: `kind(A)=L`、`shortest_len=1`、重复多，且 `B` 也重复多但变量少，判假。
+- `H3`: `kind(A)=M`、`occ(A)=2`、非 `RP`、且 `Lx(A)=F`，判假。
+- `H4`: `shortest_len(A)=1` 且 `occ(A)=3`，无条件式强拒绝。
+- `H5`: `kind(A)=M`、`shortest_len=3`、`occ=2`，判假。
+- `H6`: `kind(A)=L`，但 `B` 有 `occ(B)=2` 且四变量，判假。
+
+这一组说明：
+
+- 榜首并不是所有规则都要求形式证明级别的正确性；
+- 它也接受经验性 reject；
+- 但即便经验 reject，也被写成了 typed pattern，而不是 prose intuition。
+
+### 16.11 第 127-142 行：Layer B Decision Tree
+
+这是榜首的第三层保险。
+
+它先定义三个 fallback 整数：
+
+- `M`：`Eq1` 中每个变量跨两侧的总出现次数的最小值；
+- `S`：`Eq1` 左边的 `*` 数；
+- `V`：`Eq1` 左边的不同变量数。
+
+然后按树判：
+
+- `B1`: 若 `M >= 2`，判假。
+- `B2a`: 否则若 `M=1` 且左边是 bare，判真。
+- `B2b`: 否则若左边是两变量单乘积，判真。
+- `B2c`: 其余判假。
+
+这块极其重要，因为它解决了一个常见问题：
+
+- 如果所有精细规则都没命中，怎么办？
+
+你的 `P1.2.5` 的答案是：
+
+- “没看出短推导就 false”。
+
+榜首的答案是：
+
+- “落到一个仍然结构化、仍然 deterministic 的小决策树”。
+
+这就是为什么它哪怕在 rule miss 区域，也比你的 prompt 稳得多。
+
+### 16.12 第 144-178 行：Worked Examples
+
+这一块容易被忽略，但其实很关键。
+
+它给了四类示范：
+
+- `F2` 真例；
+- `A1` 假例；
+- `B1` 假例；
+- `B2a` 真例。
+
+这些例子的作用不是增加知识点，而是：
+
+- 教模型如何真的执行前面那套 parse/rule system；
+- 把抽象规则变成 trace 模板；
+- 降低模型误读规则的概率。
+
+从成本上看，例子当然更贵；  
+但从执行稳定性看，这些示范很可能贡献了大量收益。
+
+### 16.13 对 `rank1` 的一句话归纳
+
+如果压缩成一句话，我会这样定义榜首 prompt：
+
+> 它不是在“教模型怎么想”，而是在“给模型一个近似手工编码的结构分类器，并要求它先算中间特征，再按规则顺序执行”。
+
+这就是它为什么贵，但也为什么强。
+
+## 17. 三份 prompt 的直接对照结论
+
+如果把三份 prompt 放在一条轴上，它们大概是这样：
+
+- `P1.2.5`：单 token、早停、true-trigger 偏强、false 侧偏口语的轻量启发式路由器。
+- `rank33`：强调 parse、proof、counterexample、验证义务的通用 solver prompt。
+- `rank1`：显式 parse + typed features + ordered rules + probe bank + fallback tree 的手工特征分类器。
+
+它们对应三种完全不同的胜负逻辑。
+
+### 17.1 为什么 `P1.2.5` 会落后于 `rank33`
+
+不是因为你不会写规则，而是因为：
+
+- 你不给模型外显证据义务；
+- 你让模型可以非常早停；
+- 你的 `FALSE` 决策很多靠 prose heuristic；
+- 你的 fallback 是主观的 “看不出短推导”。
+
+而 `rank33` 至少要求：
+
+- parse；
+- rewrite/proof；
+- counterexample；
+- validation。
+
+即使它不如 `rank1` 程序化，它也比你的 prompt 更难“凭印象直接交卷”。
+
+### 17.2 为什么 `rank33` 能到前列，但仍输给 `rank1`
+
+因为 `rank33` 的核心范式仍然是：
+
+- 让模型当 solver；
+- 临场找 proof 或 counterexample。
+
+而 `rank1` 的核心范式是：
+
+- 让模型当 classifier；
+- 先抽特征；
+- 再跑规则；
+- 必要时用廉价 probe falsify；
+- 最后再走 fallback tree。
+
+前者更通用，后者更像针对这类题和这类模型精心蒸馏过的决策边界。  
+比赛结果更奖励后者。
+
+### 17.3 为什么榜首方案比你的 prompt 贵很多，但这份成本大多不是浪费
+
+因为它把很多本来会留给模型“脑补”的步骤，改成了显式执行：
+
+- parse block；
+- feature block；
+- rule trace；
+- probe logic；
+- structured fallback。
+
+这些步骤都会增加 token，尤其 completion token。  
+但它们换来的不是“更会讲道理”，而是“更难乱判”。
+
+### 17.4 对你最有价值的启发
+
+如果只提炼一条对你后续最有用的结论，那就是：
+
+> 你下一版最值得借鉴的，不是榜首的长度，而是它把隐式判断改成显式特征、把 prose heuristic 改成 ordered typed rules、把主观 fallback 改成结构化 fallback 的方式。
+
+具体到工程上，最应该迁移的是：
+
+- 轻量 parse-first scaffold；
+- 少量硬 separator；
+- 少量高收益 projection / unary-dependence detector；
+- 一个真正的 fallback tree；
+- 必要时加入 1-2 个极便宜的小模型 probe。
+
+最不应该继续保留的，是：
+
+- “if helpful” 这种软约束起手；
+- “no short derivation is visible” 这种主观 fallback；
+- 只靠 anti-bias reminders 修补、却不建设中间结构层。
+
+如果把这一附录再压成一句话结尾，我会写成：
+
+> `P1.2.5`、`rank33`、`rank1` 的差异，不是“写得多还是少”，而是“让模型凭感觉判断、让模型当 solver、还是把模型压成一个显式特征分类器”这三种范式差异；排行榜最终明显更偏爱第三种。
