@@ -4,26 +4,26 @@
 
 ## Current Unique Task
 
-`T03_prompt_corpus_candidate_register`: 建立第一批 prompt candidate register v0、provenance rules 和 corpus source hygiene。
+`T04_external_prompt_source_collection`: 核验外部 prompt placeholders，补齐 raw index provenance，并决定 prompt corpus 文件的 git 跟踪策略。
 
 任务包：
 
-- `docs/tasks/phase_0_research_setup/T03_prompt_corpus_candidate_register.md`
+- `docs/tasks/phase_1_public_corpus/T04_external_prompt_source_collection.md`
 
 状态：Ready for worker，尚未执行。
 
 为什么现在做它：
 
-- `T01` 已完成研究脚手架，`T02` 已完成 paper claim/evidence guardrail。
-- Phase 0 还缺第一批 prompt candidate register 和 provenance rules。
-- 先登记本地与可公开候选，再进入 Phase 1 的正式 corpus 清洗，可避免混入不可公开 prompt 或把结构级记录误写成可复算记录。
+- `T03` 已通过 review，Phase 0 基本完成。
+- candidate register v0 中有 2 个 public placeholders，仍缺 URL、作者/团队和 license/ToS 确认。
+- `data/*/prompt_corpus` 目前被 `.gitignore` 排除，进入 T04 前必须明确 git tracking 策略，避免关键研究状态只留在本地。
 
 ## Milestone 0: Research Repositioning and Repository Setup
 
 - [x] `C00`: Captain 初始化治理文档。
 - [x] `T01`: Research scaffold and seed configs。
 - [x] `T02`: Paper outline v0 and contribution list extraction。
-- [ ] `T03`: Prompt corpus candidate register v0 and provenance rules。
+- [x] `T03`: Prompt corpus candidate register v0 and provenance rules。
 
 Exit criteria:
 
@@ -44,6 +44,13 @@ T02 review result:
 - Verdict: `PASS`
 - Review file: `docs/review/T02_paper_outline_contribution_matrix_review.md`
 - Non-blocking followups: `outline.md` 绝对路径链接、`unsupported_do_not_claim` 示例缺失、C7 内部 justification 边界，分别进入 T03/T21 后续约束。
+
+T03 review result:
+
+- Verdict: `PASS`
+- Review file: `docs/review/T03_prompt_corpus_candidate_register_review.md`
+- Candidate register summary: 11 candidates; 9 direct-recompute local candidates; 1 metadata-only placeholder; 1 structure-only placeholder.
+- Non-blocking followups: `data/` gitignore tracking strategy、token estimate、external placeholder provenance、config typo cleanup。
 
 ## Milestone 1: Public Corpus and Provenance Cleaning
 

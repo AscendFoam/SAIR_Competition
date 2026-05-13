@@ -152,6 +152,19 @@
 - T03 或 T21 前补一个 `unsupported_do_not_claim` 或 rejected-claim 区域。
 - 论文草稿阶段检查 contribution list 与 claim evidence matrix 是否一致。
 
+### R13: Prompt corpus governance files 被 gitignore 排除
+
+信号：
+
+- `data/interim/prompt_corpus/*` 和 `data/external/prompt_corpus/*` 在本地存在，但普通 `git add` 不会纳入提交。
+- 后续 worker 以为 corpus register 已版本化，但切换环境后文件丢失。
+
+应对：
+
+- T04 前决定 force-add 具体 governance files，或调整 `.gitignore` allowlist。
+- 不允许把 raw private data 一起放开，只 allowlist prompt corpus governance files。
+- 提交前检查 `git status --ignored` 或明确列出需 `git add -f` 的路径。
+
 ## Open Questions
 
 1. 官方三模型 route 是否仍可复现，若不可复现，采用哪些近似 provider 和模型？
@@ -166,6 +179,9 @@
 10. `compression_style` 与 `ce_search_depth` 是否进入 TAX_V1，还是只进入人工 audit note？
 11. T03 candidate register 中，哪些本地 prompt 可直接进入 recompute，哪些只能作为 historical/local contrast？
 12. T02 的 `unsupported_do_not_claim` 状态是通过新增 rejected claim 解决，还是在 T21 paper draft 时解决？
+13. `data/interim/prompt_corpus/` 和 `data/external/prompt_corpus/` 应使用 `.gitignore` allowlist 还是 `git add -f` 管理？
+14. public placeholders 在 T04 后如果仍无 license confirmation，应降级为 structure-only 还是 excluded？
+15. 是否在 T05 引入 tokenizer，还是继续使用 byte size 到 Phase 2？
 
 ## Deferred Items
 
@@ -175,3 +191,4 @@
 - dashboard 或 prompt lint 产品化。
 - T01 review 非阻塞事项：`storage_policy` typo、taxonomy mapping、`compression_style`、`ce_search_depth`、正式 eval `repeats` schema。
 - T02 review 非阻塞事项：`outline.md` 绝对路径链接、C7 主贡献边界、`unsupported_do_not_claim` 示例缺失。
+- T03 review 非阻塞事项：prompt corpus data files git tracking、`prompt_tokens_est`、external placeholder provenance、`configs/research` typo cleanup。

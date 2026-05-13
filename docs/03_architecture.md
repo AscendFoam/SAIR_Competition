@@ -180,3 +180,18 @@ T02 review 没有 blocking issue。paper layer 现在有：
 - `reports/paper/outline.md` 中绝对 Windows 链接需要在 T03 或 standalone hygiene fix 中改成相对链接。
 - `C7` 只能作为 setup/motivation，不应进入论文主贡献列表的最终版本。
 - `unsupported_do_not_claim` 状态目前只出现在任务验证层面，后续需要至少保留一个 rejected/unsupported claim，避免 claim 分类形同虚设。
+
+## 9. T03 Review Followups
+
+T03 review 没有 blocking issue。corpus layer 现在有：
+
+- `data/interim/prompt_corpus/candidate_register_v0.jsonl`
+- `data/interim/prompt_corpus/provenance_rules.md`
+- `data/interim/prompt_corpus/prompt_corpus_manifest.json`
+- `data/external/prompt_corpus/raw_index.example.jsonl`
+
+后续注意：
+
+- `.gitignore` 当前排除 `data/interim/*` 和 `data/external/*`，所以 prompt corpus governance files on disk 可能不会进入普通 git add。T04 前必须决定 force-add 还是调整 `.gitignore` allowlist。
+- `prompt_tokens_est` 仍未计算，当前只能用 `prompt_bytes` 做 v0 size signal。
+- public placeholders 仍缺少 source URL、author/team 和 license confirmation，T04 需要补齐或降级为 structure-only / excluded。

@@ -44,7 +44,7 @@ We plan to study prompt-based textual distillation for formal equational reasoni
 - `C5`: 一个小而可控的 feature-aware textual distillation 方法家族与受控消融。
 - `C6`: 一个带 attribution、release boundary 和复现说明的研究交付包。
 
-详细状态见 [contribution_list.md](D:/Codes/Math/SAIR_Competition/reports/paper/contribution_list.md)。
+详细状态见 [contribution_list.md](contribution_list.md)。
 
 ## Section Skeleton
 

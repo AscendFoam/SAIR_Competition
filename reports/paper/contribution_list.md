@@ -57,3 +57,11 @@
 - required evidence: asset inventory、fixed splits、CLI chain、family tagger / offline asset pipeline、handoff governance。
 - current status: `supported_by_existing_assets`
 - nearest competing work or likely reviewer objection: “这更像内部项目总结，而不是论文贡献”；在论文中应只作为 setup and motivation，不应占据结果 claim。
+
+## C8
+
+- contribution statement: 继续通过大规模 Stage1 prompt wording 搜索冲击 leaderboard ceiling，本身构成论文主贡献。
+- source in local docs: `docs/02_experiment_plan.md` 2.2、4.3、17；`docs/08_risks_and_open_questions.md` R1、R2、R9。
+- required evidence: 无；该方向已被当前研究 framing 明确排除。
+- current status: `unsupported_do_not_claim`
+- nearest competing work or likely reviewer objection: “这会把论文退化成比赛复盘或局部 prompt 调参总结”；该项保留为 rejected claim 示例，提醒后续写作不要把它误写成贡献。

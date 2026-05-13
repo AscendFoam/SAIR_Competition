@@ -146,3 +146,40 @@ prompt taxonomy 描述 prompt 结构，family tagger 描述题目结构，两者
 - 当前仍处于 Phase 0，重点是候选边界和来源规则。
 - 先把本地 prompt、官方 archetype、可公开/不可公开候选、结构级记录资格分清楚，可以降低后续版权、归因和数据泄漏风险。
 - T03 可吸收 T02 review 的链接和 unsupported claim 小清理，不需要单开任务。
+
+## D009: 接受 T03 review verdict 并进入 Phase 1
+
+日期：2026-05-13
+
+决策：
+
+`docs/review/T03_prompt_corpus_candidate_register_review.md` verdict 为 `PASS`，Captain 接受该结论，标记 `T03_prompt_corpus_candidate_register` 完成，并将 Current Unique Task 切换到 `T04_external_prompt_source_collection`。
+
+理由：
+
+- Reviewer 未发现 blocking issue。
+- Candidate register v0 覆盖 11 个候选，满足 `8-12` 启动目标。
+- 9 个本地 prompt 的 SHA256 和 byte size 已被 reviewer 独立验证。
+- Public placeholders 未伪造数据，仍标注为 metadata-only / structure-only。
+- Manifest 仍标注 `candidate_register_v0_not_cleaned`，没有把 candidate register 写成 completed corpus。
+
+非阻塞事项处理：
+
+- `data/` prompt corpus 文件被 `.gitignore` 排除：deferred 到 T04 前置决策，T04 任务包必须处理 tracking strategy。
+- `prompt_tokens_est` 为 0：accepted for v0，deferred 到 corpus normalization 或 taxonomy coding。
+- external placeholders 缺少 URL、author、license：deferred 到 T04 主任务。
+- `configs/research/corpus_sources.example.json` typo 未改：accepted because T03 forbidden scope 禁止修改该目录；后续 config hygiene 时处理。
+
+## D010: T04 允许核验外部 provenance，但仍不复制外部 prompt 原文
+
+日期：2026-05-13
+
+决策：
+
+T04 可以核验外部候选的公开 URL、作者/团队、license/ToS 和 storage eligibility，但不得复制外部 prompt 原文到仓库，除非来源许可明确允许且任务包要求写入。
+
+理由：
+
+- T03 已建立 public placeholders，但缺少真实 provenance。
+- Phase 1 的目标是 provenance cleaning，不是扩大不可控 prompt 文本仓库。
+- 继续保护 public/private asset boundary，避免版权和归因风险。

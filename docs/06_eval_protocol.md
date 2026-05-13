@@ -207,3 +207,16 @@ T02 已建立 `reports/paper/claim_evidence_matrix.md`。后续所有实验报�
 - feature-aware textual distillation 当前只能写作 method plan，不能写作有效方法。
 
 T03 只建立候选登记和 provenance 边界，不产生 eval evidence。
+
+## 10. Candidate Register Status from T03
+
+T03 已建立 `candidate_register_v0`，但它不是 eval shortlist，也不是 normalized corpus。
+
+当前约束：
+
+- direct-recompute local candidates 可作为后续 screening 候选池来源，但仍需 T04/T05 provenance 和 corpus normalization。
+- metadata-only / structure-only public placeholders 不可直接进入 eval。
+- `prompt_tokens_est` 暂不可用于统计结论。
+- `prompt_bytes` 和 SHA256 可用于 v0 hash coverage 和 size sanity check。
+
+T04/T05 完成前，不应启动 T10 screening。

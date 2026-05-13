@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(python -c ' *)",
-      "Bash(PYTHONPATH=src python -m sair_competition.cli validate-layout)"
+      "Bash(PYTHONPATH=src python -m sair_competition.cli validate-layout)",
+      "Bash(grep -n \"D:/Codes\\\\|D:\\\\\\\\\\\\\\\\Codes\\\\|D:\\\\\\\\\\\\\\\\Codes\" reports/paper/outline.md)",
+      "Bash(echo \"Exit code: $?\")",
+      "Bash(grep -n \"storage_policy\\\\|storage policy\\\\|storage-policy\" data/external/prompt_corpus/raw_index.example.jsonl data/interim/prompt_corpus/provenance_rules.md data/interim/prompt_corpus/candidate_register_v0.jsonl)",
+      "Bash(grep -rn \"storage_policy\\\\|storage policy\\\\|storage-policy\" configs/research/)"
     ]
   }
 }

@@ -76,3 +76,11 @@ Go。
 - `reports/paper/claim_evidence_matrix.md` 已把允许措辞和禁止措辞显式化。
 
 下一步唯一任务是 `T03_prompt_corpus_candidate_register`：建立第一批 prompt candidate register v0 和 provenance rules。T03 仍不跑 API，不改 prompt wording，只登记候选、来源边界和可复算资格。
+
+`T03_prompt_corpus_candidate_register` 已通过 reviewer `PASS`：
+
+- candidate register v0 已登记 11 个候选，其中 9 个本地候选具备已验证 hash 和 byte size。
+- provenance rules 已写清 direct-recompute、metadata-only、structure-only 和 excluded 的边界。
+- corpus manifest 仍诚实标注为 `candidate_register_v0_not_cleaned`，没有把候选登记写成 completed corpus。
+
+下一步唯一任务是 `T04_external_prompt_source_collection`：进入 Phase 1，核验外部 prompt placeholders 的来源、URL、作者/团队和 license/ToS 边界，并决定 `data/*/prompt_corpus` 文件如何进入 git。

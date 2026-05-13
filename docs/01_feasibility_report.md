@@ -84,10 +84,14 @@ Phase 0 进展：
 
 1. `T01`: research scaffold 已通过 review。
 2. `T02`: paper outline、contribution list、claim/evidence/status matrix 已通过 review。
+3. `T03`: candidate register v0 和 provenance rules 已通过 review。
 
-剩余 Phase 0 关键工作：
+Phase 0 exit criteria 基本满足：
 
-1. `T03`: 建立第一批 prompt candidate register 和 provenance rules。
+- 研究目录和 seed config 已创建。
+- paper claim/evidence guardrail 已建立。
+- 第一批 `8-12` prompt 候选目标已达到，当前为 11 个候选。
+- normalized corpus 仍未完成，进入 Phase 1 后处理。
 
 Review 非阻塞事项会在后续任务吸收：taxonomy 字段映射在 T07 前完成，`repeats` 类型和 source storage typo 在后续 config 收敛时清理。
 
@@ -96,3 +100,10 @@ T02 review 非阻塞事项处理：
 - `unsupported_do_not_claim` 未实际使用：deferred 到 T03/T21 前，在 rejected/unsupported claim 区域补充或在论文草稿阶段检查。
 - C7 更像内部项目 justification：accepted，保留为 setup/motivation，不作为论文主贡献。
 - `outline.md` 使用绝对 Windows 链接：deferred 到 T03 的 hygiene fix。
+
+T03 review 非阻塞事项处理：
+
+- `data/` prompt corpus 文件被 `.gitignore` 排除：deferred 到 T04 前置治理决策。
+- `prompt_tokens_est` 全为 0：accepted for v0，deferred 到 taxonomy/corpus normalization 任务。
+- external placeholders 缺少 URL、author、license：deferred 到 T04 主任务。
+- `configs/research/corpus_sources.example.json` 的 typo 仍存在：accepted because T03 forbidden scope 不允许改，后续专门 config hygiene 时处理。
