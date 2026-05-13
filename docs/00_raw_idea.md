@@ -84,3 +84,11 @@ Go。
 - corpus manifest 仍诚实标注为 `candidate_register_v0_not_cleaned`，没有把候选登记写成 completed corpus。
 
 下一步唯一任务是 `T04_external_prompt_source_collection`：进入 Phase 1，核验外部 prompt placeholders 的来源、URL、作者/团队和 license/ToS 边界，并决定 `data/*/prompt_corpus` 文件如何进入 git。
+
+`T04_external_prompt_source_collection` 已通过 reviewer `PASS`：
+
+- `.gitignore` 已用窄 allowlist 放开 prompt corpus governance files，没有放开原始私有数据。
+- 外部 GitHub 来源已核验 URL、作者和 MIT license，但尚未镜像 prompt 原文。
+- Contributor Network 来源仅有 host-level provenance，仍保留为 structure-only。
+
+下一步唯一任务是 `T05_normalize_prompt_corpus_v1`：把 direct-recompute 候选规范化为 `corpus_v1`，生成 duplicate/missing metadata report，并拆清 `eligible` 与 `text_ready` 计数。

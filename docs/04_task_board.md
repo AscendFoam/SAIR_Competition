@@ -4,19 +4,19 @@
 
 ## Current Unique Task
 
-`T04_external_prompt_source_collection`: 核验外部 prompt placeholders，补齐 raw index provenance，并决定 prompt corpus 文件的 git 跟踪策略。
+`T05_normalize_prompt_corpus_v1`: 将 direct-recompute 候选规范化为 corpus v1，并生成 duplicate / missing metadata report。
 
 任务包：
 
-- `docs/tasks/phase_1_public_corpus/T04_external_prompt_source_collection.md`
+- `docs/tasks/phase_1_public_corpus/T05_normalize_prompt_corpus_v1.md`
 
 状态：Ready for worker，尚未执行。
 
 为什么现在做它：
 
-- `T03` 已通过 review，Phase 0 基本完成。
-- candidate register v0 中有 2 个 public placeholders，仍缺 URL、作者/团队和 license/ToS 确认。
-- `data/*/prompt_corpus` 目前被 `.gitignore` 排除，进入 T04 前必须明确 git tracking 策略，避免关键研究状态只留在本地。
+- `T04` 已通过 review，外部 provenance v0 和 git tracking strategy 已落地。
+- normalized corpus 仍为空，manifest 仍是 `candidate_register_v0_provenance_checked_not_normalized`。
+- 进入评测或 taxonomy 前，必须先把候选登记转成可审计的 `corpus_v1.jsonl`，并拆清 eligible 与 text-ready 语义。
 
 ## Milestone 0: Research Repositioning and Repository Setup
 
@@ -52,9 +52,17 @@ T03 review result:
 - Candidate register summary: 11 candidates; 9 direct-recompute local candidates; 1 metadata-only placeholder; 1 structure-only placeholder.
 - Non-blocking followups: `data/` gitignore tracking strategy、token estimate、external placeholder provenance、config typo cleanup。
 
+T04 review result:
+
+- Verdict: `PASS`
+- Review file: `docs/review/T04_external_prompt_source_collection_review.md`
+- External provenance: GitHub source verified with MIT license; Contributor Network remains host-level / structure-only.
+- Git tracking: `.gitignore` narrow allowlist now covers prompt corpus governance files.
+- Non-blocking followups: direct-recompute vs text-ready counts、fragile LinkedIn provenance、additional external candidates、raw index example schema alignment。
+
 ## Milestone 1: Public Corpus and Provenance Cleaning
 
-- [ ] `T04`: Collect official, local, GitHub, paper and contributor prompt candidates into raw index。
+- [x] `T04`: Collect official, local, GitHub, paper and contributor prompt candidates into raw index。
 - [ ] `T05`: Normalize corpus schema, hash prompt files, and generate duplicate/missing metadata report。
 - [ ] `T06`: Write corpus audit summary and public/private asset boundary note。
 

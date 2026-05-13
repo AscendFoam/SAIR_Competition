@@ -220,3 +220,16 @@ T03 已建立 `candidate_register_v0`，但它不是 eval shortlist，也不是 
 - `prompt_bytes` 和 SHA256 可用于 v0 hash coverage 和 size sanity check。
 
 T04/T05 完成前，不应启动 T10 screening。
+
+## 11. T04 Provenance Status
+
+T04 已完成外部 provenance v0：
+
+- `github_public_prompt_repo_cazares_2026`: URL、author/team、MIT license verified；raw prompt text not mirrored in T04。
+- `contributor_network_stage1_official_post_2026`: host-level official provenance only；storage rights and specific prompt page unresolved；keep structure-only。
+
+Eval implications:
+
+- GitHub source may become direct-recompute only after T05 imports and hashes a specific prompt file, or records a reproducible retrieval path.
+- Contributor Network source must not enter direct eval until stable prompt-level provenance exists.
+- Manifest counts must distinguish eligible source from local text-ready prompt.

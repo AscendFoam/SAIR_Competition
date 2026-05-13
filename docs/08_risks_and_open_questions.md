@@ -165,6 +165,34 @@
 - 不允许把 raw private data 一起放开，只 allowlist prompt corpus governance files。
 - 提交前检查 `git status --ignored` 或明确列出需 `git add -f` 的路径。
 
+Status:
+
+- T04 已采用 `.gitignore` 窄 allowlist，风险降级为 monitor。
+
+### R14: `direct_recompute` 与 `text_ready` 语义混淆
+
+信号：
+
+- Manifest 中 `direct_recompute_count` 包含已许可但尚未本地镜像的 external source。
+- 下游 worker 误以为所有 direct-recompute candidates 都有本地 prompt text 和 hash。
+
+应对：
+
+- T05 manifest 必须拆分 `eligible_count`、`text_ready_count`、`mirrored_external_count`。
+- eval 只能使用 text-ready 且 hash 覆盖的 prompt。
+
+### R15: 外部 provenance anchor 不稳定
+
+信号：
+
+- Contributor Network 只用 LinkedIn post 作为 host-level anchor。
+- source URL 可能失效或不能指向具体 prompt。
+
+应对：
+
+- T05/T06 尝试寻找稳定 first-party URL。
+- 未找到前保持 structure-only，不进入 direct recompute。
+
 ## Open Questions
 
 1. 官方三模型 route 是否仍可复现，若不可复现，采用哪些近似 provider 和模型？
@@ -182,6 +210,8 @@
 13. `data/interim/prompt_corpus/` 和 `data/external/prompt_corpus/` 应使用 `.gitignore` allowlist 还是 `git add -f` 管理？
 14. public placeholders 在 T04 后如果仍无 license confirmation，应降级为 structure-only 还是 excluded？
 15. 是否在 T05 引入 tokenizer，还是继续使用 byte size 到 Phase 2？
+16. GitHub MIT source 是否在 T05 镜像具体 prompt 文件，还是只记录 reproducible URL 到 T06？
+17. `raw_index.example.jsonl` 是否应完全改成 T04 schema，还是保留旧 corpus schema 示例？
 
 ## Deferred Items
 
@@ -192,3 +222,4 @@
 - T01 review 非阻塞事项：`storage_policy` typo、taxonomy mapping、`compression_style`、`ce_search_depth`、正式 eval `repeats` schema。
 - T02 review 非阻塞事项：`outline.md` 绝对路径链接、C7 主贡献边界、`unsupported_do_not_claim` 示例缺失。
 - T03 review 非阻塞事项：prompt corpus data files git tracking、`prompt_tokens_est`、external placeholder provenance、`configs/research` typo cleanup。
+- T04 review 非阻塞事项：eligible vs text-ready count split、LinkedIn provenance fragility、more external candidates、raw index example schema alignment。

@@ -183,3 +183,40 @@ T04 可以核验外部候选的公开 URL、作者/团队、license/ToS 和 stor
 - T03 已建立 public placeholders，但缺少真实 provenance。
 - Phase 1 的目标是 provenance cleaning，不是扩大不可控 prompt 文本仓库。
 - 继续保护 public/private asset boundary，避免版权和归因风险。
+
+## D011: 接受 T04 review verdict 并进入 T05
+
+日期：2026-05-13
+
+决策：
+
+`docs/review/T04_external_prompt_source_collection_review.md` verdict 为 `PASS`，Captain 接受该结论，标记 `T04_external_prompt_source_collection` 完成，并将 Current Unique Task 切换到 `T05_normalize_prompt_corpus_v1`。
+
+理由：
+
+- Reviewer 未发现 blocking issue。
+- `.gitignore` 已采用窄 allowlist，解决 prompt corpus governance files 普通 git tracking 问题，同时没有放开私有 raw/interim 数据。
+- `raw_index.jsonl` 已记录 2 个外部 source 的 provenance 状态。
+- GitHub public source 已核验 URL、作者和 MIT license；Contributor Network source 被保守地保留为 structure-only。
+- 没有复制外部 prompt 原文，没有跑 API，没有触碰代码或 prompt wording。
+
+非阻塞事项处理：
+
+- `direct_recompute_count` 语义混合：deferred 到 T05，任务包必须拆分 eligible 与 text-ready。
+- Contributor Network 依赖 LinkedIn host-level provenance：deferred 到 T05/T06 寻找稳定一手 URL，否则保持 structure-only。
+- 外部候选数量仍少：deferred 到 T05/T06 主动寻找 GitHub/paper candidates。
+- `raw_index.example.jsonl` schema 落后：deferred 到 T05 对齐。
+
+## D012: T05 先 normalize corpus v1，不启动 eval
+
+日期：2026-05-13
+
+决策：
+
+T05 只将候选登记规范化为 `corpus_v1.jsonl`、生成 duplicate/missing metadata report，并修正计数语义；仍不启动 screening、API eval 或 prompt 改写。
+
+理由：
+
+- 评测前必须有稳定 corpus snapshot 和 manifest。
+- 当前 GitHub external source 虽可许可镜像，但是否导入具体 prompt 文件需要单独记录来源、hash 和 attribution。
+- `post-release analysis` 纪律仍要求 prompt selection 不使用 released subsets。

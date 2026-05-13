@@ -195,3 +195,14 @@ T03 review 没有 blocking issue。corpus layer 现在有：
 - `.gitignore` 当前排除 `data/interim/*` 和 `data/external/*`，所以 prompt corpus governance files on disk 可能不会进入普通 git add。T04 前必须决定 force-add 还是调整 `.gitignore` allowlist。
 - `prompt_tokens_est` 仍未计算，当前只能用 `prompt_bytes` 做 v0 size signal。
 - public placeholders 仍缺少 source URL、author/team 和 license confirmation，T04 需要补齐或降级为 structure-only / excluded。
+
+## 10. T04 Review Followups
+
+T04 review 没有 blocking issue。corpus governance files 现在通过 `.gitignore` 窄 allowlist 可被 git 跟踪。
+
+后续注意：
+
+- Manifest 中 `direct_recompute_count=10` 当前表达 eligibility，不等价于 text is locally available。T05 必须拆分 `eligible_count` 与 `text_ready_count`。
+- GitHub external source 已验证 MIT license，但原文未镜像；T05 需要决定是否导入具体 prompt 文件或继续 metadata-only。
+- Contributor Network source 仍是 LinkedIn host-level provenance，T05/T06 应寻找更稳定的一手 URL，否则保持 structure-only。
+- `raw_index.example.jsonl` 仍是旧 schema 示例，T05 可统一 example schema。

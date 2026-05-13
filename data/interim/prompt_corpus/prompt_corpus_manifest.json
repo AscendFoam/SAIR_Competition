@@ -1,0 +1,78 @@
+{
+  "manifest_version": "CORPUS_MANIFEST_V1",
+  "generated_on": "2026-05-13",
+  "status": "candidate_register_v0_provenance_checked_not_normalized",
+  "corpus_size": 0,
+  "ready_prompt_count": 0,
+  "candidate_register_summary": {
+    "path": "data/interim/prompt_corpus/candidate_register_v0.jsonl",
+    "total_candidates": 11,
+    "direct_recompute_count": 10,
+    "metadata_only_count": 1,
+    "structure_only_count": 1,
+    "excluded_count": 0
+  },
+  "external_provenance_status": {
+    "verified_external_source_count": 2,
+    "externally_storage_allowed_count": 1,
+    "remaining_structure_only_external_count": 1,
+    "excluded_external_count": 0
+  },
+  "git_tracking_strategy": {
+    "mode": "allowlist_in_gitignore",
+    "tracked_governance_files": [
+      "data/external/prompt_corpus/*.md",
+      "data/external/prompt_corpus/*.jsonl",
+      "data/interim/prompt_corpus/*.md",
+      "data/interim/prompt_corpus/*.json",
+      "data/interim/prompt_corpus/*.jsonl"
+    ]
+  },
+  "target_prompt_count_range": [
+    8,
+    12
+  ],
+  "records_present": [
+    "data/external/prompt_corpus/raw_index.jsonl",
+    "data/interim/prompt_corpus/candidate_register_v0.jsonl",
+    "data/interim/prompt_corpus/provenance_rules.md"
+  ],
+  "source_counts": {
+    "official": 0,
+    "contributor_network": 1,
+    "github": 1,
+    "paper": 0,
+    "local": 9,
+    "social": 0
+  },
+  "hash_coverage": {
+    "scope": "candidate_register_v0",
+    "with_sha256": 9,
+    "without_sha256": 2
+  },
+  "storage_policy_summary": {
+    "store_full_text_when_allowed": true,
+    "hash_only_when_text_storage_not_allowed": true,
+    "private_prompt_storage_forbidden": true
+  },
+  "provenance_requirements": [
+    "source_type",
+    "source_ref",
+    "timestamp",
+    "license_or_tos_note",
+    "visibility_note",
+    "post_release_use_allowed"
+  ],
+  "planned_next_steps": [
+    "Use T05 to normalize direct-recompute candidates into corpus_v1 and generate missing-metadata reports.",
+    "Decide whether to import and hash permissively licensed external prompt text from verified GitHub sources.",
+    "Keep contributor-network placeholders structure-only until a stable prompt page and attribution terms are verified.",
+    "Link direct-recompute and structure-only candidates to taxonomy annotations before T07."
+  ],
+  "notes": [
+    "Candidate register v0 exists and external provenance has been checked at the source-record level, but the normalized corpus is still empty and not cleaned.",
+    "Released final evaluation subsets are analysis assets, not prompt-selection assets.",
+    "The GitHub public placeholder now has a verified permissive license but has not been mirrored locally in T04.",
+    "The contributor-network placeholder remains structure-only because the underlying contributor prompt page and storage rights are unresolved."
+  ]
+}

@@ -107,3 +107,10 @@ T03 review 非阻塞事项处理：
 - `prompt_tokens_est` 全为 0：accepted for v0，deferred 到 taxonomy/corpus normalization 任务。
 - external placeholders 缺少 URL、author、license：deferred 到 T04 主任务。
 - `configs/research/corpus_sources.example.json` 的 typo 仍存在：accepted because T03 forbidden scope 不允许改，后续专门 config hygiene 时处理。
+
+T04 review 非阻塞事项处理：
+
+- `direct_recompute_count` 混合 eligibility 与 text-ready 语义：deferred 到 T05，必须拆成 eligible/text-ready。
+- Contributor Network provenance 依赖 LinkedIn post：accepted as fragile host-level provenance，deferred 到 T05/T06 寻找稳定一手来源。
+- 外部候选数量仍少：deferred 到 T05/T06，主动补 GitHub/paper candidates。
+- `raw_index.example.jsonl` 与 `raw_index.jsonl` schema 不一致：deferred 到 T05。

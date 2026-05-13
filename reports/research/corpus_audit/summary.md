@@ -1,6 +1,6 @@
 # Corpus Audit Summary
 
-状态：candidate register v0 已建立，但 normalized corpus 仍未完成。
+状态：candidate register v0 已建立，external provenance 已完成首轮核验，但 normalized corpus 仍未完成。
 
 ## Purpose
 
@@ -11,11 +11,19 @@
 - corpus size: `0`
 - ready prompt count: `0`
 - candidate register size: `11`
-- direct recompute candidates: `9`
+- direct recompute candidates: `10`
 - metadata-only candidates: `1`
 - structure-only candidates: `1`
+- excluded candidates: `0`
 - target prompt count: `8-12`
-- status: `candidate_register_v0_not_cleaned`
+- status: `candidate_register_v0_provenance_checked_not_normalized`
+
+## External Provenance Status
+
+- verified external source records: `2`
+- externally storage-allowed source records: `1`
+- remaining structure-only external records: `1`
+- excluded external records: `0`
 
 ## Candidate Source Counts
 
@@ -32,22 +40,37 @@
 - without hash: `2`
 - scope: `candidate_register_v0`
 
+## Git Tracking Strategy
+
+- strategy: `.gitignore` narrow allowlist
+- tracked governance paths:
+  - `data/external/prompt_corpus/*.md`
+  - `data/external/prompt_corpus/*.jsonl`
+  - `data/interim/prompt_corpus/*.md`
+  - `data/interim/prompt_corpus/*.json`
+  - `data/interim/prompt_corpus/*.jsonl`
+- explicitly still ignored:
+  - `data/raw/*`
+  - general `data/interim/*` outputs outside `prompt_corpus/`
+  - future `data/external/prompt_corpus/raw_prompts/` mirrors unless separately approved
+
 ## Missing Metadata
 
-- external placeholder source URLs: missing
-- external placeholder license confirmations: missing
-- external placeholder author or team verification: missing
+- contributor-network underlying prompt page: unresolved
+- contributor-network individual contributor attribution: unresolved
+- file-level import decision for verified GitHub prompt text: pending later task
 - prompt token estimates: not filled yet
 
 ## License and ToS Notes
 
 - 本地 prompt 可以登记 path、hash 和 byte size，但仍需遵守 release boundary。
-- GitHub / contributor-network placeholder 当前不复制原文，只保留 metadata-only 或 structure-only 记录。
+- 已核验的 GitHub 外部候选来自公开 MIT repo，但 T04 仍不复制原文，只记录 provenance 和可导入性。
+- contributor-network 候选目前只有官方 SAIR host-level post 可核验，仍不得复制原文。
 - released final evaluation subsets 不是 prompt source；它们只用于后续 `post-release analysis`。
 
 ## Next Actions
 
-1. 在 T04 核验外部候选的 source URL、author、license 和 attribution。
-2. 在 T05 为 direct-recompute 候选补齐 normalized corpus schema、去重和缺失 metadata 报告。
-3. 为 candidate register 中的本地文件补 token estimate，并决定是否纳入首批 analyzable corpus。
-4. 对 metadata-only 和 structure-only 候选保留 provenance hygiene，不提前升级为 direct recompute。
+1. 在 T05 为 direct-recompute 候选补齐 normalized corpus schema、去重和缺失 metadata 报告。
+2. 决定是否把已核验的 MIT GitHub prompt 文件导入本地并补 hash/token estimate。
+3. 若后续无法解析 contributor-network 的具体 prompt 页面与归因条款，继续保持 structure-only 或降级为 excluded。
+4. 在 T05/T07 前补 token estimate，并决定哪些 direct-recompute 候选进入首批 analyzable corpus。

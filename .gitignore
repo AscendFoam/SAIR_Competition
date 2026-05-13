@@ -45,6 +45,15 @@ data/external/*
 data/interim/splits/*
 !data/interim/splits/README.md
 !data/external/README.md
+!data/external/prompt_corpus/
+data/external/prompt_corpus/*
+!data/external/prompt_corpus/*.md
+!data/external/prompt_corpus/*.jsonl
+!data/interim/prompt_corpus/
+data/interim/prompt_corpus/*
+!data/interim/prompt_corpus/*.md
+!data/interim/prompt_corpus/*.json
+!data/interim/prompt_corpus/*.jsonl
 
 # Competition-private prompts
 prompts/cheatsheets/*

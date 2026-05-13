@@ -24,17 +24,17 @@
 
 ## 2. Current Unique Task
 
-`T04_external_prompt_source_collection`
+`T05_normalize_prompt_corpus_v1`
 
 任务包：
 
-- `docs/tasks/phase_1_public_corpus/T04_external_prompt_source_collection.md`
+- `docs/tasks/phase_1_public_corpus/T05_normalize_prompt_corpus_v1.md`
 
 状态：
 
 - Ready for worker。
 - 尚未执行。
-- T01、T02、T03 已通过 review 并由 Captain 标记完成。
+- T01、T02、T03、T04 已通过 review 并由 Captain 标记完成。
 
 T01 review 判断：
 
@@ -58,6 +58,15 @@ T03 review 判断：
 - Candidate register: 11 candidates total; 9 direct-recompute local candidates; 1 metadata-only placeholder; 1 structure-only placeholder.
 - Non-blocking followups: T04 处理 `data/*/prompt_corpus` git tracking strategy；T04 补 external placeholder URL/author/license；T05/T07 后续处理 token estimates。
 
+T04 review 判断：
+
+- Verdict: `PASS`
+- Review file: `docs/review/T04_external_prompt_source_collection_review.md`
+- Captain action: accepted; `docs/04_task_board.md` 已勾选 T04。
+- Git tracking: `.gitignore` narrow allowlist for prompt corpus governance files。
+- External provenance: GitHub MIT source verified but not mirrored; Contributor Network remains host-level / structure-only。
+- Non-blocking followups: T05 split eligible/text-ready counts；T05/T06 seek stable contributor URL and more external candidates；T05 align raw_index example schema。
+
 ## 3. 下一位 Worker 需要先读
 
 ```text
@@ -69,17 +78,17 @@ docs/04_task_board.md
 docs/06_eval_protocol.md
 docs/07_handoff.md
 docs/08_risks_and_open_questions.md
-docs/tasks/phase_1_public_corpus/T04_external_prompt_source_collection.md
+docs/tasks/phase_1_public_corpus/T05_normalize_prompt_corpus_v1.md
 ```
 
 ## 4. Worker 执行边界
 
-下一轮 worker 只做 T04：
+下一轮 worker 只做 T05：
 
-- 决定并实施 prompt corpus governance files 的 git tracking strategy。
-- 核验 external/public placeholders 的 URL、author/team、license/ToS 和 storage eligibility。
-- 更新 raw index、candidate register、manifest 和 corpus audit summary。
-- 不复制外部 prompt 原文，除非来源许可明确允许且仍在任务边界内。
+- 将 candidate register v0 规范化为 `corpus_v1.jsonl`。
+- 生成 duplicate report 和 missing metadata report。
+- 拆分 eligible/text-ready/mirrored external 计数。
+- 决定是否镜像 MIT GitHub prompt 文件；若镜像，必须记录来源、hash、license 和 attribution。
 
 不要做：
 
@@ -90,37 +99,26 @@ docs/tasks/phase_1_public_corpus/T04_external_prompt_source_collection.md
 - 不删除或重命名历史文档。
 - 不标记任务完成。
 
-本轮实际改动文件：
-
-- `data/external/prompt_corpus/raw_index.example.jsonl`
-- `data/interim/prompt_corpus/candidate_register_v0.jsonl`
-- `data/interim/prompt_corpus/provenance_rules.md`
-- `data/interim/prompt_corpus/prompt_corpus_manifest.json`
-- `reports/research/corpus_audit/summary.md`
-- `reports/paper/outline.md`
-- `reports/paper/contribution_list.md`
-- `docs/07_handoff.md`
-
 ## 5. Reviewer 重点
 
-T04 reviewer 类型：normal。
+T05 reviewer 类型：normal。
 
 重点检查：
 
-- 是否解决或明确记录 `data/*/prompt_corpus` git tracking strategy。
-- 是否补齐 external placeholders 的来源 URL、作者/团队、license/ToS note，或明确降级为 structure-only / excluded。
-- 是否没有复制外部 prompt 原文。
-- 是否保持 released subsets 的 post-release 限定。
-- 是否未跑 API、未改 prompt wording、未改 `src/`。
+- `corpus_v1.jsonl` 是否只包含 text-ready 或明确可复现记录。
+- 是否生成 duplicate/missing metadata reports。
+- Manifest 是否拆清 eligible 与 text-ready。
+- 是否没有启动 eval、没有改 prompt wording、没有混入私有 prompt。
+- 若镜像 MIT external prompt，是否保留 URL、license、author、hash 和 attribution。
 
-## 6. 完成 T04 后 Captain 要做
+## 6. 完成 T05 后 Captain 要做
 
 如果 review 为 `PASS`：
 
-1. 在 `docs/04_task_board.md` 勾选 `T04`。
+1. 在 `docs/04_task_board.md` 勾选 `T05`。
 2. 更新本文件的当前状态。
-3. 推荐进入 `T05`，但不直接执行。
-4. 若 data tracking 仍未解决，阻止进入 T05。
+3. 推荐进入 `T06`，但不直接执行。
+4. 若 corpus_v1 不可解析或 manifest 仍混淆 eligible/text-ready，阻止进入 T06。
 
 如果 `PASS_WITH_WARNINGS`：
 
@@ -136,9 +134,8 @@ T04 reviewer 类型：normal。
 
 ## 7. 当前未验证事项
 
-- T04 尚未执行。
-- normalized corpus 仍未采集完成，manifest 仅到 `candidate_register_v0_not_cleaned`。
-- `data/interim/prompt_corpus/` 和 `data/external/prompt_corpus/` 文件当前被 `.gitignore` 排除，提交策略未定。
-- external placeholders 仍待 provenance 核验。
+- normalized corpus 仍未采集完成，manifest 仅到 `candidate_register_v0_provenance_checked_not_normalized`。
+- T05 尚未执行。
+- contributor-network 占位项仍只有 host-level official provenance，尚未解析到稳定的具体 prompt 页面。
 - screening / recomputed benchmark / post-release analysis 仍未开始执行。
-- T04 之后的任务包尚未详细展开。
+- T05 之后的任务包尚未详细展开。
