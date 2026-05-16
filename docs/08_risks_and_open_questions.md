@@ -1,6 +1,6 @@
 # Risks and Open Questions
 
-日期：2026-05-12
+日期：2026-05-14
 
 ## Active Risks
 
@@ -181,6 +181,11 @@ Status:
 - T05 manifest 必须拆分 `eligible_count`、`text_ready_count`、`mirrored_external_count`。
 - eval 只能使用 text-ready 且 hash 覆盖的 prompt。
 
+Status:
+
+- T05 已拆分 `eligible_count=10`、`text_ready_count=9`、`mirrored_external_count=0`，风险降级为 monitor。
+- T06 仍需把该边界写入 public/private asset boundary，防止下游 worker 误用 metadata-only 记录。
+
 ### R15: 外部 provenance anchor 不稳定
 
 信号：
@@ -192,6 +197,29 @@ Status:
 
 - T05/T06 尝试寻找稳定 first-party URL。
 - 未找到前保持 structure-only，不进入 direct recompute。
+
+### R16: `corpus_v1` 与 `candidate_register_v0` schema drift
+
+信号：
+
+- 下游 worker 从 `candidate_register_v0.jsonl` 读取旧字段，而不是从 `corpus_v1.jsonl` 读取 `text_ready`、`eligible_for_recompute` 和 `corpus_inclusion_status`。
+- 任务报告把 candidate register 当成 eval-ready corpus。
+
+应对：
+
+- T06 boundary note 必须声明 `corpus_v1.jsonl` 是 authoritative corpus snapshot。
+- T07/T10 任务包必须把 `corpus_v1.jsonl` 列为输入，而不是直接从 candidate register 决定 eval eligibility。
+
+### R17: Missing metadata report verbosity hides actionable external gaps
+
+信号：
+
+- 9 条本地记录缺 `source_url` 的 info 级提示淹没了 2 条外部记录缺 hash/path 的 actionable issue。
+
+应对：
+
+- T06 corpus audit narrative 中聚合本地 source_url policy-exempt 缺失。
+- 单独列出 GitHub metadata-only 和 Contributor Network structure-only 两个 actionable external gaps。
 
 ## Open Questions
 
@@ -207,11 +235,12 @@ Status:
 10. `compression_style` 与 `ce_search_depth` 是否进入 TAX_V1，还是只进入人工 audit note？
 11. T03 candidate register 中，哪些本地 prompt 可直接进入 recompute，哪些只能作为 historical/local contrast？
 12. T02 的 `unsupported_do_not_claim` 状态是通过新增 rejected claim 解决，还是在 T21 paper draft 时解决？
-13. `data/interim/prompt_corpus/` 和 `data/external/prompt_corpus/` 应使用 `.gitignore` allowlist 还是 `git add -f` 管理？
+13. `data/interim/prompt_corpus/` 和 `data/external/prompt_corpus/` 应使用 `.gitignore` allowlist 还是 `git add -f` 管理？已在 T04 选择 `.gitignore` narrow allowlist，后续 monitor。
 14. public placeholders 在 T04 后如果仍无 license confirmation，应降级为 structure-only 还是 excluded？
-15. 是否在 T05 引入 tokenizer，还是继续使用 byte size 到 Phase 2？
-16. GitHub MIT source 是否在 T05 镜像具体 prompt 文件，还是只记录 reproducible URL 到 T06？
-17. `raw_index.example.jsonl` 是否应完全改成 T04 schema，还是保留旧 corpus schema 示例？
+15. 是否在 T05 引入 tokenizer，还是继续使用 byte size 到 Phase 2？T05 未引入 tokenizer；T07 前需要重新决定。
+16. GitHub MIT source 是否在 T05 镜像具体 prompt 文件，还是只记录 reproducible URL 到 T06？T05 未镜像，保持 metadata-only；未来若需要 external text-ready coverage，单开任务。
+17. `raw_index.example.jsonl` 是否应完全改成 T04 schema，还是保留旧 corpus schema 示例？T05 已改成 T04 schema。
+18. T06 是否能找到 Contributor Network 的稳定 prompt-level URL，若找不到是否维持 structure-only 到 paper limitation？
 
 ## Deferred Items
 
@@ -223,3 +252,4 @@ Status:
 - T02 review 非阻塞事项：`outline.md` 绝对路径链接、C7 主贡献边界、`unsupported_do_not_claim` 示例缺失。
 - T03 review 非阻塞事项：prompt corpus data files git tracking、`prompt_tokens_est`、external placeholder provenance、`configs/research` typo cleanup。
 - T04 review 非阻塞事项：eligible vs text-ready count split、LinkedIn provenance fragility、more external candidates、raw index example schema alignment。
+- T05 review 非阻塞事项：candidate register/corpus v1 schema drift、missing metadata report verbosity、`prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL。

@@ -233,3 +233,21 @@ Eval implications:
 - GitHub source may become direct-recompute only after T05 imports and hashes a specific prompt file, or records a reproducible retrieval path.
 - Contributor Network source must not enter direct eval until stable prompt-level provenance exists.
 - Manifest counts must distinguish eligible source from local text-ready prompt.
+
+## 12. Corpus v1 Eval Eligibility from T05
+
+T05 已通过 review，`corpus_v1.jsonl` 是后续 eval 候选池的 authoritative corpus snapshot，但不是 eval shortlist。
+
+当前 eval eligibility：
+
+- `included_text_ready`: 9 条本地记录，可在 T10 之后按 screening matrix 进入直接复算候选池。
+- `included_metadata_only`: 1 条 GitHub MIT record，provenance-eligible 但未本地镜像、无 local path/hash，不能直接进入 eval。
+- `included_structure_only`: 1 条 Contributor Network record，只有 host-level provenance，不能直接进入 eval。
+- `excluded`: 0 条。
+
+T10 前约束：
+
+- 只允许 text-ready 且 SHA256 覆盖的 prompt 进入 screening execution。
+- 若要使用 GitHub MIT prompt 原文，必须先通过独立任务镜像文件、记录 path/hash/byte size/license/attribution，并更新 manifest。
+- Contributor Network record 在稳定 prompt-level provenance 和 storage terms 确认前不得进入 eval。
+- `prompt_tokens_est=0` 不可用于长度分桶或 token-based analysis；T07 前需要补估算或明确改用 byte size。

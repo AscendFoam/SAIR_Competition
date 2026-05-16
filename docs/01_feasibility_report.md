@@ -114,3 +114,18 @@ T04 review 非阻塞事项处理：
 - Contributor Network provenance 依赖 LinkedIn post：accepted as fragile host-level provenance，deferred 到 T05/T06 寻找稳定一手来源。
 - 外部候选数量仍少：deferred 到 T05/T06，主动补 GitHub/paper candidates。
 - `raw_index.example.jsonl` 与 `raw_index.jsonl` schema 不一致：deferred 到 T05。
+
+T05 review 判断：
+
+- `docs/review/T05_normalize_prompt_corpus_v1_review.md` verdict 为 `PASS`。
+- `corpus_v1` 已满足 Phase 1 最小 corpus snapshot：11 条记录，9 条 text-ready，10 条 eligible，1 条 metadata-only，1 条 structure-only。
+- `direct_recompute_count` 语义混合问题已通过 manifest 中的 `eligible_count` / `text_ready_count` / `mirrored_external_count` 拆分解决。
+- `raw_index.example.jsonl` schema misalignment 已解决。
+
+T05 review 非阻塞事项处理：
+
+- `candidate_register_v0.jsonl` 未回填新字段：accepted；后续以下游 `corpus_v1.jsonl` 为 authoritative snapshot。
+- missing metadata report 对 9 条本地记录逐条提示 `source_url` 缺失：accepted as verbose but correct；T06 可在 audit narrative 中聚合说明。
+- `prompt_tokens_est` 全为 0：deferred 到 T07 前，避免长度分桶误读。
+- GitHub MIT source 未镜像：accepted；如需要 external text-ready coverage，后续单开 provenance/import 任务。
+- Contributor Network 稳定 prompt-level URL 仍缺：deferred 到 T06 风险说明。

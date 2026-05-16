@@ -220,3 +220,41 @@ T05 只将候选登记规范化为 `corpus_v1.jsonl`、生成 duplicate/missing 
 - 评测前必须有稳定 corpus snapshot 和 manifest。
 - 当前 GitHub external source 虽可许可镜像，但是否导入具体 prompt 文件需要单独记录来源、hash 和 attribution。
 - `post-release analysis` 纪律仍要求 prompt selection 不使用 released subsets。
+
+## D013: 接受 T05 review verdict 并进入 T06
+
+日期：2026-05-14
+
+决策：
+
+`docs/review/T05_normalize_prompt_corpus_v1_review.md` verdict 为 `PASS`，Captain 接受该结论，标记 `T05_normalize_prompt_corpus_v1` 完成，并将 Current Unique Task 切换到 `T06_corpus_audit_public_private_boundary`。
+
+理由：
+
+- Reviewer 未发现 blocking issue。
+- `corpus_v1.jsonl` 已规范化 11 条记录，并明确区分 9 条 text-ready、1 条 metadata-only、1 条 structure-only。
+- Manifest 已拆分 `eligible_count=10`、`text_ready_count=9`、`mirrored_external_count=0`。
+- Duplicate report、missing metadata report 和 schema-aligned raw index example 均已落地并可解析。
+- 没有复制外部 prompt 原文，没有跑 eval，没有改 prompt wording。
+
+非阻塞事项处理：
+
+- `candidate_register_v0.jsonl` 未回填 corpus v1 字段：accepted；后续以 `corpus_v1.jsonl` 为 authoritative snapshot。
+- missing metadata report 对本地 `source_url` 缺失逐条列出：accepted as cosmetic verbosity；T06 可在 audit summary 中聚合叙述。
+- `prompt_tokens_est` 为 0：deferred 到 T07 前处理。
+- GitHub MIT source 未镜像：accepted；后续若需要 external text-ready coverage，另开 import/provenance 任务。
+- Contributor Network prompt-level provenance 未解决：deferred 到 T06 风险和边界说明。
+
+## D014: T06 只写 corpus audit 和 public/private boundary，不镜像外部 prompt
+
+日期：2026-05-14
+
+决策：
+
+T06 的唯一目标是基于 T05 corpus v1 写清 public/private asset boundary 和下游使用规则，不下载、不镜像外部 prompt 原文，也不启动 taxonomy 或 eval。
+
+理由：
+
+- T05 已完成 normalized corpus，但下游 worker 仍需要清晰判断哪些记录可公开、可复算、仅可结构级讨论。
+- GitHub MIT source 是否镜像需要文件级 path、hash、license 和 attribution 记录，适合作为后续独立 provenance/import 任务。
+- Contributor Network 当前仍只有 host-level provenance，不能因进入 T06 而提升为 text-ready。

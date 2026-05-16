@@ -1,0 +1,125 @@
+{
+  "report_version": "MISSING_METADATA_REPORT_V1",
+  "generated_on": "2026-05-13",
+  "scope": "corpus_v1",
+  "policy_notes": [
+    "Repository-local prompts may leave source_url empty when source_ref and prompt_text_path already provide a reproducible local anchor.",
+    "prompt_tokens_est remains 0 for all corpus_v1 records in T05; token estimation is deferred and tracked separately from blocking provenance gaps.",
+    "A missing prompt hash is only blocking when a record is expected to be text-ready."
+  ],
+  "summary": {
+    "total_records": 11,
+    "actionable_record_count": 2,
+    "policy_exempt_record_count": 9,
+    "missing_source_url_count": 9,
+    "missing_author_or_team_count": 0,
+    "missing_license_note_count": 0,
+    "missing_prompt_hash_count": 2,
+    "missing_local_text_count": 2,
+    "unresolved_storage_eligibility_count": 0,
+    "zero_token_estimate_count": 11
+  },
+  "records": [
+    {
+      "prompt_id": "local_p0_official_reconstructed_empty",
+      "severity": "info",
+      "missing_fields": [
+        "source_url"
+      ],
+      "reason": "Repository-local record uses source_ref and prompt_text_path as the provenance anchor.",
+      "recommended_next_action": "No blocking action in T05. A later task may add a canonical repo-local URL convention if needed."
+    },
+    {
+      "prompt_id": "local_p1_1_1_strict_first_draft",
+      "severity": "info",
+      "missing_fields": [
+        "source_url"
+      ],
+      "reason": "Repository-local record uses source_ref and prompt_text_path as the provenance anchor.",
+      "recommended_next_action": "No blocking action in T05. A later task may add a canonical repo-local URL convention if needed."
+    },
+    {
+      "prompt_id": "local_p1_2_2_implicit_guardrail_v1",
+      "severity": "info",
+      "missing_fields": [
+        "source_url"
+      ],
+      "reason": "Repository-local record uses source_ref and prompt_text_path as the provenance anchor.",
+      "recommended_next_action": "No blocking action in T05. A later task may add a canonical repo-local URL convention if needed."
+    },
+    {
+      "prompt_id": "local_p1_2_3_implicit_guardrail_v2",
+      "severity": "info",
+      "missing_fields": [
+        "source_url"
+      ],
+      "reason": "Repository-local record uses source_ref and prompt_text_path as the provenance anchor.",
+      "recommended_next_action": "No blocking action in T05. A later task may add a canonical repo-local URL convention if needed."
+    },
+    {
+      "prompt_id": "local_p1_2_5_minimal_rule_missing_hard_composition",
+      "severity": "info",
+      "missing_fields": [
+        "source_url"
+      ],
+      "reason": "Repository-local record uses source_ref and prompt_text_path as the provenance anchor.",
+      "recommended_next_action": "No blocking action in T05. A later task may add a canonical repo-local URL convention if needed."
+    },
+    {
+      "prompt_id": "local_p1_2_8_narrow_singleton_families",
+      "severity": "info",
+      "missing_fields": [
+        "source_url"
+      ],
+      "reason": "Repository-local record uses source_ref and prompt_text_path as the provenance anchor.",
+      "recommended_next_action": "No blocking action in T05. A later task may add a canonical repo-local URL convention if needed."
+    },
+    {
+      "prompt_id": "local_p2_0_0_official_balanced_strict_v0",
+      "severity": "info",
+      "missing_fields": [
+        "source_url"
+      ],
+      "reason": "Repository-local record uses source_ref and prompt_text_path as the provenance anchor.",
+      "recommended_next_action": "No blocking action in T05. A later task may add a canonical repo-local URL convention if needed."
+    },
+    {
+      "prompt_id": "local_p2_0_1_official_counterexample_first_strict_v0",
+      "severity": "info",
+      "missing_fields": [
+        "source_url"
+      ],
+      "reason": "Repository-local record uses source_ref and prompt_text_path as the provenance anchor.",
+      "recommended_next_action": "No blocking action in T05. A later task may add a canonical repo-local URL convention if needed."
+    },
+    {
+      "prompt_id": "local_p2_0_2_official_fast_filters_strict_v0",
+      "severity": "info",
+      "missing_fields": [
+        "source_url"
+      ],
+      "reason": "Repository-local record uses source_ref and prompt_text_path as the provenance anchor.",
+      "recommended_next_action": "No blocking action in T05. A later task may add a canonical repo-local URL convention if needed."
+    },
+    {
+      "prompt_id": "public_placeholder_ce_first_github",
+      "severity": "actionable",
+      "missing_fields": [
+        "prompt_sha256",
+        "prompt_text_path"
+      ],
+      "reason": "External GitHub source is eligible in provenance terms, but T05 does not mirror the specific prompt file locally.",
+      "recommended_next_action": "If a later task mirrors an MIT-licensed file, record the raw_prompts path, SHA256, byte size, and token estimate. Until then keep this record metadata-only."
+    },
+    {
+      "prompt_id": "public_placeholder_contributor_prompt",
+      "severity": "actionable",
+      "missing_fields": [
+        "prompt_sha256",
+        "prompt_text_path"
+      ],
+      "reason": "Contributor Network provenance remains host-level and structure-only, so no prompt text or hash can be stored yet.",
+      "recommended_next_action": "Find a stable first-party prompt page and attribution terms before any mirroring; otherwise keep structure-only or exclude."
+    }
+  ]
+}

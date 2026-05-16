@@ -91,4 +91,11 @@ Go。
 - 外部 GitHub 来源已核验 URL、作者和 MIT license，但尚未镜像 prompt 原文。
 - Contributor Network 来源仅有 host-level provenance，仍保留为 structure-only。
 
-下一步唯一任务是 `T05_normalize_prompt_corpus_v1`：把 direct-recompute 候选规范化为 `corpus_v1`，生成 duplicate/missing metadata report，并拆清 `eligible` 与 `text_ready` 计数。
+`T05_normalize_prompt_corpus_v1` 已通过 reviewer `PASS`：
+
+- `corpus_v1.jsonl` 已规范化 11 条记录。
+- 其中 9 条 text-ready、10 条 eligible、1 条 metadata-only、1 条 structure-only。
+- duplicate report 显示当前无重复；missing metadata report 记录了本地记录的 policy-exempt source_url 缺失和两个外部占位项的 actionable 缺口。
+- GitHub MIT source 在 T05 未镜像，仍为 metadata-only；Contributor Network 仍为 structure-only。
+
+下一步唯一任务是 `T06_corpus_audit_public_private_boundary`：基于 `corpus_v1` 写清 corpus audit 和 public/private asset boundary，确保 T07 taxonomy 与 T10 screening 不误用 metadata-only 或 structure-only 记录。

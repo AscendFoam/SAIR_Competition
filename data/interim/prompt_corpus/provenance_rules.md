@@ -25,6 +25,14 @@
 - `structure_only`: 只允许做结构编码、taxonomy、归因或 related-work 对照，不进入直接重算。
 - `exclude`: 当前不进入重算、结构分析或公开语料主体。
 
+## Corpus v1 Status Semantics
+
+- `eligible_for_recompute`: 表示 provenance、许可和使用边界允许后续重算；它不等于“本地文本已就绪”。
+- `text_ready`: 表示当前已经有本地 `prompt_text_path`、`prompt_sha256` 和 `prompt_bytes`，可直接进入本地重算或后续 taxonomy 标注。
+- `mirrored_external`: 只统计那些已经在 `data/external/prompt_corpus/raw_prompts/` 下完成本地镜像，并保留来源 URL、license note、归因、hash 和 byte size 的 external prompt。
+- `included_text_ready`、`included_metadata_only`、`included_structure_only`、`excluded`: 是 `corpus_v1.jsonl` 与 manifest 使用的规范化 inclusion labels，用来区分“进入语料登记”与“是否可直接跑”。
+- T05 默认不因为上游 source 已核验就自动镜像 external prompt 原文；若未镜像，记录可以 `eligible_for_recompute: true`，但仍应保持 `text_ready: false`。
+
 ## Metadata-Only Conditions
 
 满足任一条件时应使用 `metadata_only`：
@@ -70,4 +78,4 @@
 
 - 当前采用 `.gitignore` 窄 allowlist，允许跟踪 `data/external/prompt_corpus/*.md`、`*.jsonl` 与 `data/interim/prompt_corpus/*.md`、`*.json`、`*.jsonl`。
 - 该 allowlist 只覆盖 prompt corpus governance files，不放开 `data/raw/`、一般 `data/interim/` 产物或未来可能出现的 `raw_prompts/`。
-- 如果后续新增外部原文镜像目录，应继续默认忽略，除非另开任务并明确许可边界。
+- 如果后续新增外部原文镜像目录，应继续默认忽略，除非另开任务并明确许可边界与镜像文件范围。

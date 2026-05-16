@@ -1,22 +1,22 @@
 # Task Board
 
-日期：2026-05-12
+日期：2026-05-14
 
 ## Current Unique Task
 
-`T05_normalize_prompt_corpus_v1`: 将 direct-recompute 候选规范化为 corpus v1，并生成 duplicate / missing metadata report。
+`T06_corpus_audit_public_private_boundary`: 基于 `corpus_v1` 写清 corpus audit 和 public/private asset boundary，确认哪些记录可公开、可复算、仅结构级记录或暂不进入评测。
 
 任务包：
 
-- `docs/tasks/phase_1_public_corpus/T05_normalize_prompt_corpus_v1.md`
+- `docs/tasks/phase_1_public_corpus/T06_corpus_audit_public_private_boundary.md`
 
 状态：Ready for worker，尚未执行。
 
 为什么现在做它：
 
-- `T04` 已通过 review，外部 provenance v0 和 git tracking strategy 已落地。
-- normalized corpus 仍为空，manifest 仍是 `candidate_register_v0_provenance_checked_not_normalized`。
-- 进入评测或 taxonomy 前，必须先把候选登记转成可审计的 `corpus_v1.jsonl`，并拆清 eligible 与 text-ready 语义。
+- `T05` 已通过 normal review，`corpus_v1.jsonl`、duplicate report 和 missing metadata report 均已落地。
+- 当前还需要把 corpus audit 和公开边界整理成可交给 taxonomy / screening worker 使用的治理说明。
+- 在进入 T07 taxonomy 前，必须明确 `text-ready`、`metadata-only`、`structure-only`、外部 MIT source 未镜像、Contributor Network host-level provenance 等边界。
 
 ## Milestone 0: Research Repositioning and Repository Setup
 
@@ -63,8 +63,16 @@ T04 review result:
 ## Milestone 1: Public Corpus and Provenance Cleaning
 
 - [x] `T04`: Collect official, local, GitHub, paper and contributor prompt candidates into raw index。
-- [ ] `T05`: Normalize corpus schema, hash prompt files, and generate duplicate/missing metadata report。
+- [x] `T05`: Normalize corpus schema, hash prompt files, and generate duplicate/missing metadata report。
 - [ ] `T06`: Write corpus audit summary and public/private asset boundary note。
+
+T05 review result:
+
+- Verdict: `PASS`
+- Review file: `docs/review/T05_normalize_prompt_corpus_v1_review.md`
+- Corpus v1 summary: 11 records; 9 text-ready; 10 eligible; 1 metadata-only; 1 structure-only; 0 mirrored external; 0 duplicates.
+- Captain action: accepted; `T05` marked complete.
+- Non-blocking followups: treat `corpus_v1.jsonl` as authoritative over `candidate_register_v0.jsonl`; token estimates deferred to T07; GitHub MIT source mirror decision and Contributor Network stable URL deferred to T06 or later dedicated provenance task; missing metadata report grouping is cosmetic and not required now.
 
 Exit criteria:
 

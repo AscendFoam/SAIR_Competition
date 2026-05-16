@@ -6,7 +6,10 @@
       "Bash(grep -n \"D:/Codes\\\\|D:\\\\\\\\\\\\\\\\Codes\\\\|D:\\\\\\\\\\\\\\\\Codes\" reports/paper/outline.md)",
       "Bash(echo \"Exit code: $?\")",
       "Bash(grep -n \"storage_policy\\\\|storage policy\\\\|storage-policy\" data/external/prompt_corpus/raw_index.example.jsonl data/interim/prompt_corpus/provenance_rules.md data/interim/prompt_corpus/candidate_register_v0.jsonl)",
-      "Bash(grep -rn \"storage_policy\\\\|storage policy\\\\|storage-policy\" configs/research/)"
+      "Bash(grep -rn \"storage_policy\\\\|storage policy\\\\|storage-policy\" configs/research/)",
+      "Bash(python -m json.tool data/interim/prompt_corpus/prompt_corpus_manifest.json)",
+      "Bash(python -m json.tool data/interim/prompt_corpus/duplicate_report_v1.json)",
+      "Bash(python -m json.tool data/interim/prompt_corpus/missing_metadata_report_v1.json)"
     ]
   }
 }

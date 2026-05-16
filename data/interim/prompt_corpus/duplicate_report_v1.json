@@ -1,0 +1,28 @@
+{
+  "report_version": "DUPLICATE_REPORT_V1",
+  "generated_on": "2026-05-13",
+  "scope": "corpus_v1",
+  "record_count": 11,
+  "duplicate_by_sha256": {
+    "count": 0,
+    "groups": []
+  },
+  "duplicate_by_normalized_source_url": {
+    "count": 0,
+    "normalization_rule": "trim + lowercase; empty URLs excluded",
+    "groups": []
+  },
+  "duplicate_by_candidate_id": {
+    "count": 0,
+    "groups": []
+  },
+  "duplicate_by_prompt_id": {
+    "count": 0,
+    "groups": []
+  },
+  "action_notes": [
+    "No duplicate SHA256 values were found among the 9 text-ready records in corpus_v1.",
+    "No duplicate non-empty source URLs were found after trim-and-lowercase normalization.",
+    "prompt_id currently matches candidate_id for all 11 records; rerun this report if future mirroring splits one candidate into multiple prompt files."
+  ]
+}

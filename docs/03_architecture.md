@@ -206,3 +206,19 @@ T04 review 没有 blocking issue。corpus governance files 现在通过 `.gitign
 - GitHub external source 已验证 MIT license，但原文未镜像；T05 需要决定是否导入具体 prompt 文件或继续 metadata-only。
 - Contributor Network source 仍是 LinkedIn host-level provenance，T05/T06 应寻找更稳定的一手 URL，否则保持 structure-only。
 - `raw_index.example.jsonl` 仍是旧 schema 示例，T05 可统一 example schema。
+
+## 11. T05 Corpus v1 Status
+
+T05 review 没有 blocking issue。corpus layer 现在有规范化 snapshot：
+
+- `data/interim/prompt_corpus/corpus_v1.jsonl`
+- `data/interim/prompt_corpus/duplicate_report_v1.json`
+- `data/interim/prompt_corpus/missing_metadata_report_v1.json`
+
+当前架构约束：
+
+- `corpus_v1.jsonl` 是后续 taxonomy / screening 的 authoritative corpus snapshot；`candidate_register_v0.jsonl` 保留为 provenance input，不要求 schema 与 corpus v1 完全一致。
+- 只有 `corpus_inclusion_status=included_text_ready` 且有 hash/path 的记录可进入本地直接复算。
+- `included_metadata_only` 可用于 provenance、audit 和可能的未来 import 决策，但不能直接进入 eval。
+- `included_structure_only` 只能用于结构级讨论或风险记录，不能进入 eval。
+- T06 需要把上述边界写成 public/private asset boundary note，避免 release manifest 或后续 worker 误读。
