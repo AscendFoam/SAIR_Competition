@@ -33,6 +33,14 @@
 - `included_text_ready`、`included_metadata_only`、`included_structure_only`、`excluded`: 是 `corpus_v1.jsonl` 与 manifest 使用的规范化 inclusion labels，用来区分“进入语料登记”与“是否可直接跑”。
 - T05 默认不因为上游 source 已核验就自动镜像 external prompt 原文；若未镜像，记录可以 `eligible_for_recompute: true`，但仍应保持 `text_ready: false`。
 
+## Downstream Use Gates
+
+- `data/interim/prompt_corpus/corpus_v1.jsonl` 是当前 authoritative corpus snapshot；`candidate_register_v0.jsonl` 仍只是 provenance input。
+- 只有 `included_text_ready` 且具备非空 `prompt_text_path` 与 `prompt_sha256` 的记录，才可进入 direct recompute。
+- `included_metadata_only` 记录可用于 provenance、audit 或未来 import 决策，但当前不得进入 taxonomy full-text coding 或 eval。
+- `included_structure_only` 记录只可用于结构级说明、风险记录或 limitation note，不得进入 taxonomy full-text coding 或 eval。
+- 具体 public/private release 边界以 `reports/research/corpus_audit/public_private_boundary.md` 为准。
+
 ## Metadata-Only Conditions
 
 满足任一条件时应使用 `metadata_only`：

@@ -98,4 +98,15 @@ Go。
 - duplicate report 显示当前无重复；missing metadata report 记录了本地记录的 policy-exempt source_url 缺失和两个外部占位项的 actionable 缺口。
 - GitHub MIT source 在 T05 未镜像，仍为 metadata-only；Contributor Network 仍为 structure-only。
 
-下一步唯一任务是 `T06_corpus_audit_public_private_boundary`：基于 `corpus_v1` 写清 corpus audit 和 public/private asset boundary，确保 T07 taxonomy 与 T10 screening 不误用 metadata-only 或 structure-only 记录。
+`T06_corpus_audit_public_private_boundary` 已通过 reviewer `PASS`：
+
+- `public_private_boundary.md` 已明确 9 条 text-ready、1 条 GitHub metadata-only、1 条 Contributor Network structure-only 的使用边界。
+- `corpus_v1.jsonl` 已被正式声明为下游 authoritative snapshot。
+- T07/T10 的 direct recompute gate 已写清：只有 text-ready + local path + SHA256 记录可进入 full-text coding 或直接复算。
+
+Milestone 1 已完成一次里程碑审查，结论为 `Conditional`：
+
+- Public corpus 与 provenance cleaning 的目标已完成并有 review 支撑。
+- 但 clean-environment reproducibility 仍是部分成立，因为外部镜像导入刻意未做，taxonomy/eval 产物仍未生成。
+
+下一步唯一任务是 `T07_manual_taxonomy_coding_v1`：对 9 条 text-ready records 做人工 taxonomy 编码，补足 `prompt_tokens_est` 和 plan-to-schema mapping，为 T08 extractor skeleton 与 T10 screening 准备结构化输入。

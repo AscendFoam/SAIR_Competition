@@ -1,22 +1,22 @@
 # Task Board
 
-日期：2026-05-14
+日期：2026-05-17
 
 ## Current Unique Task
 
-`T06_corpus_audit_public_private_boundary`: 基于 `corpus_v1` 写清 corpus audit 和 public/private asset boundary，确认哪些记录可公开、可复算、仅结构级记录或暂不进入评测。
+`T07_manual_taxonomy_coding_v1`: 对第一批 text-ready prompt 做人工 taxonomy 编码，补足 token estimate 和 plan-to-schema mapping，为 extractor skeleton 与 screening shortlist 准备结构化输入。
 
 任务包：
 
-- `docs/tasks/phase_1_public_corpus/T06_corpus_audit_public_private_boundary.md`
+- `docs/tasks/phase_2_prompt_taxonomy/T07_manual_taxonomy_coding_v1.md`
 
 状态：Ready for worker，尚未执行。
 
 为什么现在做它：
 
-- `T05` 已通过 normal review，`corpus_v1.jsonl`、duplicate report 和 missing metadata report 均已落地。
-- 当前还需要把 corpus audit 和公开边界整理成可交给 taxonomy / screening worker 使用的治理说明。
-- 在进入 T07 taxonomy 前，必须明确 `text-ready`、`metadata-only`、`structure-only`、外部 MIT source 未镜像、Contributor Network host-level provenance 等边界。
+- `T06` 已通过 normal review，Milestone 1 的 corpus audit 与 public/private boundary 已落地。
+- 当前已有 9 条 text-ready record 可作为 taxonomy 主编码池，但 `prompt_features_v1.jsonl` 仍不存在，`prompt_tokens_est` 也仍为 `0`。
+- 在进入 T08 extractor skeleton 和 T10 screening matrix 之前，必须先把手工 taxonomy、字段 mapping 和长度分桶口径固定下来。
 
 ## Milestone 0: Research Repositioning and Repository Setup
 
@@ -64,7 +64,7 @@ T04 review result:
 
 - [x] `T04`: Collect official, local, GitHub, paper and contributor prompt candidates into raw index。
 - [x] `T05`: Normalize corpus schema, hash prompt files, and generate duplicate/missing metadata report。
-- [ ] `T06`: Write corpus audit summary and public/private asset boundary note。
+- [x] `T06`: Write corpus audit summary and public/private asset boundary note。
 
 T05 review result:
 
@@ -74,11 +74,25 @@ T05 review result:
 - Captain action: accepted; `T05` marked complete.
 - Non-blocking followups: treat `corpus_v1.jsonl` as authoritative over `candidate_register_v0.jsonl`; token estimates deferred to T07; GitHub MIT source mirror decision and Contributor Network stable URL deferred to T06 or later dedicated provenance task; missing metadata report grouping is cosmetic and not required now.
 
+T06 review result:
+
+- Verdict: `PASS`
+- Review file: `docs/review/T06_corpus_audit_public_private_boundary_review.md`
+- Boundary summary: 9 text-ready local records; 1 GitHub metadata-only record; 1 Contributor Network structure-only record; direct-recompute gate explicitly limited to the 9 text-ready records.
+- Captain action: accepted; `T06` marked complete.
+- Non-blocking followups: handoff wording should keep `eval-ready now = 9` distinct from manifest `eligible_count = 10`; manifest `records_present` includes a report path; `prompt_tokens_est` and external mirror/provenance issues continue into T07+.
+
 Exit criteria:
 
 - 至少 `8-12` 个 prompt 候选进入可分析 corpus。
 - 每个候选有 source type、source ref、hash 或结构级编码原因。
 - 不可公开或不可合法存储的 prompt 只做结构级记录。
+
+Milestone 1 review status:
+
+- Milestone review file: `docs/review/M1_review.md`
+- Gate: `Conditional`
+- Reason: corpus/provenance cleaning goals are complete and review-backed, but clean-environment reproducibility is only partial because external mirror/import is intentionally unresolved and taxonomy/eval inputs are not yet generated.
 
 ## Milestone 2: Prompt Taxonomy v1
 

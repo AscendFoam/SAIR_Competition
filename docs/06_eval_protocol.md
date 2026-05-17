@@ -251,3 +251,16 @@ T10 前约束：
 - 若要使用 GitHub MIT prompt 原文，必须先通过独立任务镜像文件、记录 path/hash/byte size/license/attribution，并更新 manifest。
 - Contributor Network record 在稳定 prompt-level provenance 和 storage terms 确认前不得进入 eval。
 - `prompt_tokens_est=0` 不可用于长度分桶或 token-based analysis；T07 前需要补估算或明确改用 byte size。
+
+## 13. Milestone 1 Gate After T06
+
+Milestone 1 已做 milestone review，结论为 `Conditional`：
+
+- corpus/provenance cleaning 已完成并可进入 Milestone 2；
+- 但不能把当前状态误写成“可从干净环境完全重建所有 public corpus assets”。
+
+对 T07/T10 的直接影响：
+
+- T07 必须先产出可复核的 manual taxonomy 和 `prompt_tokens_est`/length-bucket 口径，T10 才能安全引用长度特征。
+- T10 screening 候选池仍仅限于 9 条 text-ready local records，除非未来 reviewed import task 改变 GitHub metadata-only record 的状态。
+- Milestone 2 的任何报告都不能把 metadata-only / structure-only 记录包装成已参与 full-text coding 或 eval。

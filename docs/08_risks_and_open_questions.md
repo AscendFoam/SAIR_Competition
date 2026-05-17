@@ -1,6 +1,6 @@
 # Risks and Open Questions
 
-日期：2026-05-14
+日期：2026-05-17
 
 ## Active Risks
 
@@ -184,7 +184,7 @@ Status:
 Status:
 
 - T05 已拆分 `eligible_count=10`、`text_ready_count=9`、`mirrored_external_count=0`，风险降级为 monitor。
-- T06 仍需把该边界写入 public/private asset boundary，防止下游 worker 误用 metadata-only 记录。
+- T06 已把该边界写入 public/private asset boundary，风险降级为 monitor。
 
 ### R15: 外部 provenance anchor 不稳定
 
@@ -198,6 +198,11 @@ Status:
 - T05/T06 尝试寻找稳定 first-party URL。
 - 未找到前保持 structure-only，不进入 direct recompute。
 
+Status:
+
+- T06 未解除该风险；Contributor Network 仍只有 host-level provenance。
+- 继续 deferred 到后续 provenance/import 任务或论文 limitation。
+
 ### R16: `corpus_v1` 与 `candidate_register_v0` schema drift
 
 信号：
@@ -210,6 +215,11 @@ Status:
 - T06 boundary note 必须声明 `corpus_v1.jsonl` 是 authoritative corpus snapshot。
 - T07/T10 任务包必须把 `corpus_v1.jsonl` 列为输入，而不是直接从 candidate register 决定 eval eligibility。
 
+Status:
+
+- T06 已把 `corpus_v1.jsonl` 写成 authoritative snapshot。
+- T07/T10 仍需在任务包和 review 中持续执行业务约束，风险降级为 monitor。
+
 ### R17: Missing metadata report verbosity hides actionable external gaps
 
 信号：
@@ -220,6 +230,22 @@ Status:
 
 - T06 corpus audit narrative 中聚合本地 source_url policy-exempt 缺失。
 - 单独列出 GitHub metadata-only 和 Contributor Network structure-only 两个 actionable external gaps。
+
+Status:
+
+- T06 已完成 narrative 聚合和 actionable gap 拆分，风险降级为 monitor。
+
+### R18: Milestone 1 clean-environment reproducibility 被高估
+
+信号：
+
+- 文档把当前 Phase 1 状态写成“可从干净环境完整重建 public corpus”。
+- 忽略 GitHub metadata-only 未镜像、Contributor Network 未解析 prompt-level URL 的事实。
+
+应对：
+
+- Milestone 1 review 明确保持 `Conditional`，而不是 `Allow`。
+- T07/T10/T21 继续把当前状态描述为“review-backed local research snapshot”，不是外部 source 全量可重建包。
 
 ## Open Questions
 
@@ -241,6 +267,7 @@ Status:
 16. GitHub MIT source 是否在 T05 镜像具体 prompt 文件，还是只记录 reproducible URL 到 T06？T05 未镜像，保持 metadata-only；未来若需要 external text-ready coverage，单开任务。
 17. `raw_index.example.jsonl` 是否应完全改成 T04 schema，还是保留旧 corpus schema 示例？T05 已改成 T04 schema。
 18. T06 是否能找到 Contributor Network 的稳定 prompt-level URL，若找不到是否维持 structure-only 到 paper limitation？
+19. T07 对 `prompt_tokens_est` 采用什么 reviewable 估算口径，才能既支持 length bucket 又不伪称 tokenizer 精度？
 
 ## Deferred Items
 
@@ -253,3 +280,4 @@ Status:
 - T03 review 非阻塞事项：prompt corpus data files git tracking、`prompt_tokens_est`、external placeholder provenance、`configs/research` typo cleanup。
 - T04 review 非阻塞事项：eligible vs text-ready count split、LinkedIn provenance fragility、more external candidates、raw index example schema alignment。
 - T05 review 非阻塞事项：candidate register/corpus v1 schema drift、missing metadata report verbosity、`prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL。
+- T06 review 非阻塞事项：handoff `eval-ready now` vs manifest `eligible_count` wording distinction、manifest `records_present` includes report path、`prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL。

@@ -222,3 +222,17 @@ T05 review 没有 blocking issue。corpus layer 现在有规范化 snapshot：
 - `included_metadata_only` 可用于 provenance、audit 和可能的未来 import 决策，但不能直接进入 eval。
 - `included_structure_only` 只能用于结构级讨论或风险记录，不能进入 eval。
 - T06 需要把上述边界写成 public/private asset boundary note，避免 release manifest 或后续 worker 误读。
+
+## 12. T06 Boundary Status
+
+T06 review 没有 blocking issue。corpus governance layer 现在新增：
+
+- `reports/research/corpus_audit/public_private_boundary.md`
+
+当前架构约束：
+
+- `corpus_v1.jsonl` 继续是 authoritative corpus snapshot，`public_private_boundary.md` 是 authoritative downstream use note。
+- T07 taxonomy 只能对 9 条 `included_text_ready` local records 做 full-text coding。
+- GitHub metadata-only record 当前只可作为 provenance note，不能变成 taxonomy row 或 screening row。
+- Contributor Network structure-only record 当前只可作为 limitation/boundary note，不能变成 taxonomy row 或 screening row。
+- Milestone 1 可以关闭，但 clean-environment reproducibility 仍依赖本地已有 prompt files 和 review-backed governance files，而不是外部 source 的即时重建。

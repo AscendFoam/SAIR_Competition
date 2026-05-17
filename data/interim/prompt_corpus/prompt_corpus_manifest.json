@@ -1,6 +1,6 @@
 {
   "manifest_version": "CORPUS_MANIFEST_V1",
-  "generated_on": "2026-05-13",
+  "generated_on": "2026-05-16",
   "status": "corpus_v1_normalized_not_taxonomy_coded",
   "candidate_count": 11,
   "corpus_v1_record_count": 11,
@@ -64,7 +64,8 @@
     "data/interim/prompt_corpus/corpus_v1.jsonl",
     "data/interim/prompt_corpus/duplicate_report_v1.json",
     "data/interim/prompt_corpus/missing_metadata_report_v1.json",
-    "data/interim/prompt_corpus/provenance_rules.md"
+    "data/interim/prompt_corpus/provenance_rules.md",
+    "reports/research/corpus_audit/public_private_boundary.md"
   ],
   "source_counts": {
     "official": 0,
@@ -83,6 +84,14 @@
   },
   "duplicate_report_path": "data/interim/prompt_corpus/duplicate_report_v1.json",
   "missing_metadata_report_path": "data/interim/prompt_corpus/missing_metadata_report_v1.json",
+  "boundary_note_path": "reports/research/corpus_audit/public_private_boundary.md",
+  "downstream_use_policy": {
+    "authoritative_snapshot": "data/interim/prompt_corpus/corpus_v1.jsonl",
+    "taxonomy_primary_input": "included_text_ready records only",
+    "screening_primary_input": "included_text_ready records with local path and SHA256 only",
+    "metadata_only_eval_allowed": false,
+    "structure_only_eval_allowed": false
+  },
   "storage_policy_summary": {
     "store_full_text_when_allowed": true,
     "hash_only_when_text_storage_not_allowed": true,
@@ -97,7 +106,7 @@
     "post_release_use_allowed"
   ],
   "planned_next_steps": [
-    "Use T06 to restate the corpus audit and public/private asset boundary against corpus_v1.",
+    "Use T06 boundary note to keep taxonomy and screening aligned to corpus_v1 rather than candidate_register_v0.",
     "Keep the verified GitHub source metadata-only until an explicit file-level mirror/import task records raw_prompts path, SHA256, and byte size.",
     "Keep the contributor-network placeholder structure-only until a stable first-party prompt URL and attribution terms are verified.",
     "Backfill prompt token estimates before taxonomy analysis depends on token-based length buckets."
@@ -106,6 +115,7 @@
     "corpus_v1 now normalizes all 11 candidate register records, but only 9 are text-ready for direct local recompute.",
     "eligible_count separates provenance-eligible records from text_ready_count; the GitHub placeholder is eligible but not mirrored locally.",
     "No external prompt text was mirrored in T05.",
-    "Released final evaluation subsets remain analysis assets, not prompt-selection assets."
+    "Released final evaluation subsets remain analysis assets, not prompt-selection assets.",
+    "Public/private asset boundary is documented separately and does not grant automatic public full-text release for local prompt files."
   ]
 }

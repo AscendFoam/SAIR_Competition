@@ -129,3 +129,21 @@ T05 review 非阻塞事项处理：
 - `prompt_tokens_est` 全为 0：deferred 到 T07 前，避免长度分桶误读。
 - GitHub MIT source 未镜像：accepted；如需要 external text-ready coverage，后续单开 provenance/import 任务。
 - Contributor Network 稳定 prompt-level URL 仍缺：deferred 到 T06 风险说明。
+
+T06 review 判断：
+
+- `docs/review/T06_corpus_audit_public_private_boundary_review.md` verdict 为 `PASS`。
+- public/private asset boundary 已把 9 条 text-ready local records、1 条 metadata-only GitHub record、1 条 structure-only Contributor Network record 的下游使用规则写清。
+- `corpus_v1.jsonl` 已被明确为 T07/T10 的 authoritative snapshot，metadata-only / structure-only 记录不会误入 eval。
+
+Milestone 1 review 判断：
+
+- `docs/review/M1_review.md` gate 为 `Conditional`。
+- 当前 Milestone 1 功能目标已完成：candidate register、provenance cleaning、corpus v1、duplicate report、missing metadata report、boundary note 均已落地并通过 task review。
+- `validate-layout`、manifest JSON 和 `corpus_v1.jsonl` 解析在当前仓库可通过，但 clean-environment reproducibility 仍是部分成立，因为外部 mirror/import 故意未做、taxonomy/eval 产物尚不存在。
+
+进入 Milestone 2 的前置条件已满足，但必须保留三个现实约束：
+
+- T07 只能对 9 条 text-ready local records 做 full-text coding。
+- `prompt_tokens_est` 仍需在 T07 中补足或给出 reviewable 估算规则。
+- GitHub MIT source mirror decision 与 Contributor Network stable URL 仍是 deferred provenance work，不应偷渡进 taxonomy 或 screening。

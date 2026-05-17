@@ -1,6 +1,6 @@
 # Handoff
 
-日期：2026-05-14
+日期：2026-05-17
 
 ## 1. 当前项目状态
 
@@ -24,16 +24,16 @@
 
 ## 2. Current Unique Task
 
-`T06_corpus_audit_public_private_boundary`
+`T07_manual_taxonomy_coding_v1`
 
 任务包：
 
-- `docs/tasks/phase_1_public_corpus/T06_corpus_audit_public_private_boundary.md`
+- `docs/tasks/phase_2_prompt_taxonomy/T07_manual_taxonomy_coding_v1.md`
 
 状态：
 
 - Ready for worker，尚未执行。
-- T01、T02、T03、T04、T05 已通过 review 并由 Captain 标记完成。
+- T01、T02、T03、T04、T05、T06 已通过 review 并由 Captain 标记完成。
 
 T01 review 判断：
 
@@ -74,6 +74,21 @@ T05 review 判断：
 - Corpus v1: 11 records; 9 text-ready; 10 eligible; 1 metadata-only; 1 structure-only; 0 mirrored external; 0 duplicates.
 - Non-blocking followups: `corpus_v1.jsonl` 作为 authoritative corpus snapshot；token estimate deferred to T07；GitHub MIT mirror decision and Contributor Network stable URL deferred to T06 or later provenance task；missing metadata grouping cosmetic and not required now。
 
+T06 review 判断：
+
+- Verdict: `PASS`
+- Review file: `docs/review/T06_corpus_audit_public_private_boundary_review.md`
+- Captain action: accepted; `docs/04_task_board.md` 已勾选 T06。
+- Boundary note summary: 9 text-ready local records; 1 GitHub metadata-only record; 1 Contributor Network structure-only record; 0 excluded; direct-recompute gate explicitly limited to the 9 text-ready records.
+- Non-blocking followups: handoff wording should keep `eval-ready now = 9` distinct from manifest `eligible_count = 10`; manifest `records_present` includes one report path; `prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL 继续 deferred。
+
+Milestone 1 review 判断：
+
+- Verdict: `Conditional`
+- Review file: `docs/review/M1_review.md`
+- Captain action: accepted as milestone gate; Milestone 1 closes and Milestone 2 may start。
+- Gate condition: T07/T10 must continue to use `corpus_v1.jsonl` plus T06 boundary gates as the only eligibility source; metadata-only / structure-only records stay out of full-text coding and eval until a later reviewed task changes status。
+
 ## 3. 下一位 Worker 需要先读
 
 ```text
@@ -85,23 +100,23 @@ docs/04_task_board.md
 docs/06_eval_protocol.md
 docs/07_handoff.md
 docs/08_risks_and_open_questions.md
-docs/tasks/phase_1_public_corpus/T06_corpus_audit_public_private_boundary.md
-docs/review/T05_normalize_prompt_corpus_v1_review.md
+docs/tasks/phase_2_prompt_taxonomy/T07_manual_taxonomy_coding_v1.md
+docs/review/T06_corpus_audit_public_private_boundary_review.md
 data/interim/prompt_corpus/corpus_v1.jsonl
-data/interim/prompt_corpus/duplicate_report_v1.json
-data/interim/prompt_corpus/missing_metadata_report_v1.json
 data/interim/prompt_corpus/prompt_corpus_manifest.json
 reports/research/corpus_audit/summary.md
+reports/research/corpus_audit/public_private_boundary.md
+configs/research/prompt_feature_taxonomy.yaml
 ```
 
 ## 4. Worker 执行边界
 
-下一位 worker 只执行 T06：
+下一位 worker 只执行 T07：
 
-- 基于 T05 `corpus_v1`、duplicate report、missing metadata report 和 manifest，重写或补强 corpus audit summary。
-- 新增 public/private asset boundary note，清楚区分 public reproducible、local historical、metadata-only、structure-only、excluded/not-for-release。
-- 明确 T07/T10 的使用规则：只有 text-ready + hash 覆盖记录可进入本地直接复算；metadata-only / structure-only 不进入 eval。
-- 记录 GitHub MIT source 未镜像、Contributor Network 仅 host-level provenance、token estimates 仍为 0 的后续处理建议。
+- 基于 `corpus_v1.jsonl` 和 T06 boundary gate，对 9 条 text-ready local prompts 做人工 taxonomy coding。
+- 生成第一版 `prompt_features_v1.jsonl`、taxonomy report 和 experiment-plan 到 taxonomy seed 的 mapping note。
+- 为 9 条 text-ready records 回填 reviewable 的 `prompt_tokens_est` 与 length bucket，供后续 T08/T10 使用。
+- 保持 GitHub metadata-only 和 Contributor Network structure-only 记录不进入 full-text coding。
 
 不要做：
 
@@ -114,11 +129,22 @@ reports/research/corpus_audit/summary.md
 
 允许修改文件：
 
-- `reports/research/corpus_audit/summary.md`
-- `reports/research/corpus_audit/public_private_boundary.md`
-- `data/interim/prompt_corpus/prompt_corpus_manifest.json`
-- `data/interim/prompt_corpus/provenance_rules.md`
+- `data/interim/prompt_corpus/corpus_v1.jsonl`
+- `data/interim/prompt_corpus/prompt_features_v1.jsonl`
+- `configs/research/prompt_feature_taxonomy.yaml`
+- `reports/research/taxonomy/README.md`
+- `reports/research/taxonomy/taxonomy_v1.md`
+- `reports/research/taxonomy/taxonomy_mapping_note.md`
 - `docs/07_handoff.md`
+
+Current corpus boundary summary：
+
+- text-ready records: `9`
+- metadata-only records: `1`
+- structure-only records: `1`
+- eval-eligible now: `9` (`eligible_count = 10` in manifest still includes the metadata-only GitHub record as provenance-eligible, not eval-ready-now)
+- external prompt text mirrored: no
+- T07/T10 gating rule: only text-ready records with local path and SHA256 may enter direct recompute
 
 T05 corpus summary：
 
@@ -134,24 +160,24 @@ T05 corpus summary：
 
 ## 5. Reviewer 重点
 
-T06 reviewer 类型：normal。
+T07 reviewer 类型：normal。
 
 重点检查：
 
-- public/private asset boundary 是否准确反映 T05 corpus facts，而不是扩大结论。
-- 是否把 9 条 text-ready local records、1 条 GitHub metadata-only record、1 条 contributor-network structure-only record 的下游使用规则写清楚。
-- 是否明确 corpus v1 不是完整 public ecosystem coverage。
-- 是否没有复制外部 prompt 原文、没有跑 eval、没有改 prompt wording。
-- 是否为 T07 taxonomy 和 T10 screening 留下清晰的进入条件。
+- 是否只对 9 条 text-ready local records 做 full-text taxonomy coding。
+- `prompt_features_v1.jsonl` 是否与 taxonomy seed 和 mapping note 一致，且没有把 extractor 或 eval 写成已完成。
+- `prompt_tokens_est` 与 length bucket 口径是否诚实、可复核、不过度宣称。
+- 是否没有把 metadata-only / structure-only 记录提升为 full-text coded 或 eval-ready。
+- 是否为 T08 extractor skeleton 和 T10 screening 留下清晰、可解析的输入。
 
-## 6. 完成 T06 后 Captain 要做
+## 6. 完成 T07 后 Captain 要做
 
 如果 review 为 `PASS`：
 
-1. 在 `docs/04_task_board.md` 勾选 `T06`。
+1. 在 `docs/04_task_board.md` 勾选 `T07`。
 2. 更新本文件的当前状态。
-3. 可以推荐进入 `T07`，但不直接执行。
-4. 若 boundary note 混淆 public/private、把 metadata-only 或 structure-only 记录放入 eval，或把 corpus 写成完整生态覆盖，则阻止进入 T07。
+3. 可以推荐进入 `T08`，但不直接执行。
+4. 若 taxonomy coding 越过 T06 boundary gate、把 metadata-only 或 structure-only 记录做成 full-text features、或把 token estimate 写成未经支持的精确 claim，则阻止进入 T08。
 
 如果 `PASS_WITH_WARNINGS`：
 
@@ -167,9 +193,9 @@ T06 reviewer 类型：normal。
 
 ## 7. 当前未验证事项
 
-- T06 public/private asset boundary 尚未执行。
+- T07 manual taxonomy coding 尚未执行。
 - GitHub MIT external source 仍未镜像，本地 external text-ready record 仍为 `0`。
 - contributor-network 占位项仍只有 host-level official provenance，尚未解析到稳定的具体 prompt 页面。
 - `prompt_tokens_est` 在 `corpus_v1` 中仍全部为 `0`。
 - screening / recomputed benchmark / post-release analysis 仍未开始执行。
-- T07 taxonomy 任务包尚未详细展开。
+- T08/T10 仍依赖 T07 先给出稳定的 manual taxonomy 与 length-bucket 口径。

@@ -258,3 +258,44 @@ T06 的唯一目标是基于 T05 corpus v1 写清 public/private asset boundary 
 - T05 已完成 normalized corpus，但下游 worker 仍需要清晰判断哪些记录可公开、可复算、仅可结构级讨论。
 - GitHub MIT source 是否镜像需要文件级 path、hash、license 和 attribution 记录，适合作为后续独立 provenance/import 任务。
 - Contributor Network 当前仍只有 host-level provenance，不能因进入 T06 而提升为 text-ready。
+
+## D015: 接受 T06 review verdict 并进入 T07
+
+日期：2026-05-17
+
+决策：
+
+`docs/review/T06_corpus_audit_public_private_boundary_review.md` verdict 为 `PASS`，Captain 接受该结论，标记 `T06_corpus_audit_public_private_boundary` 完成，并将 Current Unique Task 切换到 `T07_manual_taxonomy_coding_v1`。
+
+理由：
+
+- Reviewer 未发现 blocking issue。
+- T06 已把 11 条 `corpus_v1` 记录明确分成 9 条 text-ready、1 条 metadata-only、1 条 structure-only。
+- Direct recompute gate、T07 taxonomy gate 和 T10 screening gate 均已写清。
+- 没有复制外部 prompt 原文，没有跑 eval，没有改 prompt wording，没有扩大 corpus coverage 叙事。
+
+非阻塞事项处理：
+
+- handoff 中 `eval-ready now = 9` 与 manifest `eligible_count = 10` 的术语差异：accepted；后续在 handoff 中显式区分“eval-ready-now”与“provenance-eligible”。
+- manifest `records_present` 包含一个 `reports/` 路径：accepted；若后续自动化工具对该字段做路径假设，再单开 cleanup 任务。
+- `prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL：deferred 到 T07+ 后续任务。
+
+## D016: Milestone 1 条件放行，进入 Milestone 2
+
+日期：2026-05-17
+
+决策：
+
+Milestone 1 `Public Corpus and Provenance Cleaning` 经里程碑审查后结论为 `Conditional`。允许关闭 Milestone 1 并进入 Milestone 2，但必须带着边界条件前进。
+
+理由：
+
+- 功能层面：candidate register、external provenance、corpus v1、duplicate/missing metadata reports、boundary note 都已存在并通过 task-level review。
+- 验证层面：当前仓库可通过 `validate-layout`，manifest JSON 与 `corpus_v1.jsonl` 均可解析。
+- 风险层面：外部 prompt mirror/import 仍刻意未做，因此“干净环境完全重建 corpus”并未被证明；taxonomy 和 eval 产物也尚未生成。
+
+条件：
+
+- T07/T10 只能以 `corpus_v1.jsonl` 和 T06 boundary note 作为 eligibility source。
+- metadata-only / structure-only records 不得进入 full-text coding 或 eval。
+- Milestone 2 需要先补 `prompt_tokens_est` 和 taxonomy mapping，再谈 extractor 或 screening。
