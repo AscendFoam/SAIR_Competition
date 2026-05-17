@@ -1,9 +1,11 @@
-schema_version: TAX_V1_SEED
-generated_on: 2026-05-11
-status: seed_scaffold
+schema_version: TAX_V1_MANUAL_CODING
+generated_on: 2026-05-17
+status: manual_coding_v1
 notes:
-  - This taxonomy is a planning scaffold for manual coding and later extractor design.
-  - It describes prompt structure, not problem-family labels.
+  - Updated from seed scaffold by T07 manual taxonomy coding.
+  - Added compression_style and ce_search_depth after stable coding on 9 text-ready samples.
+  - Added bucket_boundary_notes for length-feature thresholds.
+  - This taxonomy describes prompt structure, not problem-family labels.
   - Fields can be extended after reviewer approval and decision-log capture.
 
 length_features:
@@ -31,6 +33,28 @@ length_features:
       - medium
       - heavy
     description: How much of the prompt is occupied by reusable rule or cheatsheet content.
+  compression_style:
+    type: categorical
+    allowed_values:
+      - natural_language
+      - symbolic
+      - hybrid
+    description: Whether rules use prose, mathematical notation, or both.
+    added_in: T07
+
+bucket_boundary_notes:
+  prompt_bytes_bucket:
+    short: < 2000 bytes
+    medium: 2000-3499 bytes
+    long: 3500-7999 bytes
+    near_cap: ">= 8000 bytes (approaching typical 10KB context cap)"
+  prompt_tokens_est_bucket:
+    short: "< 500 tokens"
+    medium: 500-874 tokens
+    long: 875-1999 tokens
+    near_cap: ">= 2000 tokens"
+    estimation_method: "bytes / 4 heuristic; not a tokenizer count. Documented in taxonomy_v1.md."
+    caveat: "This is a rough estimate for bucketing only. Do not use for precise token-level analysis."
 
 structural_modules:
   system_goal_framing:
@@ -109,6 +133,14 @@ counterexample_strategy:
       - low
       - absent
     description: How strongly the prompt emphasizes filtering false statements.
+  ce_search_depth:
+    type: categorical
+    allowed_values:
+      - implicit
+      - shallow
+      - explicit_multi_step
+    description: How deeply the counterexample search is guided. Implicit means no explicit CE search instruction.
+    added_in: T07
 
 true_strategy:
   proof_like_true_support:

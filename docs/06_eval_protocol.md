@@ -264,3 +264,16 @@ Milestone 1 已做 milestone review，结论为 `Conditional`：
 - T07 必须先产出可复核的 manual taxonomy 和 `prompt_tokens_est`/length-bucket 口径，T10 才能安全引用长度特征。
 - T10 screening 候选池仍仅限于 9 条 text-ready local records，除非未来 reviewed import task 改变 GitHub metadata-only record 的状态。
 - Milestone 2 的任何报告都不能把 metadata-only / structure-only 记录包装成已参与 full-text coding 或 eval。
+
+## 14. Taxonomy Gate After T07
+
+T07 已通过 review，意味着：
+
+- `prompt_features_v1.jsonl` 可作为 T08 extractor skeleton 的人工基线；
+- T10 未来可以引用 taxonomy 字段，但仍不应先于 T08/T09 启动主线执行。
+
+当前约束：
+
+- T08 需要先把 extractor 输出与人工基线对齐，再谈更大范围自动化。
+- token estimate 目前仍是启发式，不是 tokenizer 精确计数；任何长度相关结论必须继续谨慎表述。
+- 低方差字段可以保留，但不能在 screening 或统计解释中被误当成高信息量特征。

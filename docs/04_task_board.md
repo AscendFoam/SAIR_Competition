@@ -4,19 +4,19 @@
 
 ## Current Unique Task
 
-`T07_manual_taxonomy_coding_v1`: 对第一批 text-ready prompt 做人工 taxonomy 编码，补足 token estimate 和 plan-to-schema mapping，为 extractor skeleton 与 screening shortlist 准备结构化输入。
+`T08_prompt_feature_extractor_skeleton`: 基于 T07 手工 taxonomy 与 YAML schema 实现最小 extractor skeleton 和 focused tests，并修正文档中的 token estimate 口径。
 
 任务包：
 
-- `docs/tasks/phase_2_prompt_taxonomy/T07_manual_taxonomy_coding_v1.md`
+- `docs/tasks/phase_2_prompt_taxonomy/T08_prompt_feature_extractor_skeleton.md`
 
 状态：Ready for worker，尚未执行。
 
 为什么现在做它：
 
-- `T06` 已通过 normal review，Milestone 1 的 corpus audit 与 public/private boundary 已落地。
-- 当前已有 9 条 text-ready record 可作为 taxonomy 主编码池，但 `prompt_features_v1.jsonl` 仍不存在，`prompt_tokens_est` 也仍为 `0`。
-- 在进入 T08 extractor skeleton 和 T10 screening matrix 之前，必须先把手工 taxonomy、字段 mapping 和长度分桶口径固定下来。
+- `T07` 已通过 normal review，`prompt_features_v1.jsonl`、taxonomy v1 报告和 mapping note 已落地。
+- 当前已经有 9 条 text-ready prompt 的手工编码基线，适合进入 extractor skeleton 阶段。
+- reviewer 已指出 token estimate 文档口径存在 floor vs round 不一致，宜在 T08 一并收口。
 
 ## Milestone 0: Research Repositioning and Repository Setup
 
@@ -96,9 +96,17 @@ Milestone 1 review status:
 
 ## Milestone 2: Prompt Taxonomy v1
 
-- [ ] `T07`: Manual taxonomy coding for representative prompts。
+- [x] `T07`: Manual taxonomy coding for representative prompts。
 - [ ] `T08`: Implement prompt feature extractor skeleton and tests。
 - [ ] `T09`: Taxonomy self-audit and conflict resolution report。
+
+T07 review result:
+
+- Verdict: `PASS`
+- Review file: `docs/review/T07_manual_taxonomy_coding_v1_review.md`
+- Deliverables: `prompt_features_v1.jsonl` with 9 records and 27 taxonomy fields; `corpus_v1.jsonl` token estimate backfill; taxonomy YAML v1 update; taxonomy report and mapping note.
+- Captain action: accepted; `T07` marked complete.
+- Non-blocking followups: harmonize token estimate formula wording in T08; keep low-variance fields from dominating extractor/statistical use; preserve P1.2.3 bucket-boundary sensitivity note.
 
 Exit criteria:
 

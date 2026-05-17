@@ -109,4 +109,10 @@ Milestone 1 已完成一次里程碑审查，结论为 `Conditional`：
 - Public corpus 与 provenance cleaning 的目标已完成并有 review 支撑。
 - 但 clean-environment reproducibility 仍是部分成立，因为外部镜像导入刻意未做，taxonomy/eval 产物仍未生成。
 
-下一步唯一任务是 `T07_manual_taxonomy_coding_v1`：对 9 条 text-ready records 做人工 taxonomy 编码，补足 `prompt_tokens_est` 和 plan-to-schema mapping，为 T08 extractor skeleton 与 T10 screening 准备结构化输入。
+`T07_manual_taxonomy_coding_v1` 已通过 reviewer `PASS`：
+
+- 已对 9 条 text-ready local records 完成人工 taxonomy 编码。
+- 已生成 `prompt_features_v1.jsonl`，并回填 `corpus_v1.jsonl` 的 token estimate。
+- taxonomy YAML 已补入 `compression_style`、`ce_search_depth` 和 bucket boundary note。
+
+下一步唯一任务是 `T08_prompt_feature_extractor_skeleton`：基于 T07 的人工基线实现最小 extractor skeleton 与 focused tests，同时统一 token estimate 文档口径，为 T09 自审和 T10 screening 做准备。

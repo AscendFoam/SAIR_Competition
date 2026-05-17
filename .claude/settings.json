@@ -9,7 +9,8 @@
       "Bash(grep -rn \"storage_policy\\\\|storage policy\\\\|storage-policy\" configs/research/)",
       "Bash(python -m json.tool data/interim/prompt_corpus/prompt_corpus_manifest.json)",
       "Bash(python -m json.tool data/interim/prompt_corpus/duplicate_report_v1.json)",
-      "Bash(python -m json.tool data/interim/prompt_corpus/missing_metadata_report_v1.json)"
+      "Bash(python -m json.tool data/interim/prompt_corpus/missing_metadata_report_v1.json)",
+      "Bash(git status *)"
     ]
   }
 }

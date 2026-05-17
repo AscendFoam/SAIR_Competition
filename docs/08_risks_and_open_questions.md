@@ -247,6 +247,30 @@ Status:
 - Milestone 1 review 明确保持 `Conditional`，而不是 `Allow`。
 - T07/T10/T21 继续把当前状态描述为“review-backed local research snapshot”，不是外部 source 全量可重建包。
 
+### R19: token estimate 口径漂移
+
+信号：
+
+- taxonomy report 写 `floor(prompt_bytes / 4)`，而实际回填数据使用 `round(prompt_bytes / 4)`。
+- 下游 extractor、screening 或 paper draft 继承了不一致的口径。
+
+应对：
+
+- T08 统一 token estimate 文档与实现口径。
+- 在统一前，长度相关结论只允许写成 heuristic，不允许写成精确 tokenizer count。
+
+### R20: 低方差 taxonomy 字段被误当成高信息特征
+
+信号：
+
+- `ce_search_depth`、`finite_model_search_hint`、`examples_block`、`identity_or_invariant_guidance` 等字段在当前 9 条样本上几乎无方差。
+- T08/T10/T19 把这些字段直接当作重要建模信号。
+
+应对：
+
+- T08 extractor note 和 T09 self-audit 必须显式列出低方差字段。
+- 统计分析前先检查字段方差和可解释性，不让低方差字段主导结论。
+
 ## Open Questions
 
 1. 官方三模型 route 是否仍可复现，若不可复现，采用哪些近似 provider 和模型？
@@ -268,6 +292,7 @@ Status:
 17. `raw_index.example.jsonl` 是否应完全改成 T04 schema，还是保留旧 corpus schema 示例？T05 已改成 T04 schema。
 18. T06 是否能找到 Contributor Network 的稳定 prompt-level URL，若找不到是否维持 structure-only 到 paper limitation？
 19. T07 对 `prompt_tokens_est` 采用什么 reviewable 估算口径，才能既支持 length bucket 又不伪称 tokenizer 精度？
+20. T08 应统一使用 `round(bytes/4)` 还是改回 `floor(bytes/4)`，以及是否需要保留 bucket boundary note 解释历史差异？
 
 ## Deferred Items
 
@@ -281,3 +306,4 @@ Status:
 - T04 review 非阻塞事项：eligible vs text-ready count split、LinkedIn provenance fragility、more external candidates、raw index example schema alignment。
 - T05 review 非阻塞事项：candidate register/corpus v1 schema drift、missing metadata report verbosity、`prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL。
 - T06 review 非阻塞事项：handoff `eval-ready now` vs manifest `eligible_count` wording distinction、manifest `records_present` includes report path、`prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL。
+- T07 review 非阻塞事项：token estimate formula wording mismatch、low-variance taxonomy fields、P1.2.3 bucket boundary sensitivity。

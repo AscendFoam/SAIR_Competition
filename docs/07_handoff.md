@@ -24,16 +24,16 @@
 
 ## 2. Current Unique Task
 
-`T07_manual_taxonomy_coding_v1`
+`T08_prompt_feature_extractor_skeleton`
 
 任务包：
 
-- `docs/tasks/phase_2_prompt_taxonomy/T07_manual_taxonomy_coding_v1.md`
+- `docs/tasks/phase_2_prompt_taxonomy/T08_prompt_feature_extractor_skeleton.md`
 
 状态：
 
 - Ready for worker，尚未执行。
-- T01、T02、T03、T04、T05、T06 已通过 review 并由 Captain 标记完成。
+- T01、T02、T03、T04、T05、T06、T07 已通过 review 并由 Captain 标记完成。
 
 T01 review 判断：
 
@@ -82,6 +82,27 @@ T06 review 判断：
 - Boundary note summary: 9 text-ready local records; 1 GitHub metadata-only record; 1 Contributor Network structure-only record; 0 excluded; direct-recompute gate explicitly limited to the 9 text-ready records.
 - Non-blocking followups: handoff wording should keep `eval-ready now = 9` distinct from manifest `eligible_count = 10`; manifest `records_present` includes one report path; `prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL 继续 deferred。
 
+T07 worker 执行结果：
+
+- Task: `T07_manual_taxonomy_coding_v1`
+- 状态: worker 已执行，待 review。
+- Coding pool: 9 条 text-ready local records，排除了 1 条 metadata-only 和 1 条 structure-only。
+- Token estimate: 使用 bytes/4 启发式估算，非 tokenizer 精确计数。
+- Changed files: `data/interim/prompt_corpus/prompt_features_v1.jsonl` (new), `data/interim/prompt_corpus/corpus_v1.jsonl` (token estimate backfill), `configs/research/prompt_feature_taxonomy.yaml` (v1 update), `reports/research/taxonomy/taxonomy_v1.md` (new), `reports/research/taxonomy/taxonomy_mapping_note.md` (new), `reports/research/taxonomy/README.md` (updated), `docs/07_handoff.md` (updated)。
+- T08 extractor skeleton 尚未执行。
+- T10 screening 尚未开始。
+
+T07 review 判断：
+
+- Verdict: `PASS`
+- Review file: `docs/review/T07_manual_taxonomy_coding_v1_review.md`
+- Captain action: accepted; `docs/04_task_board.md` 已勾选 T07。
+- Coding result: `prompt_features_v1.jsonl` 9 条记录、27 个 taxonomy 字段；`corpus_v1.jsonl` 已回填 token estimate；taxonomy YAML 新增 `compression_style`、`ce_search_depth`、`bucket_boundary_notes`。
+- Non-blocking followups:
+  - T08 修正文档中 token estimate `floor` vs `round` 口径不一致。
+  - T08/T09 注意低方差字段不应主导 extractor 或统计解释。
+  - 保留 P1.2.3 bucket boundary sensitivity note，不在当前阶段强行重分桶。
+
 Milestone 1 review 判断：
 
 - Verdict: `Conditional`
@@ -100,41 +121,36 @@ docs/04_task_board.md
 docs/06_eval_protocol.md
 docs/07_handoff.md
 docs/08_risks_and_open_questions.md
-docs/tasks/phase_2_prompt_taxonomy/T07_manual_taxonomy_coding_v1.md
-docs/review/T06_corpus_audit_public_private_boundary_review.md
+docs/tasks/phase_2_prompt_taxonomy/T08_prompt_feature_extractor_skeleton.md
+docs/review/T07_manual_taxonomy_coding_v1_review.md
 data/interim/prompt_corpus/corpus_v1.jsonl
+data/interim/prompt_corpus/prompt_features_v1.jsonl
 data/interim/prompt_corpus/prompt_corpus_manifest.json
 reports/research/corpus_audit/summary.md
 reports/research/corpus_audit/public_private_boundary.md
 configs/research/prompt_feature_taxonomy.yaml
+reports/research/taxonomy/taxonomy_v1.md
+reports/research/taxonomy/taxonomy_mapping_note.md
 ```
 
 ## 4. Worker 执行边界
 
-下一位 worker 只执行 T07：
+下一位 worker 只执行 T08。
 
-- 基于 `corpus_v1.jsonl` 和 T06 boundary gate，对 9 条 text-ready local prompts 做人工 taxonomy coding。
-- 生成第一版 `prompt_features_v1.jsonl`、taxonomy report 和 experiment-plan 到 taxonomy seed 的 mapping note。
-- 为 9 条 text-ready records 回填 reviewable 的 `prompt_tokens_est` 与 length bucket，供后续 T08/T10 使用。
-- 保持 GitHub metadata-only 和 Contributor Network structure-only 记录不进入 full-text coding。
-
-不要做：
-
-- 不改 `src/`。
-- 不跑 API eval。
-- 不改 prompt wording。
-- 不下载或镜像外部 prompt 原文。
-- 不删除或重命名历史文档。
-- 不改 `docs/04_task_board.md` 完成状态。
+- 基于 `prompt_features_v1.jsonl`、taxonomy YAML 和 T07 报告设计最小 extractor skeleton。
+- 只覆盖一组 reviewable 的核心字段，不追求一次性覆盖全部 taxonomy。
+- 增加 focused tests，证明 extractor 输出 schema 与少数关键字段可复核。
+- 一并修正 T07 reviewer 指出的 token estimate 公式文档口径不一致。
 
 允许修改文件：
 
-- `data/interim/prompt_corpus/corpus_v1.jsonl`
-- `data/interim/prompt_corpus/prompt_features_v1.jsonl`
+- `src/sair_competition/analysis/`
+- `src/sair_competition/cli.py`
+- `tests/`
 - `configs/research/prompt_feature_taxonomy.yaml`
 - `reports/research/taxonomy/README.md`
+- `reports/research/taxonomy/extractor_v1_notes.md`
 - `reports/research/taxonomy/taxonomy_v1.md`
-- `reports/research/taxonomy/taxonomy_mapping_note.md`
 - `docs/07_handoff.md`
 
 Current corpus boundary summary：
@@ -158,26 +174,34 @@ T05 corpus summary：
 - duplicate report: no duplicates found in T05
 - mirrored GitHub prompt text: no
 
+T07 taxonomy coding summary：
+
+- coded records: `9` (all text-ready local)
+- excluded non-text-ready records: `2` (1 metadata-only, 1 structure-only)
+- token estimate method: bytes/4 heuristic, not tokenizer
+- taxonomy fields coded: `27` (4 length + 6 structural + 3 module order + 4 counterexample + 3 true strategy + 3 output stability + 3 provenance + 1 compression_style)
+- prompt families identified: `4` (minimal baseline, guardrail-heavy lineage, official archetype adaptations, reserved external)
+
 ## 5. Reviewer 重点
 
-T07 reviewer 类型：normal。
+T08 reviewer 类型：normal。
 
 重点检查：
 
-- 是否只对 9 条 text-ready local records 做 full-text taxonomy coding。
-- `prompt_features_v1.jsonl` 是否与 taxonomy seed 和 mapping note 一致，且没有把 extractor 或 eval 写成已完成。
-- `prompt_tokens_est` 与 length bucket 口径是否诚实、可复核、不过度宣称。
-- 是否没有把 metadata-only / structure-only 记录提升为 full-text coded 或 eval-ready。
-- 是否为 T08 extractor skeleton 和 T10 screening 留下清晰、可解析的输入。
+- extractor 是否只基于 text-ready local prompt 的现有人工基线设计，没有越过 T06 boundary gate。
+- tests 是否真实验证 schema 和核心字段，而不是只测试文件存在。
+- token estimate 公式文档是否已统一为单一口径。
+- 是否诚实保留低方差字段和人工复核需求，没有把 skeleton 写成 full automation。
+- 是否为 T09 自审和 T10 screening 留下清晰、可复核的输入。
 
-## 6. 完成 T07 后 Captain 要做
+## 6. 完成 T08 后 Captain 要做
 
 如果 review 为 `PASS`：
 
-1. 在 `docs/04_task_board.md` 勾选 `T07`。
+1. 在 `docs/04_task_board.md` 勾选 `T08`。
 2. 更新本文件的当前状态。
-3. 可以推荐进入 `T08`，但不直接执行。
-4. 若 taxonomy coding 越过 T06 boundary gate、把 metadata-only 或 structure-only 记录做成 full-text features、或把 token estimate 写成未经支持的精确 claim，则阻止进入 T08。
+3. 可以推荐进入 `T09`，但不直接执行。
+4. 若 extractor 实际覆盖与文档声明不一致、tests 过弱、或越过 corpus boundary gate，则阻止进入 T09。
 
 如果 `PASS_WITH_WARNINGS`：
 
@@ -193,9 +217,10 @@ T07 reviewer 类型：normal。
 
 ## 7. 当前未验证事项
 
-- T07 manual taxonomy coding 尚未执行。
+- T08 extractor skeleton 尚未执行。
+- T07 token estimate 文档口径仍需在 T08 统一。
+- T07 无 inter-annotator agreement（单编码者），T09 self-audit 应复核编码一致性。
 - GitHub MIT external source 仍未镜像，本地 external text-ready record 仍为 `0`。
 - contributor-network 占位项仍只有 host-level official provenance，尚未解析到稳定的具体 prompt 页面。
-- `prompt_tokens_est` 在 `corpus_v1` 中仍全部为 `0`。
 - screening / recomputed benchmark / post-release analysis 仍未开始执行。
-- T08/T10 仍依赖 T07 先给出稳定的 manual taxonomy 与 length-bucket 口径。
+- T10 screening 仍不应先于 T08/T09 启动主线执行。

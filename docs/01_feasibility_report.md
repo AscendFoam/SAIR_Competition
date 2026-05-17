@@ -147,3 +147,15 @@ Milestone 1 review 判断：
 - T07 只能对 9 条 text-ready local records 做 full-text coding。
 - `prompt_tokens_est` 仍需在 T07 中补足或给出 reviewable 估算规则。
 - GitHub MIT source mirror decision 与 Contributor Network stable URL 仍是 deferred provenance work，不应偷渡进 taxonomy 或 screening。
+
+T07 review 判断：
+
+- `docs/review/T07_manual_taxonomy_coding_v1_review.md` verdict 为 `PASS`。
+- 第一批 9 条 text-ready local records 的 manual taxonomy 已落地，`prompt_features_v1.jsonl` 可作为 extractor skeleton 的人工基线。
+- `compression_style` 与 `ce_search_depth` 已从长期 deferred 状态转为已编码字段。
+
+T07 review 非阻塞事项处理：
+
+- token estimate 公式文档 `floor` vs `round` 不一致：deferred 到 T08 收口。
+- 低方差字段对 extractor/statistical use 的影响：accepted as known limitation；T08/T09 继续控制，不在当前阶段删除字段。
+- P1.2.3 bucket boundary sensitivity：accepted；保留边界注释，不在当前阶段强行改 bucket 规则。

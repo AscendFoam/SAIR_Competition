@@ -299,3 +299,24 @@ Milestone 1 `Public Corpus and Provenance Cleaning` 经里程碑审查后结论�
 - T07/T10 只能以 `corpus_v1.jsonl` 和 T06 boundary note 作为 eligibility source。
 - metadata-only / structure-only records 不得进入 full-text coding 或 eval。
 - Milestone 2 需要先补 `prompt_tokens_est` 和 taxonomy mapping，再谈 extractor 或 screening。
+
+## D017: 接受 T07 review verdict 并进入 T08
+
+日期：2026-05-17
+
+决策：
+
+`docs/review/T07_manual_taxonomy_coding_v1_review.md` verdict 为 `PASS`，Captain 接受该结论，标记 `T07_manual_taxonomy_coding_v1` 完成，并将 Current Unique Task 切换到 `T08_prompt_feature_extractor_skeleton`。
+
+理由：
+
+- Reviewer 未发现 blocking issue。
+- 已为 9 条 text-ready local prompts 建立可复核的手工 taxonomy 基线。
+- `prompt_features_v1.jsonl`、taxonomy report、mapping note 和 YAML v1 更新均已落地。
+- `compression_style` 与 `ce_search_depth` 这两个长期 deferred taxonomy 字段已进入实际编码。
+
+非阻塞事项处理：
+
+- token estimate 文档 `floor` vs `round` 不一致：deferred 到 T08，与 extractor 文档一起统一。
+- 低方差字段不应主导 extractor 或统计模型：accepted as design constraint，写入 T08/T09 约束。
+- P1.2.3 bucket boundary sensitivity：accepted，保留注释，不在当前阶段改 bucket rule。

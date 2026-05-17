@@ -236,3 +236,18 @@ T06 review 没有 blocking issue。corpus governance layer 现在新增：
 - GitHub metadata-only record 当前只可作为 provenance note，不能变成 taxonomy row 或 screening row。
 - Contributor Network structure-only record 当前只可作为 limitation/boundary note，不能变成 taxonomy row 或 screening row。
 - Milestone 1 可以关闭，但 clean-environment reproducibility 仍依赖本地已有 prompt files 和 review-backed governance files，而不是外部 source 的即时重建。
+
+## 13. T07 Manual Taxonomy Status
+
+T07 review 没有 blocking issue。taxonomy layer 现在新增：
+
+- `data/interim/prompt_corpus/prompt_features_v1.jsonl`
+- `reports/research/taxonomy/taxonomy_v1.md`
+- `reports/research/taxonomy/taxonomy_mapping_note.md`
+
+当前架构约束：
+
+- `prompt_features_v1.jsonl` 是人工编码基线，不是 extractor 输出。
+- `prompt_tokens_est` 已在 `corpus_v1.jsonl` 中回填启发式值，但文档口径仍需在 T08 统一。
+- T08 应先做最小 extractor skeleton 和 focused tests，不应把当前人工 taxonomy 误写成 fully automated pipeline。
+- T09 需要专门处理单编码者 bias、低方差字段和边界案例。
