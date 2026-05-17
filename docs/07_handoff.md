@@ -24,16 +24,16 @@
 
 ## 2. Current Unique Task
 
-`T08_prompt_feature_extractor_skeleton`
+`T09_taxonomy_self_audit_and_conflict_resolution`
 
 任务包：
 
-- `docs/tasks/phase_2_prompt_taxonomy/T08_prompt_feature_extractor_skeleton.md`
+- `docs/tasks/phase_2_prompt_taxonomy/T09_taxonomy_self_audit_and_conflict_resolution.md`
 
 状态：
 
 - Ready for worker，尚未执行。
-- T01、T02、T03、T04、T05、T06、T07 已通过 review 并由 Captain 标记完成。
+- T01、T02、T03、T04、T05、T06、T07、T08 已通过 review 并由 Captain 标记完成。
 
 T01 review 判断：
 
@@ -92,6 +92,30 @@ T07 worker 执行结果：
 - T08 extractor skeleton 尚未执行。
 - T10 screening 尚未开始。
 
+T08 worker 执行结果：
+
+- Task: `T08_prompt_feature_extractor_skeleton`
+- 状态: worker 已执行，待 review。
+- Extractor module: `src/sair_competition/analysis/prompt_features.py`
+- Rule-ized fields: 7 (prompt_bytes_bucket, prompt_tokens_est_bucket, verdict_contract, rule_or_heuristic_block, opening_strategy, counterexample_requirement, explicit_final_token)
+- Known disagreement: P2.0.2 counterexample_requirement (extractor: absent, manual: optional)
+- Token estimate wording: unified to `round(bytes/4)` in taxonomy_v1.md and taxonomy YAML
+- Tests: 90 focused tests, all passing (schema, bucket boundaries, field alignment on all 9 prompts, boundary gate, round-trip JSON)
+- Changed files: `src/sair_competition/analysis/prompt_features.py` (new), `src/sair_competition/analysis/__init__.py` (updated), `src/sair_competition/cli.py` (updated), `tests/test_prompt_feature_extractor.py` (new), `reports/research/taxonomy/extractor_v1_notes.md` (new), `reports/research/taxonomy/taxonomy_v1.md` (token estimate fix), `reports/research/taxonomy/README.md` (updated), `configs/research/prompt_feature_taxonomy.yaml` (estimation_method fix), `docs/07_handoff.md` (updated)。
+- T09 self-audit 尚未开始。
+- T10 screening 尚未开始。
+
+T08 review 判断：
+
+- Verdict: `PASS`
+- Review file: `docs/review/T08_prompt_feature_extractor_skeleton_review.md`
+- Captain action: accepted; `docs/04_task_board.md` 已勾选 T08。
+- Extractor result: 7 个高价值字段已规则化；CLI 入口已存在；90 项 focused tests 全部通过；token estimate 文档口径已统一为 `round(bytes/4)`。
+- Non-blocking followups:
+  - T09 复核 P2.0.2 `counterexample_requirement` 的 manual vs extractor 分歧。
+  - T09 明确低方差字段的保留/降权/仅说明性使用策略。
+  - T09 区分“extractor 行为稳定性测试”与“manual coding 一致性主张”的边界。
+
 T07 review 判断：
 
 - Verdict: `PASS`
@@ -121,8 +145,8 @@ docs/04_task_board.md
 docs/06_eval_protocol.md
 docs/07_handoff.md
 docs/08_risks_and_open_questions.md
-docs/tasks/phase_2_prompt_taxonomy/T08_prompt_feature_extractor_skeleton.md
-docs/review/T07_manual_taxonomy_coding_v1_review.md
+docs/review/T08_prompt_feature_extractor_skeleton_review.md
+docs/review/M1_review.md
 data/interim/prompt_corpus/corpus_v1.jsonl
 data/interim/prompt_corpus/prompt_features_v1.jsonl
 data/interim/prompt_corpus/prompt_corpus_manifest.json
@@ -131,26 +155,28 @@ reports/research/corpus_audit/public_private_boundary.md
 configs/research/prompt_feature_taxonomy.yaml
 reports/research/taxonomy/taxonomy_v1.md
 reports/research/taxonomy/taxonomy_mapping_note.md
+reports/research/taxonomy/extractor_v1_notes.md
+src/sair_competition/analysis/prompt_features.py
+tests/test_prompt_feature_extractor.py
 ```
 
 ## 4. Worker 执行边界
 
-下一位 worker 只执行 T08。
+下一位 worker 只执行 T09。
 
-- 基于 `prompt_features_v1.jsonl`、taxonomy YAML 和 T07 报告设计最小 extractor skeleton。
-- 只覆盖一组 reviewable 的核心字段，不追求一次性覆盖全部 taxonomy。
-- 增加 focused tests，证明 extractor 输出 schema 与少数关键字段可复核。
-- 一并修正 T07 reviewer 指出的 token estimate 公式文档口径不一致。
+- 基于 `prompt_features_v1.jsonl`、`extractor_v1_notes.md`、T08 tests 和 extractor 输出做 taxonomy self-audit。
+- 重点处理 P2.0.2 `counterexample_requirement` 分歧、低方差字段处理策略、以及 extractor-stability vs manual-alignment 的叙事边界。
+- T10 screening 仍不应先于 T09 启动。
 
 允许修改文件：
 
-- `src/sair_competition/analysis/`
-- `src/sair_competition/cli.py`
-- `tests/`
-- `configs/research/prompt_feature_taxonomy.yaml`
+- `data/interim/prompt_corpus/prompt_features_v1.jsonl`
 - `reports/research/taxonomy/README.md`
-- `reports/research/taxonomy/extractor_v1_notes.md`
 - `reports/research/taxonomy/taxonomy_v1.md`
+- `reports/research/taxonomy/taxonomy_mapping_note.md`
+- `reports/research/taxonomy/extractor_v1_notes.md`
+- `reports/research/taxonomy/self_audit_v1.md`
+- `reports/research/taxonomy/conflict_resolution_v1.md`
 - `docs/07_handoff.md`
 
 Current corpus boundary summary：
@@ -184,24 +210,24 @@ T07 taxonomy coding summary：
 
 ## 5. Reviewer 重点
 
-T08 reviewer 类型：normal。
+T09 reviewer 类型：normal。
 
 重点检查：
 
-- extractor 是否只基于 text-ready local prompt 的现有人工基线设计，没有越过 T06 boundary gate。
-- tests 是否真实验证 schema 和核心字段，而不是只测试文件存在。
-- token estimate 公式文档是否已统一为单一口径。
-- 是否诚实保留低方差字段和人工复核需求，没有把 skeleton 写成 full automation。
-- 是否为 T09 自审和 T10 screening 留下清晰、可复核的输入。
+- 是否真实复核了 manual taxonomy 与 extractor 结果之间的已知分歧，而不是只复述已有文档。
+- 是否对低方差字段给出了清晰、可执行的保留/降权/仅说明性使用策略。
+- 若修改 `prompt_features_v1.jsonl`，是否逐条说明理由，没有静默改动。
+- 是否没有越过 T06 boundary gate 把 non-text-ready records 拉入 full-text coding。
+- 是否为 T10 screening 留下清晰、可信的 taxonomy 输入与限制说明。
 
-## 6. 完成 T08 后 Captain 要做
+## 6. 完成 T09 后 Captain 要做
 
 如果 review 为 `PASS`：
 
-1. 在 `docs/04_task_board.md` 勾选 `T08`。
+1. 在 `docs/04_task_board.md` 勾选 `T09`。
 2. 更新本文件的当前状态。
-3. 可以推荐进入 `T09`，但不直接执行。
-4. 若 extractor 实际覆盖与文档声明不一致、tests 过弱、或越过 corpus boundary gate，则阻止进入 T09。
+3. 可以推荐进入 `T10`，但不直接执行。
+4. 若自审未真正处理已知分歧、低方差字段策略空泛、或静默改动人工标注，则阻止进入 T10。
 
 如果 `PASS_WITH_WARNINGS`：
 
@@ -217,10 +243,10 @@ T08 reviewer 类型：normal。
 
 ## 7. 当前未验证事项
 
-- T08 extractor skeleton 尚未执行。
-- T07 token estimate 文档口径仍需在 T08 统一。
+- T09 taxonomy self-audit 尚未执行。
+- T08 extractor 有 1 个已知分歧：P2.0.2 counterexample_requirement (extractor: absent, manual: optional)。
 - T07 无 inter-annotator agreement（单编码者），T09 self-audit 应复核编码一致性。
 - GitHub MIT external source 仍未镜像，本地 external text-ready record 仍为 `0`。
 - contributor-network 占位项仍只有 host-level official provenance，尚未解析到稳定的具体 prompt 页面。
 - screening / recomputed benchmark / post-release analysis 仍未开始执行。
-- T10 screening 仍不应先于 T08/T09 启动主线执行。
+- T10 screening 仍不应先于 T09 启动主线执行。

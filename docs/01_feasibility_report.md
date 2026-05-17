@@ -159,3 +159,15 @@ T07 review 非阻塞事项处理：
 - token estimate 公式文档 `floor` vs `round` 不一致：deferred 到 T08 收口。
 - 低方差字段对 extractor/statistical use 的影响：accepted as known limitation；T08/T09 继续控制，不在当前阶段删除字段。
 - P1.2.3 bucket boundary sensitivity：accepted；保留边界注释，不在当前阶段强行改 bucket 规则。
+
+T08 review 判断：
+
+- `docs/review/T08_prompt_feature_extractor_skeleton_review.md` verdict 为 `PASS`。
+- 已建立 skeleton extractor、CLI 入口与 focused tests，足以支撑 T09 自审和后续 screening 准备。
+- token estimate 口径已经统一为 `round(bytes/4)`，T07 留下的文档漂移已解决。
+
+T08 review 非阻塞事项处理：
+
+- P2.0.2 `counterexample_requirement` 的 manual vs extractor 分歧：deferred 到 T09 adjudication。
+- `rule_or_heuristic_block` 的 saturated/extended 区分依赖 `override` 关键词：deferred 到 T09/后续 corpus expansion 复核。
+- 低方差字段与 extractor-stability vs manual-alignment 的解释边界：deferred 到 T09 明确写成自审结论。

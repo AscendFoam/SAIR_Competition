@@ -19,6 +19,10 @@ from .analysis.offline_rule_review import (
     build_offline_rule_review_set,
     consolidate_offline_rule_axes,
 )
+from .analysis.prompt_features import (
+    extract_features_from_corpus,
+    extract_features_from_file,
+)
 from .eval.baseline_runner import run_baseline_suite
 from .eval.local_runner import run_complete_prompt_eval
 from .eval.metrics import compute_metrics
@@ -492,6 +496,41 @@ def prepare_positive_signal_candidate_command(
     return 0
 
 
+def extract_prompt_features_command(
+    corpus_path: Path,
+    prompt_path: str | None,
+    prompt_id: str | None,
+    output_path: str | None,
+) -> int:
+    """CLI 命令：从 prompt 文件提取结构特征。
+
+    Supports two modes:
+    - Single-prompt: --prompt-path + --prompt-id (prints JSON to stdout).
+    - Batch: --corpus-path [--output-path] (extracts all text-ready records).
+    """
+    if prompt_path:
+        if not prompt_id:
+            print("Error: --prompt-id is required when using --prompt-path.", file=__import__("sys").stderr)
+            return 1
+        features = extract_features_from_file(prompt_id, Path(prompt_path))
+        print(json_dumps(features.to_dict()))
+        return 0
+
+    results = extract_features_from_corpus(corpus_path)
+    if output_path:
+        import json as _json
+        out = Path(output_path)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        with open(out, "w", encoding="utf-8") as f:
+            for feat in results:
+                f.write(_json.dumps(feat.to_dict(), ensure_ascii=False) + "\n")
+        print(f"Extracted {len(results)} records to {out}")
+    else:
+        for feat in results:
+            print(json_dumps(feat.to_dict()))
+    return 0
+
+
 def json_dumps(payload: dict) -> str:
     """将字典序列化为格式化的 JSON 字符串。
 
@@ -635,6 +674,32 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("show-error-taxonomy", help="Show the default error taxonomy.")
     subparsers.add_parser("show-family-tag-taxonomy", help="Show the structural family-tag taxonomy.")
     subparsers.add_parser("demo-metrics", help="Print a demo metrics object.")
+
+    extract = subparsers.add_parser(
+        "extract-prompt-features",
+        help="Extract structural features from text-ready prompt files.",
+    )
+    extract.add_argument(
+        "--corpus-path",
+        default="data/interim/prompt_corpus/corpus_v1.jsonl",
+        help="Path to corpus_v1.jsonl for batch mode.",
+    )
+    extract.add_argument(
+        "--prompt-path",
+        default=None,
+        help="Single prompt file path (single-prompt mode).",
+    )
+    extract.add_argument(
+        "--prompt-id",
+        default=None,
+        help="Prompt ID for single-prompt mode.",
+    )
+    extract.add_argument(
+        "--output-path",
+        default=None,
+        help="Output JSONL path (batch mode only).",
+    )
+
     return parser
 
 
@@ -762,6 +827,13 @@ def main() -> int:
         return show_family_tag_taxonomy()
     if args.command == "demo-metrics":
         return demo_metrics()
+    if args.command == "extract-prompt-features":
+        return extract_prompt_features_command(
+            corpus_path=Path(args.corpus_path),
+            prompt_path=args.prompt_path,
+            prompt_id=args.prompt_id,
+            output_path=args.output_path,
+        )
     parser.print_help()
     return 1
 

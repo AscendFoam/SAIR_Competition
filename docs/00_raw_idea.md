@@ -115,4 +115,10 @@ Milestone 1 已完成一次里程碑审查，结论为 `Conditional`：
 - 已生成 `prompt_features_v1.jsonl`，并回填 `corpus_v1.jsonl` 的 token estimate。
 - taxonomy YAML 已补入 `compression_style`、`ce_search_depth` 和 bucket boundary note。
 
-下一步唯一任务是 `T08_prompt_feature_extractor_skeleton`：基于 T07 的人工基线实现最小 extractor skeleton 与 focused tests，同时统一 token estimate 文档口径，为 T09 自审和 T10 screening 做准备。
+`T08_prompt_feature_extractor_skeleton` 已通过 reviewer `PASS`：
+
+- 已实现 7 个高价值字段的 extractor skeleton。
+- 已新增 CLI 入口和 90 项 focused tests。
+- token estimate 文档口径已统一为 `round(bytes/4)`。
+
+下一步唯一任务是 `T09_taxonomy_self_audit_and_conflict_resolution`：对 T07 手工编码与 T08 extractor 输出做一致性自审，收口已知分歧、低方差字段策略和 conflict resolution 规则，为 T10 screening 提供可信输入。

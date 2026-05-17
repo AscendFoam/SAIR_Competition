@@ -10,7 +10,21 @@
       "Bash(python -m json.tool data/interim/prompt_corpus/prompt_corpus_manifest.json)",
       "Bash(python -m json.tool data/interim/prompt_corpus/duplicate_report_v1.json)",
       "Bash(python -m json.tool data/interim/prompt_corpus/missing_metadata_report_v1.json)",
-      "Bash(git status *)"
+      "Bash(git status *)",
+      "Bash(PYTHONPATH=src python -m pytest tests/test_prompt_feature_extractor.py -q)",
+      "Bash(PYTHONPATH=src python -c \"import pytest; print\\(pytest.__file__\\)\")",
+      "Bash(where python *)",
+      "Bash(C:/ProgramData/anaconda3/python.exe -c \"import pytest; print\\(pytest.__version__\\)\")",
+      "Bash(C:/ProgramData/anaconda3/python.exe -c \"import sys; sys.path.insert\\(0, 'src'\\); from sair_competition.analysis.prompt_features import extract_features; print\\('import OK'\\)\")",
+      "Bash(PYTHONPATH=src C:/ProgramData/anaconda3/python.exe -m pytest tests/test_prompt_feature_extractor.py -v -p no:cacheprovider)",
+      "Bash(PYTHONPATH=src C:/ProgramData/anaconda3/python.exe -m sair_competition.cli validate-layout)",
+      "Bash(PYTHONPATH=src C:/ProgramData/anaconda3/python.exe -m sair_competition.cli extract-prompt-features --prompt-path prompts/complete/P1.1.1_strict_first_draft.txt --prompt-id test_p1_1_1)",
+      "Bash(PYTHONPATH=src C:/ProgramData/anaconda3/python.exe -m sair_competition.cli extract-prompt-features --corpus-path data/interim/prompt_corpus/corpus_v1.jsonl)",
+      "Bash(PYTHONPATH=src C:/ProgramData/anaconda3/python.exe -c ' *)",
+      "Bash(PYTHONPATH=src C:/ProgramData/anaconda3/python.exe -m pytest tests/test_prompt_feature_extractor.py -q -p no:cacheprovider)",
+      "Bash(pip install *)",
+      "Bash(PYTHONPATH='src' python -m sair_competition.cli extract-prompt-features --prompt-path prompts/complete/P1.1.1_strict_first_draft.txt --prompt-id local_p1_1_1_strict_first_draft)",
+      "Bash(PYTHONPATH='src' python -m sair_competition.cli extract-prompt-features --corpus-path data/interim/prompt_corpus/corpus_v1.jsonl)"
     ]
   }
 }

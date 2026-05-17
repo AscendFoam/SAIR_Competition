@@ -4,19 +4,19 @@
 
 ## Current Unique Task
 
-`T08_prompt_feature_extractor_skeleton`: 基于 T07 手工 taxonomy 与 YAML schema 实现最小 extractor skeleton 和 focused tests，并修正文档中的 token estimate 口径。
+`T09_taxonomy_self_audit_and_conflict_resolution`: 对 T07 手工编码与 T08 extractor skeleton 做一致性复核、边界案例 adjudication 和字段冲突收口，作为 Milestone 2 收口任务。
 
 任务包：
 
-- `docs/tasks/phase_2_prompt_taxonomy/T08_prompt_feature_extractor_skeleton.md`
+- `docs/tasks/phase_2_prompt_taxonomy/T09_taxonomy_self_audit_and_conflict_resolution.md`
 
 状态：Ready for worker，尚未执行。
 
 为什么现在做它：
 
-- `T07` 已通过 normal review，`prompt_features_v1.jsonl`、taxonomy v1 报告和 mapping note 已落地。
-- 当前已经有 9 条 text-ready prompt 的手工编码基线，适合进入 extractor skeleton 阶段。
-- reviewer 已指出 token estimate 文档口径存在 floor vs round 不一致，宜在 T08 一并收口。
+- `T08` 已通过 normal review，extractor skeleton、CLI 入口和 focused tests 已落地。
+- 现在已有手工基线与自动提取骨架两套结果，可以开始做一致性自审，而不必继续堆实现。
+- T08 review 已明确指出 P2.0.2 的 `counterexample_requirement` 分歧、低方差字段风险和测试语义边界，适合在 T09 集中裁决。
 
 ## Milestone 0: Research Repositioning and Repository Setup
 
@@ -97,7 +97,7 @@ Milestone 1 review status:
 ## Milestone 2: Prompt Taxonomy v1
 
 - [x] `T07`: Manual taxonomy coding for representative prompts。
-- [ ] `T08`: Implement prompt feature extractor skeleton and tests。
+- [x] `T08`: Implement prompt feature extractor skeleton and tests。
 - [ ] `T09`: Taxonomy self-audit and conflict resolution report。
 
 T07 review result:
@@ -107,6 +107,14 @@ T07 review result:
 - Deliverables: `prompt_features_v1.jsonl` with 9 records and 27 taxonomy fields; `corpus_v1.jsonl` token estimate backfill; taxonomy YAML v1 update; taxonomy report and mapping note.
 - Captain action: accepted; `T07` marked complete.
 - Non-blocking followups: harmonize token estimate formula wording in T08; keep low-variance fields from dominating extractor/statistical use; preserve P1.2.3 bucket-boundary sensitivity note.
+
+T08 review result:
+
+- Verdict: `PASS`
+- Review file: `docs/review/T08_prompt_feature_extractor_skeleton_review.md`
+- Deliverables: extractor skeleton for 7 high-value fields; CLI entrypoint; 90 focused tests; token estimate wording unified to `round(bytes/4)`.
+- Captain action: accepted; `T08` marked complete.
+- Non-blocking followups: T09 should adjudicate the P2.0.2 `counterexample_requirement` mismatch, review low-variance fields, and distinguish extractor stability tests from manual-alignment claims.
 
 Exit criteria:
 

@@ -53,7 +53,7 @@ bucket_boundary_notes:
     medium: 500-874 tokens
     long: 875-1999 tokens
     near_cap: ">= 2000 tokens"
-    estimation_method: "bytes / 4 heuristic; not a tokenizer count. Documented in taxonomy_v1.md."
+    estimation_method: "round(bytes / 4) heuristic; not a tokenizer count. Documented in taxonomy_v1.md."
     caveat: "This is a rough estimate for bucketing only. Do not use for precise token-level analysis."
 
 structural_modules:

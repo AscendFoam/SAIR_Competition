@@ -21,7 +21,7 @@ The 2 non-text-ready records are excluded from `prompt_features_v1.jsonl` entire
 
 All 9 text-ready records previously had `prompt_tokens_est = 0`. T07 backfills these estimates using a simple heuristic:
 
-- Method: `prompt_tokens_est = floor(prompt_bytes / 4)`
+- Method: `prompt_tokens_est = round(prompt_bytes / 4)`
 - Rationale: For ASCII-dominant English text with light use of backtick notation and special characters, a bytes-per-token ratio of approximately 4 is a reasonable rough estimate.
 - Caveat: This is NOT a tokenizer count. No tokenizer (tiktoken, sentencepiece, or otherwise) was run. These values should only be used for coarse bucketing and relative comparison, never for precise token-level analysis or cost estimation.
 - The estimation method is documented in each record's `notes` field as "Token estimate: bytes/4 heuristic (T07)."

@@ -251,3 +251,17 @@ T07 review 没有 blocking issue。taxonomy layer 现在新增：
 - `prompt_tokens_est` 已在 `corpus_v1.jsonl` 中回填启发式值，但文档口径仍需在 T08 统一。
 - T08 应先做最小 extractor skeleton 和 focused tests，不应把当前人工 taxonomy 误写成 fully automated pipeline。
 - T09 需要专门处理单编码者 bias、低方差字段和边界案例。
+
+## 14. T08 Extractor Skeleton Status
+
+T08 review 没有 blocking issue。taxonomy tooling layer 现在新增：
+
+- `src/sair_competition/analysis/prompt_features.py`
+- `tests/test_prompt_feature_extractor.py`
+- `reports/research/taxonomy/extractor_v1_notes.md`
+
+当前架构约束：
+
+- extractor skeleton 只覆盖 7 个高价值字段，不代表 full automation。
+- `prompt_features_v1.jsonl` 仍是 authoritative manual reference，extractor 输出只是对照与复用工具。
+- T09 必须处理 extractor 与 manual coding 的已知分歧、低方差字段和说明边界，之后才适合进入 T10 screening。

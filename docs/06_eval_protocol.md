@@ -277,3 +277,17 @@ T07 已通过 review，意味着：
 - T08 需要先把 extractor 输出与人工基线对齐，再谈更大范围自动化。
 - token estimate 目前仍是启发式，不是 tokenizer 精确计数；任何长度相关结论必须继续谨慎表述。
 - 低方差字段可以保留，但不能在 screening 或统计解释中被误当成高信息量特征。
+
+## 15. Self-Audit Gate After T08
+
+T08 已通过 review，但 T10 仍不应直接启动。
+
+原因：
+
+- 当前已经同时存在 manual taxonomy 与 extractor skeleton，两者之间需要先做一致性自审。
+- 已知存在至少一个字段分歧：P2.0.2 `counterexample_requirement`。
+- 低方差字段和测试语义边界还需要在 T09 中写成明确结论。
+
+因此，T10 前仍有一个硬门槛：
+
+- T09 必须先给出 self-audit 与 conflict resolution note，确认哪些字段可直接用于 screening/reporting，哪些字段只能作为说明性标签。

@@ -320,3 +320,24 @@ Milestone 1 `Public Corpus and Provenance Cleaning` 经里程碑审查后结论�
 - token estimate 文档 `floor` vs `round` 不一致：deferred 到 T08，与 extractor 文档一起统一。
 - 低方差字段不应主导 extractor 或统计模型：accepted as design constraint，写入 T08/T09 约束。
 - P1.2.3 bucket boundary sensitivity：accepted，保留注释，不在当前阶段改 bucket rule。
+
+## D018: 接受 T08 review verdict 并进入 T09
+
+日期：2026-05-17
+
+决策：
+
+`docs/review/T08_prompt_feature_extractor_skeleton_review.md` verdict 为 `PASS`，Captain 接受该结论，标记 `T08_prompt_feature_extractor_skeleton` 完成，并将 Current Unique Task 切换到 `T09_taxonomy_self_audit_and_conflict_resolution`。
+
+理由：
+
+- Reviewer 未发现 blocking issue。
+- 已有 skeleton extractor、CLI 入口和 focused tests，可支撑后续 taxonomy 自审与 screening 准备。
+- T07 留下的 token estimate 文档口径问题已在 T08 中收口。
+- extractor 仍保持 scope honesty，没有被包装成 full automation。
+
+非阻塞事项处理：
+
+- P2.0.2 `counterexample_requirement` 的 manual vs extractor 分歧：deferred 到 T09 adjudication。
+- `rule_or_heuristic_block` 对 `override` 关键词的 fragile heuristic：deferred 到 T09/后续 corpus expansion 复核。
+- 低方差字段与 extractor-stability vs manual-alignment 的边界：deferred 到 T09 明确写成自审结论。
