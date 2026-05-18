@@ -4,14 +4,16 @@
 
 ## 当前状态
 
-Taxonomy v1 manual coding 已由 T07 完成并通过 full-text 编码。T08 extractor skeleton 已实现。
+Taxonomy v1 manual coding 已由 T07 完成并通过 full-text 编码。T08 extractor skeleton 已实现。T09 self-audit 和 conflict resolution 已完成。
 
 - taxonomy schema: `configs/research/prompt_feature_taxonomy.yaml` (TAX_V1_MANUAL_CODING)
-- manual coding results: `data/interim/prompt_corpus/prompt_features_v1.jsonl` (9 records)
+- manual coding results: `data/interim/prompt_corpus/prompt_features_v1.jsonl` (9 records, T09 corrected)
 - extractor skeleton: `src/sair_competition/analysis/prompt_features.py`
 - taxonomy report: `reports/research/taxonomy/taxonomy_v1.md`
 - experiment-plan-to-schema mapping: `reports/research/taxonomy/taxonomy_mapping_note.md`
 - extractor notes: `reports/research/taxonomy/extractor_v1_notes.md`
+- self-audit report: `reports/research/taxonomy/self_audit_v1.md`
+- conflict resolution: `reports/research/taxonomy/conflict_resolution_v1.md`
 
 ## 已完成
 
@@ -21,10 +23,13 @@ Taxonomy v1 manual coding 已由 T07 完成并通过 full-text 编码。T08 extr
 - Mapping note: 建立 experiment plan 6.2 节字段与 YAML taxonomy 字段的对应关系。
 - T08 extractor skeleton: 基于 keyword/pattern 规则对 7 个高价值字段做自动化提取，90 项 focused tests 全部通过。
 - Token estimate 口径统一: 文档从 `floor(bytes/4)` 修正为 `round(bytes/4)`，与数据一致。
+- T09 self-audit: 9/9 extractor-manual agreement（P2.0.2 校正后）；低方差字段分类与使用策略。
+- T09 conflict resolution: P2.0.2 `counterexample_requirement` 从 `optional` 校正为 `absent`；`rule_or_heuristic_block` heuristic 接受；低方差字段排除出统计模型。
 
 ## 待完成
 
-- T09: Taxonomy self-audit and conflict resolution report。
+- T10: Build screening evaluation matrix。
+- T11: Run screening on selected prompt candidates。
 
 ## 文件清单
 
@@ -32,4 +37,6 @@ Taxonomy v1 manual coding 已由 T07 完成并通过 full-text 编码。T08 extr
 |---|---|
 | `taxonomy_v1.md` | Taxonomy v1 手工编码报告，含编码池说明、token estimate 方法、length bucket 边界、feature 分布和 prompt 家族分组 |
 | `taxonomy_mapping_note.md` | Experiment plan 6.2 节字段到 YAML taxonomy 字段的映射表 |
-| `extractor_v1_notes.md` | T08 extractor skeleton 覆盖状态、已知分歧和低方差字段说明 |
+| `extractor_v1_notes.md` | T08 extractor skeleton 覆盖状态、T09 校正后的一致性、低方差字段策略 |
+| `self_audit_v1.md` | T09 self-audit: sample coverage, field variance, field usage classification for T10/T19 |
+| `conflict_resolution_v1.md` | T09 adjudications: P2.0.2 correction, heuristic acceptance, low-variance policy, reporting boundary |

@@ -1,18 +1,43 @@
 # Handoff
 
-日期：2026-05-17
+## Captain Override (2026-05-18)
+
+Current Unique Task:
+- `T11_run_screening_on_selected_prompt_candidates`
+
+Captain decision on review:
+- `docs/review/T10_build_screening_evaluation_matrix_review.md` verdict `PASS` is accepted.
+- `T10_build_screening_evaluation_matrix` is complete and does not require another automatic review cycle.
+
+Ready-for-worker package:
+- `docs/tasks/phase_3_screening_eval/T11_run_screening_on_selected_prompt_candidates.md`
+
+Worker scope for T11:
+- Execute the frozen Stage A screening on the 9 text-ready local prompts.
+- Produce reproducible run artifacts under `artifacts/research_runs/screening/`.
+- Write `reports/research/screening/screening_execution_manifest_v1.md`.
+- Update this handoff file only with execution facts, artifact paths, provider route, and failed/partial run status.
+
+Deferred follow-ups from T10 review:
+- `N1`: wording in `screening_matrix_v1.md` should be aligned with authoritative `prompt_features_v1.jsonl` distributions.
+- `N2`: wording in `screening_candidate_registry_v1.md` should be aligned with the same authoritative distributions.
+- `N4`: indirect references to self-audit / conflict-resolution evidence should be rewritten more directly for report hygiene.
+
+Accepted non-risk:
+- `N3`: `.claude/settings.json` noise is accepted as unrelated workspace noise and should not drive research-state decisions.
+
+日期：2026-05-18
 
 ## 1. 当前项目状态
 
-项目已从 Stage1 参赛收口切换到 Stage1 后赛事实证科研。核心基准文档是：
+项目当前主线仍是 SAIR Stage1 后赛事实证科研，不是继续刷榜，也不是启动 Stage2 solver。研究基线与工作纪律由以下文件定义：
 
 - `docs/02_experiment_plan.md`
 - `docs/reference/AI_coding_workflow.md`
-
-当前治理文档已初始化：
-
 - `AGENTS.md`
-- `CLAUDE.md`
+
+治理主文件现况：
+
 - `docs/00_raw_idea.md`
 - `docs/01_feasibility_report.md`
 - `docs/03_architecture.md`
@@ -22,119 +47,69 @@
 - `docs/07_handoff.md`
 - `docs/08_risks_and_open_questions.md`
 
+截至当前，T01-T09 均已通过 review 并被 Captain 接受。当前已完成：
+
+- public prompt corpus v1 与 public/private boundary
+- 9 条 text-ready local prompts 的 manual taxonomy v1
+- 7 个高价值字段的 extractor skeleton 与 focused tests
+- taxonomy self-audit、conflict resolution 与 1 处最小数据校正
+
 ## 2. Current Unique Task
 
-`T09_taxonomy_self_audit_and_conflict_resolution`
+`T10_build_screening_evaluation_matrix`
 
 任务包：
 
-- `docs/tasks/phase_2_prompt_taxonomy/T09_taxonomy_self_audit_and_conflict_resolution.md`
+- `docs/tasks/phase_3_screening_eval/T10_build_screening_evaluation_matrix.md`
 
 状态：
 
-- Ready for worker，尚未执行。
-- T01、T02、T03、T04、T05、T06、T07、T08 已通过 review 并由 Captain 标记完成。
+- Worker 已执行，待 review。
 
-T01 review 判断：
+T10 worker 执行结果：
 
-- Verdict: `PASS`
-- Review file: `docs/review/T01_research_scaffold_review.md`
-- Captain action: accepted; `docs/04_task_board.md` 已勾选 T01。
-- Non-blocking followups: T03 清理 `storage_policy` typo；T07 前补 taxonomy mapping、`compression_style` 和 `ce_search_depth` 决策；T10 前收敛 `repeats` schema。
-
-T02 review 判断：
-
-- Verdict: `PASS`
-- Review file: `docs/review/T02_paper_outline_contribution_matrix_review.md`
-- Captain action: accepted; `docs/04_task_board.md` 已勾选 T02。
-- Non-blocking followups: T03 修正 `outline.md` 绝对路径链接；T03/T21 前补 rejected/unsupported claim；C7 只保留为 setup/motivation。
-
-T03 review 判断：
-
-- Verdict: `PASS`
-- Review file: `docs/review/T03_prompt_corpus_candidate_register_review.md`
-- Captain action: accepted; `docs/04_task_board.md` 已勾选 T03。
-- Candidate register: 11 candidates total; 9 direct-recompute local candidates; 1 metadata-only placeholder; 1 structure-only placeholder.
-- Non-blocking followups: T04 处理 `data/*/prompt_corpus` git tracking strategy；T04 补 external placeholder URL/author/license；T05/T07 后续处理 token estimates。
-
-T04 review 判断：
-
-- Verdict: `PASS`
-- Review file: `docs/review/T04_external_prompt_source_collection_review.md`
-- Captain action: accepted; `docs/04_task_board.md` 已勾选 T04。
-- Git tracking: `.gitignore` narrow allowlist for prompt corpus governance files。
-- External provenance: GitHub MIT source verified but not mirrored; Contributor Network remains host-level / structure-only。
-- Non-blocking followups: T05 split eligible/text-ready counts；T05/T06 seek stable contributor URL and more external candidates；T05 align raw_index example schema。
-
-T05 review 判断：
-
-- Verdict: `PASS`
-- Review file: `docs/review/T05_normalize_prompt_corpus_v1_review.md`
-- Captain action: accepted; `docs/04_task_board.md` 已勾选 T05。
-- Corpus v1: 11 records; 9 text-ready; 10 eligible; 1 metadata-only; 1 structure-only; 0 mirrored external; 0 duplicates.
-- Non-blocking followups: `corpus_v1.jsonl` 作为 authoritative corpus snapshot；token estimate deferred to T07；GitHub MIT mirror decision and Contributor Network stable URL deferred to T06 or later provenance task；missing metadata grouping cosmetic and not required now。
-
-T06 review 判断：
-
-- Verdict: `PASS`
-- Review file: `docs/review/T06_corpus_audit_public_private_boundary_review.md`
-- Captain action: accepted; `docs/04_task_board.md` 已勾选 T06。
-- Boundary note summary: 9 text-ready local records; 1 GitHub metadata-only record; 1 Contributor Network structure-only record; 0 excluded; direct-recompute gate explicitly limited to the 9 text-ready records.
-- Non-blocking followups: handoff wording should keep `eval-ready now = 9` distinct from manifest `eligible_count = 10`; manifest `records_present` includes one report path; `prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL 继续 deferred。
-
-T07 worker 执行结果：
-
-- Task: `T07_manual_taxonomy_coding_v1`
+- Task: `T10_build_screening_evaluation_matrix`
 - 状态: worker 已执行，待 review。
-- Coding pool: 9 条 text-ready local records，排除了 1 条 metadata-only 和 1 条 structure-only。
-- Token estimate: 使用 bytes/4 启发式估算，非 tokenizer 精确计数。
-- Changed files: `data/interim/prompt_corpus/prompt_features_v1.jsonl` (new), `data/interim/prompt_corpus/corpus_v1.jsonl` (token estimate backfill), `configs/research/prompt_feature_taxonomy.yaml` (v1 update), `reports/research/taxonomy/taxonomy_v1.md` (new), `reports/research/taxonomy/taxonomy_mapping_note.md` (new), `reports/research/taxonomy/README.md` (updated), `docs/07_handoff.md` (updated)。
-- T08 extractor skeleton 尚未执行。
-- T10 screening 尚未开始。
+- Screening matrix: `reports/research/screening/screening_matrix_v1.md`（候选池 9 条、smoke split、单模型、repeats=1、parse/collapse gates）
+- Candidate registry: `reports/research/screening/screening_candidate_registry_v1.md`（6 core + 3 contrast、excluded records、structural coverage gaps）
+- Shortlist rules: `reports/research/screening/screening_shortlist_rules_v1.md`（elimination E1-E4、inclusion I1-I2、anchor-based assembly、target 3-5）
+- Config 收敛: `evaluation_matrix.example.json` 中 screening phase prompt_set 已替换为 9 条实际 prompt_id；`repeats` 已统一为整数；`"1-3"` 字符串已消除
+- Changed files: `reports/research/screening/screening_matrix_v1.md` (new), `reports/research/screening/screening_candidate_registry_v1.md` (new), `reports/research/screening/screening_shortlist_rules_v1.md` (new), `configs/research/evaluation_matrix.example.json` (updated), `configs/research/README.md` (updated), `reports/research/screening/README.md` (updated), `docs/07_handoff.md` (updated)
+- T11 screening execution 尚未开始。
 
-T08 worker 执行结果：
+## 3. 已完成任务摘要
 
-- Task: `T08_prompt_feature_extractor_skeleton`
-- 状态: worker 已执行，待 review。
-- Extractor module: `src/sair_competition/analysis/prompt_features.py`
-- Rule-ized fields: 7 (prompt_bytes_bucket, prompt_tokens_est_bucket, verdict_contract, rule_or_heuristic_block, opening_strategy, counterexample_requirement, explicit_final_token)
-- Known disagreement: P2.0.2 counterexample_requirement (extractor: absent, manual: optional)
-- Token estimate wording: unified to `round(bytes/4)` in taxonomy_v1.md and taxonomy YAML
-- Tests: 90 focused tests, all passing (schema, bucket boundaries, field alignment on all 9 prompts, boundary gate, round-trip JSON)
-- Changed files: `src/sair_competition/analysis/prompt_features.py` (new), `src/sair_competition/analysis/__init__.py` (updated), `src/sair_competition/cli.py` (updated), `tests/test_prompt_feature_extractor.py` (new), `reports/research/taxonomy/extractor_v1_notes.md` (new), `reports/research/taxonomy/taxonomy_v1.md` (token estimate fix), `reports/research/taxonomy/README.md` (updated), `configs/research/prompt_feature_taxonomy.yaml` (estimation_method fix), `docs/07_handoff.md` (updated)。
-- T09 self-audit 尚未开始。
-- T10 screening 尚未开始。
+### T01-T06：Corpus / Provenance 基线
 
-T08 review 判断：
+- T01-T03：完成 research scaffold、paper claim guardrail、prompt candidate register。
+- T04：完成外部 provenance v0 和 `.gitignore` 窄 allowlist。
+- T05：完成 `corpus_v1.jsonl`，11 条记录中 9 条 text-ready、1 条 metadata-only、1 条 structure-only。
+- T06：完成 `public_private_boundary.md`，明确只有 9 条 text-ready + local path + SHA256 的记录可进入 full-text coding / direct recompute。
 
-- Verdict: `PASS`
-- Review file: `docs/review/T08_prompt_feature_extractor_skeleton_review.md`
-- Captain action: accepted; `docs/04_task_board.md` 已勾选 T08。
-- Extractor result: 7 个高价值字段已规则化；CLI 入口已存在；90 项 focused tests 全部通过；token estimate 文档口径已统一为 `round(bytes/4)`。
-- Non-blocking followups:
-  - T09 复核 P2.0.2 `counterexample_requirement` 的 manual vs extractor 分歧。
-  - T09 明确低方差字段的保留/降权/仅说明性使用策略。
-  - T09 区分“extractor 行为稳定性测试”与“manual coding 一致性主张”的边界。
+### T07：Manual taxonomy coding
 
-T07 review 判断：
+- `data/interim/prompt_corpus/prompt_features_v1.jsonl`
+- 9 条 text-ready local prompts
+- 27 个 taxonomy 字段
+- token estimate 采用 `round(bytes/4)` 启发式估算
 
-- Verdict: `PASS`
-- Review file: `docs/review/T07_manual_taxonomy_coding_v1_review.md`
-- Captain action: accepted; `docs/04_task_board.md` 已勾选 T07。
-- Coding result: `prompt_features_v1.jsonl` 9 条记录、27 个 taxonomy 字段；`corpus_v1.jsonl` 已回填 token estimate；taxonomy YAML 新增 `compression_style`、`ce_search_depth`、`bucket_boundary_notes`。
-- Non-blocking followups:
-  - T08 修正文档中 token estimate `floor` vs `round` 口径不一致。
-  - T08/T09 注意低方差字段不应主导 extractor 或统计解释。
-  - 保留 P1.2.3 bucket boundary sensitivity note，不在当前阶段强行重分桶。
+### T08：Extractor skeleton
 
-Milestone 1 review 判断：
+- `src/sair_competition/analysis/prompt_features.py`
+- CLI 入口已存在
+- 7 个 rule-ized fields
+- 90 项 focused tests 全部通过
 
-- Verdict: `Conditional`
-- Review file: `docs/review/M1_review.md`
-- Captain action: accepted as milestone gate; Milestone 1 closes and Milestone 2 may start。
-- Gate condition: T07/T10 must continue to use `corpus_v1.jsonl` plus T06 boundary gates as the only eligibility source; metadata-only / structure-only records stay out of full-text coding and eval until a later reviewed task changes status。
+### T09：Self-audit and conflict resolution
 
-## 3. 下一位 Worker 需要先读
+- `reports/research/taxonomy/self_audit_v1.md`
+- `reports/research/taxonomy/conflict_resolution_v1.md`
+- P2.0.2 `counterexample_requirement` 从 `optional` 校正为 `absent`
+- extractor/manual agreement 达到 63/63（7 fields x 9 prompts）
+- 10 个低方差字段保留在 schema 中，但排除出统计模型，仅作 descriptive labels
+- reporting boundary 固定为：manual coding = authoritative taxonomy truth；extractor = supporting cross-check
+
+## 4. 下一位 Worker 必读
 
 ```text
 README.md
@@ -145,7 +120,7 @@ docs/04_task_board.md
 docs/06_eval_protocol.md
 docs/07_handoff.md
 docs/08_risks_and_open_questions.md
-docs/review/T08_prompt_feature_extractor_skeleton_review.md
+docs/review/T10_build_screening_evaluation_matrix_review.md
 docs/review/M1_review.md
 data/interim/prompt_corpus/corpus_v1.jsonl
 data/interim/prompt_corpus/prompt_features_v1.jsonl
@@ -153,100 +128,98 @@ data/interim/prompt_corpus/prompt_corpus_manifest.json
 reports/research/corpus_audit/summary.md
 reports/research/corpus_audit/public_private_boundary.md
 configs/research/prompt_feature_taxonomy.yaml
+configs/research/evaluation_matrix.example.json
 reports/research/taxonomy/taxonomy_v1.md
 reports/research/taxonomy/taxonomy_mapping_note.md
 reports/research/taxonomy/extractor_v1_notes.md
+reports/research/taxonomy/self_audit_v1.md
+reports/research/taxonomy/conflict_resolution_v1.md
+reports/research/screening/README.md
+reports/research/screening/screening_matrix_v1.md
+reports/research/screening/screening_candidate_registry_v1.md
+reports/research/screening/screening_shortlist_rules_v1.md
 src/sair_competition/analysis/prompt_features.py
 tests/test_prompt_feature_extractor.py
 ```
 
-## 4. Worker 执行边界
+## 5. Worker 执行边界
 
-下一位 worker 只执行 T09。
+T10 已执行，待 review。下一位 worker 不应重复执行 T10。
 
-- 基于 `prompt_features_v1.jsonl`、`extractor_v1_notes.md`、T08 tests 和 extractor 输出做 taxonomy self-audit。
-- 重点处理 P2.0.2 `counterexample_requirement` 分歧、低方差字段处理策略、以及 extractor-stability vs manual-alignment 的叙事边界。
-- T10 screening 仍不应先于 T09 启动。
+- 如 review 为 PASS，可进入 T11 (run screening on selected prompt candidates)。
+- T11 应基于 `screening_matrix_v1.md` 定义的 matrix 执行 screening。
+- T11 需填入 `provider_route` 实际值，但不得更改 screening phase 的其他 frozen 字段（temperature, max_tokens, reasoning_mode, repeats, prompt_set, dataset_set）。
+- T11 应使用 `screening_shortlist_rules_v1.md` 做 shortlist 决策，T12 写 screening summary。
 
 允许修改文件：
 
-- `data/interim/prompt_corpus/prompt_features_v1.jsonl`
-- `reports/research/taxonomy/README.md`
-- `reports/research/taxonomy/taxonomy_v1.md`
-- `reports/research/taxonomy/taxonomy_mapping_note.md`
-- `reports/research/taxonomy/extractor_v1_notes.md`
-- `reports/research/taxonomy/self_audit_v1.md`
-- `reports/research/taxonomy/conflict_resolution_v1.md`
-- `docs/07_handoff.md`
+- `docs/04_task_board.md`（仅 Captain，勾选 T10）
+- 其他文件由 T11 任务包定义
+
+T11 任务包未创建前，worker 不应提前执行 T11。
+
+## 6. Current corpus / taxonomy facts
 
 Current corpus boundary summary：
 
-- text-ready records: `9`
+- total corpus records: `11`
+- text-ready local records: `9`
 - metadata-only records: `1`
 - structure-only records: `1`
-- eval-eligible now: `9` (`eligible_count = 10` in manifest still includes the metadata-only GitHub record as provenance-eligible, not eval-ready-now)
-- external prompt text mirrored: no
-- T07/T10 gating rule: only text-ready records with local path and SHA256 may enter direct recompute
+- eval-eligible now: `9`
+- mirrored external text-ready records: `0`
 
-T05 corpus summary：
+Current taxonomy / extractor summary：
 
-- `corpus_v1_record_count = 11`
-- `eligible_count = 10`
-- `text_ready_count = 9`
-- `mirrored_external_count = 0`
-- `metadata_only_count = 1`
-- `structure_only_count = 1`
-- `excluded_count = 0`
-- duplicate report: no duplicates found in T05
-- mirrored GitHub prompt text: no
+- taxonomy fields coded: `27`
+- rule-ized fields: `7`
+- extractor/manual agreement after T09 adjudication: `63/63`
+- low-variance fields excluded from models: `10`
+- authoritative corrected mismatch count: `1` historical mismatch, now resolved
 
-T07 taxonomy coding summary：
+## 7. Reviewer 重点（给 T10）
 
-- coded records: `9` (all text-ready local)
-- excluded non-text-ready records: `2` (1 metadata-only, 1 structure-only)
-- token estimate method: bytes/4 heuristic, not tokenizer
-- taxonomy fields coded: `27` (4 length + 6 structural + 3 module order + 4 counterexample + 3 true strategy + 3 output stability + 3 provenance + 1 compression_style)
-- prompt families identified: `4` (minimal baseline, guardrail-heavy lineage, official archetype adaptations, reserved external)
-
-## 5. Reviewer 重点
-
-T09 reviewer 类型：normal。
+T10 reviewer 类型应为 `normal`。
 
 重点检查：
 
-- 是否真实复核了 manual taxonomy 与 extractor 结果之间的已知分歧，而不是只复述已有文档。
-- 是否对低方差字段给出了清晰、可执行的保留/降权/仅说明性使用策略。
-- 若修改 `prompt_features_v1.jsonl`，是否逐条说明理由，没有静默改动。
-- 是否没有越过 T06 boundary gate 把 non-text-ready records 拉入 full-text coding。
-- 是否为 T10 screening 留下清晰、可信的 taxonomy 输入与限制说明。
+- screening matrix 是否只使用 T06/T09 允许的候选池（9 条 text-ready）和字段。
+- `repeats` 是否从 `"1-3"` 说明性字符串收敛为正式可执行整数。
+- 是否清楚区分 T10 matrix 设计 与 T11 screening execution。
+- 是否把 10 个低方差字段正确降为 descriptive-only，不作为 shortlist 主决策依据。
+- 是否把 manual coding 设为权威特征来源，而不是把 extractor 输出写成 authoritative truth。
+- shortlist rules 的 elimination/inclusion 条件是否具体、可执行、不会导致 T12 需要做主观判断。
+- candidate registry 是否正确分类 6 core / 3 contrast candidates，以及 excluded records 的排除理由是否充分。
+- 是否没有偷跑实验结论或性能预测。
 
-## 6. 完成 T09 后 Captain 要做
+## 8. Captain 在 T10 review 后要做
 
 如果 review 为 `PASS`：
 
-1. 在 `docs/04_task_board.md` 勾选 `T09`。
+1. 在 `docs/04_task_board.md` 勾选 `T10`。
 2. 更新本文件的当前状态。
-3. 可以推荐进入 `T10`，但不直接执行。
-4. 若自审未真正处理已知分歧、低方差字段策略空泛、或静默改动人工标注，则阻止进入 T10。
+3. 可以推荐进入 T11，但不直接执行。
+4. 若 screening matrix 候选池不含 9 条 text-ready records、repeats 未收敛为整数、或 shortlist rules 留有模糊主观判断空间，则阻止进入 T11。
 
 如果 `PASS_WITH_WARNINGS`：
 
-1. 把 warning 分类为 accepted、deferred、rejected。
+1. 把 warning 分类为 accepted / deferred / rejected。
 2. deferred 写入 `docs/08_risks_and_open_questions.md`。
-3. 再决定是否进入下一任务。
+3. 再判断是否允许进入 T11。
 
 如果 `BLOCK`：
 
 1. 只派修 blocking issue 的小任务。
 2. 同一任务最多自动复审一次。
-3. 第二次仍 BLOCK 则停止交给用户裁决。
+3. 第二次仍 `BLOCK`，停止并交给用户裁决。
 
-## 7. 当前未验证事项
+## 9. 当前未验证事项
 
-- T09 taxonomy self-audit 尚未执行。
-- T08 extractor 有 1 个已知分歧：P2.0.2 counterexample_requirement (extractor: absent, manual: optional)。
-- T07 无 inter-annotator agreement（单编码者），T09 self-audit 应复核编码一致性。
-- GitHub MIT external source 仍未镜像，本地 external text-ready record 仍为 `0`。
-- contributor-network 占位项仍只有 host-level official provenance，尚未解析到稳定的具体 prompt 页面。
-- screening / recomputed benchmark / post-release analysis 仍未开始执行。
-- T10 screening 仍不应先于 T09 启动主线执行。
+- T10 screening evaluation matrix 已执行，待 review。
+- Screening matrix 已定义：9 条候选、smoke split、单模型、repeats=1、parse/collapse gates、structural coverage test。
+- Shortlist rules 已定义：elimination E1-E4（parse failure、all-true、all-false、non-reproducible）、inclusion I1-I2（structural uniqueness、no near-duplicate）、anchor-based assembly。
+- T11 screening execution 尚未开始。
+- external text-ready coverage 仍为 `0`；GitHub MIT source 仍未镜像。
+- contributor-network 占位项仍只有 host-level provenance。
+- screening / recomputed benchmark / post-release analysis 仍未实际运行。
+- `.claude/settings.json` 仍是与研究提交无关的本地工具权限噪音，应避免混入正式提交。

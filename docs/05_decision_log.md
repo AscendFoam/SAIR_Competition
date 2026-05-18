@@ -1,5 +1,29 @@
 # Decision Log
 
+## D020: Accept T10 review verdict and advance to T11
+
+Date: `2026-05-18`
+
+Decision:
+- Captain accepts `docs/review/T10_build_screening_evaluation_matrix_review.md` with verdict `PASS`.
+- `T10_build_screening_evaluation_matrix` is treated as complete and may be committed after Captain governance updates.
+- The next and only current worker task is `T11_run_screening_on_selected_prompt_candidates`.
+- A new worker package must exist at `docs/tasks/phase_3_screening_eval/T11_run_screening_on_selected_prompt_candidates.md`.
+
+Reason:
+- The T10 review found no blocking issue.
+- The screening matrix, candidate registry, shortlist rules, and example config are sufficiently frozen for Stage A execution.
+- T12 depends on actual screening artifacts, so T11 is now the critical path.
+
+Warning handling:
+- accepted: `N3` (`.claude/settings.json` noise, not part of the research state transition)
+- deferred: `N1`, `N2`, `N4`
+- rejected: none
+
+Follow-up:
+- Track deferred T10 review warnings in `docs/08_risks_and_open_questions.md`.
+- Do not reopen T10 unless a new blocking fact appears during T11/T12 integration.
+
 本文件记录影响研究方向、架构或复现实验解释的关键决策。普通执行细节写入 `docs/07_handoff.md`。
 
 ## D001: Stage1 后续主线切换为 prompt textual distillation research
@@ -341,3 +365,24 @@ Milestone 1 `Public Corpus and Provenance Cleaning` 经里程碑审查后结论�
 - P2.0.2 `counterexample_requirement` 的 manual vs extractor 分歧：deferred 到 T09 adjudication。
 - `rule_or_heuristic_block` 对 `override` 关键词的 fragile heuristic：deferred 到 T09/后续 corpus expansion 复核。
 - 低方差字段与 extractor-stability vs manual-alignment 的边界：deferred 到 T09 明确写成自审结论。
+
+## D019: 接受 T09 review verdict 并进入 T10
+
+日期：2026-05-18
+
+决策：
+
+`docs/review/T09_taxonomy_self_audit_and_conflict_resolution_review.md` verdict 为 `PASS`，Captain 接受该结论，标记 `T09_taxonomy_self_audit_and_conflict_resolution` 完成，并将 Current Unique Task 切换到 `T10_build_screening_evaluation_matrix`。
+
+理由：
+
+- Reviewer 未发现 blocking issue。
+- T09 已对 T08 留下的 4 类关键问题给出明确 adjudication：P2.0.2 分歧、`rule_or_heuristic_block` heuristic、低方差字段策略、extractor/manual reporting boundary。
+- `prompt_features_v1.jsonl` 的唯一修正是 review-backed、最小且透明的：P2.0.2 `counterexample_requirement` 从 `optional` 改为 `absent`。
+- 自审后 7 个 rule-ized 字段在 9 条 prompt 上达到 63/63 extractor-manual agreement，足以支撑下一步 screening matrix 设计。
+
+非阻塞事项处理：
+
+- `.claude/settings.json` 权限噪音：accepted，不纳入研究提交。
+- `self_audit_v1.md` 与 `conflict_resolution_v1.md` 的低方差字段分组表述不完全一致：deferred 到后续文档 hygiene 或 screening summary 阶段统一。
+- `self_audit_v1.md` Section 7 标题仍像 adjudication 前的输入说明：deferred，不阻塞 T10。

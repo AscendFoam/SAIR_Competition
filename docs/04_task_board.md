@@ -1,22 +1,35 @@
 # Task Board
 
+## Captain Override (2026-05-18)
+
+- Captain review decision: accept `docs/review/T10_build_screening_evaluation_matrix_review.md` with verdict `PASS`.
+- `T10_build_screening_evaluation_matrix` is complete at the Captain level.
+- Current Unique Task: `T11_run_screening_on_selected_prompt_candidates`.
+- Active worker package: `docs/tasks/phase_3_screening_eval/T11_run_screening_on_selected_prompt_candidates.md`
+- Warning classification for T10 review:
+- accepted: `N3` (`.claude/settings.json` noise; not part of research deliverable state)
+- deferred: `N1`, `N2`, `N4` (distribution wording consistency and indirect self-audit references)
+- rejected: none
+- Deferred warnings must be tracked in `docs/08_risks_and_open_questions.md` and cleaned up in a later reporting/doc-hygiene task.
+- No blocking issue remains for T10. The only worker task now is to execute frozen Stage A screening under T11.
+
 日期：2026-05-17
 
 ## Current Unique Task
 
-`T09_taxonomy_self_audit_and_conflict_resolution`: 对 T07 手工编码与 T08 extractor skeleton 做一致性复核、边界案例 adjudication 和字段冲突收口，作为 Milestone 2 收口任务。
+`T10_build_screening_evaluation_matrix`: 基于 T06 corpus gate 与 T09 taxonomy adjudication，建立可执行的 screening evaluation matrix，明确候选池、字段使用规则、run config 约束和 shortlist 准入标准。
 
 任务包：
 
-- `docs/tasks/phase_2_prompt_taxonomy/T09_taxonomy_self_audit_and_conflict_resolution.md`
+- `docs/tasks/phase_3_screening_eval/T10_build_screening_evaluation_matrix.md`
 
 状态：Ready for worker，尚未执行。
 
 为什么现在做它：
 
-- `T08` 已通过 normal review，extractor skeleton、CLI 入口和 focused tests 已落地。
-- 现在已有手工基线与自动提取骨架两套结果，可以开始做一致性自审，而不必继续堆实现。
-- T08 review 已明确指出 P2.0.2 的 `counterexample_requirement` 分歧、低方差字段风险和测试语义边界，适合在 T09 集中裁决。
+- `T09` 已通过 normal review，manual taxonomy 与 extractor skeleton 的唯一已知分歧已裁决，字段使用边界已写清。
+- T10 是进入 screening execution 前的最后一个设计关口；先把候选池、矩阵 schema、字段准入和 run artifact 约束固定，能避免 T11 边跑边改 protocol。
+- T09 已明确哪些字段可直接用于 screening、哪些只能 descriptive-only，T10 现在有足够稳定的输入可写成正式矩阵。
 
 ## Milestone 0: Research Repositioning and Repository Setup
 
@@ -98,7 +111,7 @@ Milestone 1 review status:
 
 - [x] `T07`: Manual taxonomy coding for representative prompts。
 - [x] `T08`: Implement prompt feature extractor skeleton and tests。
-- [ ] `T09`: Taxonomy self-audit and conflict resolution report。
+- [x] `T09`: Taxonomy self-audit and conflict resolution report。
 
 T07 review result:
 
@@ -116,10 +129,26 @@ T08 review result:
 - Captain action: accepted; `T08` marked complete.
 - Non-blocking followups: T09 should adjudicate the P2.0.2 `counterexample_requirement` mismatch, review low-variance fields, and distinguish extractor stability tests from manual-alignment claims.
 
+T09 review result:
+
+- Verdict: `PASS`
+- Review file: `docs/review/T09_taxonomy_self_audit_and_conflict_resolution_review.md`
+- Deliverables: `self_audit_v1.md` and `conflict_resolution_v1.md`; P2.0.2 `counterexample_requirement` corrected from `optional` to `absent`; extractor/manual agreement reaches 63/63 across 7 rule-ized fields after adjudication.
+- Captain action: accepted; `T09` marked complete.
+- Warning handling:
+  - accepted: `.claude/settings.json` tool-permission noise is unrelated and should stay out of the research commit.
+  - deferred: unify low-variance field grouping wording across T09 documents; tighten the final section title/wording in `self_audit_v1.md` if later doc hygiene work is opened.
+  - rejected: none.
+
 Exit criteria:
 
 - `prompt_features_v1.jsonl` 覆盖第一批候选。
 - taxonomy report 能解释字段、边界案例和复核结果。
+
+Milestone 2 review status:
+
+- Gate: `Pass`
+- Reason: T07 manual coding、T08 extractor skeleton 和 T09 self-audit/conflict resolution 已共同满足“taxonomy report 能解释字段、边界案例和复核结果”的退出条件；但 T10 之后仍需继续遵守 low-variance 与 manual-authoritative 的使用边界。
 
 ## Milestone 3: Screening Evaluation
 

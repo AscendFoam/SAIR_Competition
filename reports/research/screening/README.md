@@ -1,22 +1,27 @@
 # Screening Reports
 
-本目录用于记录 Stage A `screening` 评测结果。
+本目录用于记录 Stage A `screening` 评测设计、结果和 shortlist 决策。
 
-目标：
+## 当前状态
 
-- 排查 parse collapse
-- 排查 all-true 或 all-false collapse
-- 形成进入完整评测的 shortlist
+Matrix defined, execution not started. T10 已完成 screening evaluation matrix 设计，T11 尚未执行 screening。
 
-当前状态：
+## 文件清单
 
-- 仅完成 `evaluation_matrix` 模板。
-- 尚未运行任何 screening。
+| 文件 | 说明 |
+|---|---|
+| `screening_matrix_v1.md` | Screening evaluation matrix：候选池、split、model config、metrics、gates、field usage rules |
+| `screening_candidate_registry_v1.md` | 9 条 text-ready 候选的 registry：分类（core/contrast）、structural coverage、excluded records |
+| `screening_shortlist_rules_v1.md` | Shortlist 决策规则：elimination conditions、inclusion conditions、deduplication、coverage test |
 
-后续报告至少应包含：
+## 待完成
 
-- 候选 prompt 列表
-- 数据切片说明
-- 模型与 provider route
-- parse success、true recall、false recall、accuracy
-- shortlist 决策及其理由
+- T11: Run screening on 9 prompt candidates using smoke split.
+- T12: Write screening summary and shortlist report.
+
+## 设计原则
+
+- 排查 parse collapse、all-true/all-false collapse。
+- 形成 3-5 个 prompt 的 shortlist 进入 recomputed benchmark。
+- Screening 结果不直接用于论文性能结论，只用于排除和 shortlist 决策。
+- 10 个低方差 taxonomy 字段不作为 shortlist 主决策依据。

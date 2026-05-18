@@ -121,4 +121,16 @@ Milestone 1 已完成一次里程碑审查，结论为 `Conditional`：
 - 已新增 CLI 入口和 90 项 focused tests。
 - token estimate 文档口径已统一为 `round(bytes/4)`。
 
-下一步唯一任务是 `T09_taxonomy_self_audit_and_conflict_resolution`：对 T07 手工编码与 T08 extractor 输出做一致性自审，收口已知分歧、低方差字段策略和 conflict resolution 规则，为 T10 screening 提供可信输入。
+`T09_taxonomy_self_audit_and_conflict_resolution` 已通过 reviewer `PASS`：
+
+- 已完成 taxonomy self-audit 与 conflict resolution。
+- P2.0.2 `counterexample_requirement` 已从 `optional` 校正为 `absent`，且 coder note 已记录 adjudication。
+- 10 个低方差字段已被明确保留在 schema 中，但排除出统计模型，仅作说明性标签。
+- extractor 输出与 manual coding 的关系已被收口为“manual authoritative、extractor cross-check”。
+
+下一步唯一任务是 `T10_build_screening_evaluation_matrix`：把 T06 corpus gate、T09 字段使用边界和现有 evaluation seed template 收敛成正式 screening matrix，为 T11 小样本 screening execution 建立稳定 protocol，而不是边跑边改规则。
+## Captain Status Update (2026-05-18)
+
+- Research framing is unchanged: this remains a post-release analysis project centered on the Stage1 public prompt corpus, taxonomy, robustness, and textual distillation.
+- `T10_build_screening_evaluation_matrix` has passed review and been accepted by Captain.
+- The current execution task has advanced to `T11_run_screening_on_selected_prompt_candidates`.

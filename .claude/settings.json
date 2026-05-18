@@ -24,7 +24,9 @@
       "Bash(PYTHONPATH=src C:/ProgramData/anaconda3/python.exe -m pytest tests/test_prompt_feature_extractor.py -q -p no:cacheprovider)",
       "Bash(pip install *)",
       "Bash(PYTHONPATH='src' python -m sair_competition.cli extract-prompt-features --prompt-path prompts/complete/P1.1.1_strict_first_draft.txt --prompt-id local_p1_1_1_strict_first_draft)",
-      "Bash(PYTHONPATH='src' python -m sair_competition.cli extract-prompt-features --corpus-path data/interim/prompt_corpus/corpus_v1.jsonl)"
+      "Bash(PYTHONPATH='src' python -m sair_competition.cli extract-prompt-features --corpus-path data/interim/prompt_corpus/corpus_v1.jsonl)",
+      "Bash(python -m pytest tests/test_prompt_feature_extractor.py -q)",
+      "Bash(python -m json.tool configs/research/evaluation_matrix.example.json)"
     ]
   }
 }

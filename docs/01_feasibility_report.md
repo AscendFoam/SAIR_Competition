@@ -171,3 +171,26 @@ T08 review 非阻塞事项处理：
 - P2.0.2 `counterexample_requirement` 的 manual vs extractor 分歧：deferred 到 T09 adjudication。
 - `rule_or_heuristic_block` 的 saturated/extended 区分依赖 `override` 关键词：deferred 到 T09/后续 corpus expansion 复核。
 - 低方差字段与 extractor-stability vs manual-alignment 的解释边界：deferred 到 T09 明确写成自审结论。
+
+T09 review 判断：
+
+- `docs/review/T09_taxonomy_self_audit_and_conflict_resolution_review.md` verdict 为 `PASS`。
+- T09 已完成自审与冲突裁决，唯一数据修正是 P2.0.2 `counterexample_requirement: optional -> absent`。
+- 自审后 7 个 rule-ized 字段在 9 条 prompt 上达到 63/63 一致；manual coding 与 extractor 的关系被明确收口为“manual authoritative, extractor supporting cross-check”。
+
+T09 review warning 处理：
+
+- `.claude/settings.json` 工具权限噪音：accepted，不纳入研究提交。
+- 低方差字段在 `self_audit_v1.md` 与 `conflict_resolution_v1.md` 的分组口径不完全一致：deferred 到后续文档 hygiene 或 screening 总结阶段统一，不阻塞 T10。
+- `self_audit_v1.md` 末尾 “Recommendations for T09 Adjudication Input” 标题语气仍像预审建议：deferred，后续如开文档润色任务再清。
+
+进入 Milestone 3 的前置条件现在成立，但仍保留三个执行约束：
+
+- T10 只能使用 9 条 text-ready local records 作为 screening 候选池。
+- T10/T19 不得把 10 个低方差字段作为独立统计变量。
+- screening matrix 必须以 T09 的 field usage classification 为准，manual coding 为权威引用，extractor 只做交叉验证。
+## Captain Status Update (2026-05-18)
+
+- Feasibility remains confirmed for the Stage1 research line.
+- The Stage A screening design gate is now review-backed through T10.
+- The next critical-path task is `T11_run_screening_on_selected_prompt_candidates`.

@@ -265,3 +265,22 @@ T08 review 没有 blocking issue。taxonomy tooling layer 现在新增：
 - extractor skeleton 只覆盖 7 个高价值字段，不代表 full automation。
 - `prompt_features_v1.jsonl` 仍是 authoritative manual reference，extractor 输出只是对照与复用工具。
 - T09 必须处理 extractor 与 manual coding 的已知分歧、低方差字段和说明边界，之后才适合进入 T10 screening。
+
+## 15. T09 Self-Audit Gate Status
+
+T09 review 没有 blocking issue。taxonomy governance layer 现在新增：
+
+- `reports/research/taxonomy/self_audit_v1.md`
+- `reports/research/taxonomy/conflict_resolution_v1.md`
+
+当前架构约束：
+
+- `prompt_features_v1.jsonl` 仍是 authoritative manual feature table；T09 只做了 1 处 review-backed 最小修正：P2.0.2 `counterexample_requirement` 从 `optional` 改为 `absent`。
+- extractor agreement 现在可作为质量信号报告，但不能替代 manual coding truth。
+- 10 个低方差字段必须保留在 schema 中以维持连续性，但当前不能作为 screening/statistical modeling 的主信号。
+- T10 需要把上述边界写进 screening evaluation matrix；T11 只能在该矩阵冻结后执行。
+## Captain Status Update (2026-05-18)
+
+- The architecture baseline is unchanged.
+- A review-backed Stage A screening design now exists in `reports/research/screening/` and `configs/research/evaluation_matrix.example.json`.
+- The next operational layer to populate is `artifacts/research_runs/screening/` under `T11_run_screening_on_selected_prompt_candidates`.

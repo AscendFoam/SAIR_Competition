@@ -1,6 +1,6 @@
 # Extractor v1 Notes
 
-Date: 2026-05-17
+Date: 2026-05-17 (updated 2026-05-18 by T09)
 Task: T08_prompt_feature_extractor_skeleton
 Module: `src/sair_competition/analysis/prompt_features.py`
 
@@ -9,8 +9,7 @@ Module: `src/sair_competition/analysis/prompt_features.py`
 This is a **skeleton** extractor, not full automation. Manual taxonomy coding
 (`prompt_features_v1.jsonl`) remains the **authoritative reference**.  The
 extractor produces structured feature records from prompt text files, but only
-a subset of fields are rule-ized.  T09 self-audit is still required before
-taxonomy results are used for statistical analysis.
+a subset of fields are rule-ized.  T09 self-audit has been completed.
 
 ## Rule-ized Fields (skeleton coverage)
 
@@ -24,20 +23,20 @@ focused tests against all 9 text-ready prompts:
 | `verdict_contract` | "exactly one token" / "VERDICT:" patterns | Yes |
 | `rule_or_heuristic_block` | "Mandatory TRUE checks" + "override" keywords | Yes |
 | `opening_strategy` | "Counterexample-first" / "Balanced solve" / "Mandatory TRUE" / "Fast TRUE" keywords | Yes |
-| `counterexample_requirement` | "counterexample-first policy" / "falsification" / "counterexample" instruction keywords | 8/9 (see below) |
+| `counterexample_requirement` | "counterexample-first policy" / "falsification" / "counterexample" instruction keywords | 9/9 (after T09 adjudication) |
 | `explicit_final_token` | "exactly one token" / "single token" patterns | Yes |
 
 ## Known Disagreements with Manual Coding
 
-### P2.0.2 counterexample_requirement
+### ~~P2.0.2 counterexample_requirement~~ — Resolved by T09
 
-- Manual coding: `optional`
+- ~~Manual coding: `optional`~~ → T09 adjudication: `absent`
 - Extractor output: `absent`
-- Reason: P2.0.2 has no "counterexample" keyword in its text. The manual
-  coder assigned "optional" based on implicit counterexample-like reasoning in
-  the fast-false filters, but the skeleton extractor cannot detect this without
-  deeper semantic analysis.
-- Impact: Low. P2.0.2 is the only prompt with this discrepancy.
+- The manual coding has been corrected to `absent` per T09 conflict resolution.
+  P2.0.2 has no counterexample search instruction; the "stay conservative"
+  fallback is an ambiguity-handling instruction, not a CE instruction.
+- After T09 correction: extractor and manual coding now agree 9/9 on all
+  rule-ized fields.
 
 ### P1.2.5 vs P1.2.8 rule_or_heuristic_block distinction
 
@@ -46,6 +45,10 @@ Both prompts contain "Singleton family A/B" rules, but only P1.2.5 is coded as
 "do not let later guardrails override it" clause) to distinguish `saturated`
 from `extended`. This heuristic is specific to the current corpus and may need
 revision if future prompts have different override patterns.
+
+**T09 adjudication**: Accept as-is for skeleton scope. The distinction is
+correct for all 9 current prompts. Manual coding remains authoritative if
+future prompts reveal fragility. Documented in `conflict_resolution_v1.md`.
 
 ## Placeholder Fields (not yet rule-ized)
 
@@ -74,18 +77,34 @@ or a future extractor version:
 
 ## Low-Variance Fields
 
-The following fields have low variance in the current 9-prompt corpus and
-should not be treated as high-information features in screening or statistical
-models, even after future extractor coverage:
+The following fields have zero or near-zero variance in the current 9-prompt
+corpus and must not be used as independent variables in statistical models:
 
-- `ce_search_depth`: 8 implicit, 1 shallow
+**Zero-variance (single value across all 9):**
+- `system_goal_framing`: all true
 - `finite_model_search_hint`: all false
 - `identity_or_invariant_guidance`: all false
 - `examples_before_rules`: all false
 - `examples_block`: all none
-- `counterexample_requirement`: 7 absent, 1 encouraged, 1 optional (manual)
+- `provenance_status`: all local_project
+- `post_release_relation`: all pre_release_design
 
-These fields are retained for future corpus expansion.
+**Near-zero-variance:**
+- `ce_search_depth`: 8 implicit, 1 shallow
+- `counterexample_requirement`: 8 absent, 1 encouraged (after T09 correction)
+- `builds_on_public_work`: 6 none_declared, 3 official_only
+
+**T09 policy**: Retain in schema and feature records. Exclude from regression
+models and correlation analyses. May be used as descriptive labels and for
+hypothesis generation. Re-evaluate after corpus expansion. See
+`conflict_resolution_v1.md` Adjudication 3.
+
+## Extractor vs Manual Reporting Boundary (T09)
+
+**Rule**: Extractor outputs report "extractor behavior"; manual coding reports
+"taxonomy truth." When both exist, manual coding is authoritative. When only
+manual exists, report directly but note it is not extractor-verified. See
+`conflict_resolution_v1.md` Adjudication 4.
 
 ## Token Estimate Fix (T08)
 
@@ -126,11 +145,12 @@ python -m sair_competition.cli extract-prompt-features `
 
 ## Relationship to T09
 
-T09 self-audit must review:
-1. Manual coding consistency (single-coder bias)
-2. Whether the extractor disagreements documented above are acceptable
-3. Whether low-variance fields should be deprioritized in statistical models
-4. Whether the keyword heuristics are robust enough for future corpus expansion
+T09 self-audit has been completed. Key outcomes:
 
-The extractor does not replace T09. It provides a rule-ized baseline that T09
-can compare against.
+1. Manual coding consistency: reviewed; single-coder bias acknowledged; mitigated by coder notes and extractor cross-check.
+2. P2.0.2 disagreement: resolved; manual coding corrected to `absent`.
+3. Low-variance fields: classified and excluded from statistical models.
+4. Keyword heuristics: accepted for skeleton scope; reassess on corpus expansion.
+
+The extractor now achieves 9/9 agreement with the corrected manual coding on
+all 7 rule-ized fields. See `self_audit_v1.md` and `conflict_resolution_v1.md`.

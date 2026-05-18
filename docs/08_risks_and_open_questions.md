@@ -1,5 +1,53 @@
 # Risks and Open Questions
 
+## Captain Update (2026-05-18)
+
+- T10 review verdict `PASS` has been accepted by Captain.
+- `T10_build_screening_evaluation_matrix` is complete.
+- Current Unique Task is now `T11_run_screening_on_selected_prompt_candidates`.
+- Deferred review warnings from T10 are recorded below as doc-consistency / reporting-hygiene risks so they are not lost before T12.
+
+## T10 Deferred Review Follow-Ups
+
+### R22: Screening matrix wording may drift from authoritative prompt feature counts
+
+Source:
+- T10 review `N1`
+
+Risk:
+- `reports/research/screening/screening_matrix_v1.md` Section 8 distribution wording may not exactly match `data/interim/prompt_corpus/prompt_features_v1.jsonl`.
+- This is not a screening-design blocker, but it can create reporting ambiguity in later summary writing.
+
+Mitigation:
+- Treat `prompt_features_v1.jsonl` as authoritative for any count/distribution claim.
+- Clean the wording during later reporting/doc-hygiene work before paper-facing summaries are finalized.
+
+### R23: Candidate registry narrative may drift from authoritative prompt feature counts
+
+Source:
+- T10 review `N2`
+
+Risk:
+- `reports/research/screening/screening_candidate_registry_v1.md` contains wording that may be inconsistent with the authoritative coded feature file.
+- This can confuse later readers about why candidate coverage was selected.
+
+Mitigation:
+- Do not change candidate membership during T11.
+- Reconcile narrative wording against `prompt_features_v1.jsonl` in a later reporting/doc-hygiene task.
+
+### R24: Indirect self-audit references reduce report traceability
+
+Source:
+- T10 review `N4`
+
+Risk:
+- Some wording in `screening_matrix_v1.md` references prior self-audit/conflict-resolution evidence too indirectly.
+- This is a traceability and readability issue, not an execution blocker.
+
+Mitigation:
+- Later reporting/doc-hygiene work should replace indirect phrases with direct citations or direct statements.
+- T11 should proceed without redesigning T10 artifacts.
+
 日期：2026-05-17
 
 ## Active Risks
@@ -275,6 +323,11 @@ Status:
 - T08 extractor note 和 T09 self-audit 必须显式列出低方差字段。
 - 统计分析前先检查字段方差和可解释性，不让低方差字段主导结论。
 
+Status:
+
+- T09 已明确 10 个低方差字段“保留 schema、排除统计模型、仅作说明性标签”的策略。
+- 风险从未识别设计风险降级为执行风险 monitor；T10/T19 仍需在 matrix 与 analysis 中持续遵守。
+
 ### R21: manual taxonomy 与 extractor 结果的局部分歧被忽略
 
 信号：
@@ -286,6 +339,11 @@ Status:
 
 - T09 必须给出 manual vs extractor mismatch 表和 adjudication rule。
 - 在 T09 之前，不把 extractor 输出写成 authoritative feature truth。
+
+Status:
+
+- T09 已完成 P2.0.2 `counterexample_requirement` adjudication，并把 authoritative 值收敛为 `absent`。
+- 当前风险降级为 monitor：后续若 corpus 扩展或 extractor 覆盖范围扩大，需要重新审视新的 mismatch。
 
 ## Open Questions
 
@@ -309,7 +367,7 @@ Status:
 18. T06 是否能找到 Contributor Network 的稳定 prompt-level URL，若找不到是否维持 structure-only 到 paper limitation？
 19. T07 对 `prompt_tokens_est` 采用什么 reviewable 估算口径，才能既支持 length bucket 又不伪称 tokenizer 精度？
 20. T08 应统一使用 `round(bytes/4)` 还是改回 `floor(bytes/4)`，以及是否需要保留 bucket boundary note 解释历史差异？
-21. P2.0.2 `counterexample_requirement` 的 authoritative 值最终应保留 manual `optional` 还是 extractor `absent`？
+21. T09 两份文档里 low-variance / moderate-variance 的分组口径是否需要在后续 doc hygiene 中统一成一套固定写法？
 
 ## Deferred Items
 
@@ -325,3 +383,4 @@ Status:
 - T06 review 非阻塞事项：handoff `eval-ready now` vs manifest `eligible_count` wording distinction、manifest `records_present` includes report path、`prompt_tokens_est`、GitHub MIT mirror decision、Contributor Network stable URL。
 - T07 review 非阻塞事项：token estimate formula wording mismatch、low-variance taxonomy fields、P1.2.3 bucket boundary sensitivity。
 - T08 review 非阻塞事项：P2.0.2 `counterexample_requirement` mismatch、`rule_or_heuristic_block` fragile heuristic、low-variance fields、extractor-stability vs manual-alignment boundary、`.claude/settings.json` tool-permission noise。
+- T09 review 非阻塞事项：low-variance field grouping wording drift across T09 docs、`self_audit_v1.md` Section 7 标题语气仍像预审输入、`.claude/settings.json` tool-permission noise。

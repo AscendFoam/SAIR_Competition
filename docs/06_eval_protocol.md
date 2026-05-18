@@ -291,3 +291,18 @@ T08 已通过 review，但 T10 仍不应直接启动。
 因此，T10 前仍有一个硬门槛：
 
 - T09 必须先给出 self-audit 与 conflict resolution note，确认哪些字段可直接用于 screening/reporting，哪些字段只能作为说明性标签。
+
+## 16. Screening Gate After T09
+
+T09 已通过 review，因此 T10 现在可以启动，但仍必须遵守以下 protocol：
+
+- screening 候选池仅限于 9 条 `included_text_ready` local prompts；metadata-only / structure-only records 不得混入。
+- T10 matrix 中可直接用于筛选或后续统计规划的字段，应优先来自 `self_audit_v1.md` Section 4.1；low-variance fields 仅可作为 descriptive labels。
+- manual coding 是 taxonomy truth；extractor 输出只能作为 cross-check、批量辅助或一致性质量信号。
+- T10 需要把 `repeats` 从 example/template 表达收敛为可执行的正式字段，不再沿用 `"1-3"` 这类说明性字符串。
+- T11 在 T10 完成并通过 review 前，不得提前运行 screening execution。
+## Captain Status Update (2026-05-18)
+
+- `T10_build_screening_evaluation_matrix` has passed review and is now Captain-accepted.
+- `T11_run_screening_on_selected_prompt_candidates` may now execute Stage A screening on the 9 text-ready local prompts.
+- During T11, `provider_route` must be filled with the actual route used, but screening `prompt_set`, `dataset_set`, `repeats`, `temperature`, `max_tokens`, and `reasoning_mode` stay frozen from the T10 matrix unless Captain opens a new task.
