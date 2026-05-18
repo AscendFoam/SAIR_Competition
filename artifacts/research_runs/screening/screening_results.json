@@ -1,0 +1,183 @@
+[
+  {
+    "prompt_id": "local_p0_official_reconstructed_empty",
+    "status": "completed",
+    "elapsed_seconds": 263.0,
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "unparsed": 47,
+      "parsed": 17
+    },
+    "accuracy": 0.1875,
+    "parse_success_rate": 0.265625,
+    "true_recall": 0.25806451612903225,
+    "false_recall": 0.12121212121212122,
+    "true_total": 31,
+    "true_correct": 8,
+    "false_total": 33,
+    "false_correct": 4,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_1_1_strict_first_draft",
+    "status": "completed",
+    "elapsed_seconds": 44.3,
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_2_implicit_guardrail_v1",
+    "status": "completed",
+    "elapsed_seconds": 48.1,
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.5,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 0.9696969696969697,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 32,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_3_implicit_guardrail_v2",
+    "status": "completed",
+    "elapsed_seconds": 40.6,
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.53125,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.03225806451612903,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 1,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_5_minimal_rule_missing_hard_composition",
+    "status": "completed",
+    "elapsed_seconds": 40.7,
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.53125,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.03225806451612903,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 1,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_8_narrow_singleton_families",
+    "status": "completed",
+    "elapsed_seconds": 45.4,
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p2_0_0_official_balanced_strict_v0",
+    "status": "completed",
+    "elapsed_seconds": 47.2,
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.53125,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.03225806451612903,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 1,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p2_0_1_official_counterexample_first_strict_v0",
+    "status": "completed",
+    "elapsed_seconds": 63.5,
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p2_0_2_official_fast_filters_strict_v0",
+    "status": "completed",
+    "elapsed_seconds": 46.3,
+    "model": "deepseek-chat",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  }
+]

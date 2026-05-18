@@ -1,0 +1,7 @@
+{
+  "prompt_id": "local_p0_official_reconstructed_empty",
+  "prompt_path": "D:\\Codes\\Math\\SAIR_Competition\\prompts\\complete\\P0.official_reconstructed_empty.txt",
+  "expected_sha256": "5872456ee8f695db6fd84b3e4448d5bf212e4545b24cd0c4882f49ac476ee2cd",
+  "actual_sha256": "5872456ee8f695db6fd84b3e4448d5bf212e4545b24cd0c4882f49ac476ee2cd",
+  "sha256_match": true
+}

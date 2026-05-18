@@ -1,5 +1,12 @@
 # Architecture
 
+## Captain Status Update (2026-05-18, T11 Review)
+
+- The Stage A screening execution layer is now populated once under `artifacts/research_runs/screening/` with DeepSeek-based run artifacts.
+- Those artifacts establish the reproducibility path for per-prompt screening runs, manifests, hash checks, and elimination reporting.
+- The next operational layer to populate is an alternate-model rerun under `T12_rerun_screening_with_alternate_low_cost_model`, with frozen prompt/dataset/settings and only provider/model changed.
+- No architecture change is opened for parser, metrics, or candidate definitions at this point; the open question is provider/model behavior, not pipeline shape.
+
 日期：2026-05-12
 
 ## 1. 仓库定位

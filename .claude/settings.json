@@ -26,7 +26,9 @@
       "Bash(PYTHONPATH='src' python -m sair_competition.cli extract-prompt-features --prompt-path prompts/complete/P1.1.1_strict_first_draft.txt --prompt-id local_p1_1_1_strict_first_draft)",
       "Bash(PYTHONPATH='src' python -m sair_competition.cli extract-prompt-features --corpus-path data/interim/prompt_corpus/corpus_v1.jsonl)",
       "Bash(python -m pytest tests/test_prompt_feature_extractor.py -q)",
-      "Bash(python -m json.tool configs/research/evaluation_matrix.example.json)"
+      "Bash(python -m json.tool configs/research/evaluation_matrix.example.json)",
+      "Bash(PYTHONPATH=src python \"artifacts/research_runs/screening/_run_screening.py\")",
+      "Bash(python3 -c ' *)"
     ]
   }
 }

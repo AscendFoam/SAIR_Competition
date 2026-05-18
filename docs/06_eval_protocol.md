@@ -1,5 +1,12 @@
 # Evaluation Protocol
 
+## Captain Status Update (2026-05-18, T11 Review)
+
+- `T11_run_screening_on_selected_prompt_candidates` is accepted by Captain as `PASS_WITH_WARNINGS`.
+- The first live Stage A screening run is complete on `deepseek / deepseek-chat`, and it yielded a screening failure with zero surviving prompts.
+- This outcome is treated as a provider/model behavior finding under the frozen protocol, not as a reason to rewrite Stage A gates retroactively.
+- The next protocol step is `T12_rerun_screening_with_alternate_low_cost_model`: rerun the same 9 prompts on the same smoke split with the same frozen non-model settings, varying only provider/model and documenting whether collapse persists.
+
 日期：2026-05-12
 
 ## 1. 基本原则

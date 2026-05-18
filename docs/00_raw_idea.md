@@ -1,5 +1,12 @@
 # Raw Idea
 
+## Captain Status Update (2026-05-18, T11 Review)
+
+- `T11_run_screening_on_selected_prompt_candidates` is accepted by Captain as `PASS_WITH_WARNINGS`.
+- The deepseek-chat Stage A screening result is treated as a valid experimental outcome, not a worker defect: all 9 candidates were eliminated, so no shortlist can yet be formed.
+- This strengthens the project's model-bias research direction: a model-level all-false default can erase prompt-level discrimination even when prompt structure varies.
+- The current execution task now advances to `T12_rerun_screening_with_alternate_low_cost_model` so we can test whether the screening failure is model-specific before writing a shortlist-facing summary.
+
 日期：2026-05-12
 
 ## 1. 解决什么问题

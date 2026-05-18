@@ -1,5 +1,31 @@
 # Decision Log
 
+## D021: Accept T11 review and open alternate-model screening rerun
+
+Date: `2026-05-18`
+
+Decision:
+- Captain accepts `docs/review/T11_run_screening_on_selected_prompt_candidates_review.md` as `PASS_WITH_WARNINGS`.
+- `T11_run_screening_on_selected_prompt_candidates` is complete.
+- The DeepSeek screening result is accepted as a real empirical outcome, not a worker failure.
+- The next and only current worker task is `T12_rerun_screening_with_alternate_low_cost_model`.
+
+Reason:
+- T11 correctly executed the frozen Stage A screening on all 9 text-ready local prompts.
+- All required artifacts, hash checks, row counts, and config freezes were verified.
+- The resulting zero-survivor outcome blocks shortlist formation, but it does not invalidate T11 itself.
+- Before any shortlist summary is written, we need one alternate-model rerun to determine whether the all-false collapse is model-specific or protocol-wide.
+
+Warning handling:
+- accepted: `N2`, `N4`, `N5`
+- deferred: `N1`, `N3`
+- rejected: none
+
+Follow-up:
+- Record the model-specific screening-collapse risk and metric-naming drift in `docs/08_risks_and_open_questions.md`.
+- Do not start the old shortlist-facing T12 summary path.
+- Open a new T12 worker package for alternate-model Stage A rerun under frozen non-model settings.
+
 ## D020: Accept T10 review verdict and advance to T11
 
 Date: `2026-05-18`

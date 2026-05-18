@@ -1,0 +1,7 @@
+{
+  "prompt_id": "local_p2_0_2_official_fast_filters_strict_v0",
+  "prompt_path": "D:\\Codes\\Math\\SAIR_Competition\\prompts\\complete\\P2.0.2_official_fast_filters_strict_v0.txt",
+  "expected_sha256": "aad115d174e43ad746c8999f6acac44f0a8b8d11fcdc4b5696fd7a3a48c5e2ad",
+  "actual_sha256": "aad115d174e43ad746c8999f6acac44f0a8b8d11fcdc4b5696fd7a3a48c5e2ad",
+  "sha256_match": true
+}

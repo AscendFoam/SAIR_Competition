@@ -1,5 +1,12 @@
 # Feasibility Report
 
+## Captain Status Update (2026-05-18, T11 Review)
+
+- T11 confirms that the screening pipeline is operational and reproducible on a live provider route.
+- The immediate feasibility question is no longer "can we execute screening?" but "can one model support shortlist discrimination without collapse?"
+- `deepseek-chat` produced a valid but unusable screening outcome for shortlist formation: 0 survivors, driven by parse collapse for P0 and all-false collapse for the 8 strict prompts.
+- The next critical-path task is `T12_rerun_screening_with_alternate_low_cost_model`, which keeps the Stage A protocol frozen while varying only provider/model to resolve whether the failure is model-specific.
+
 日期：2026-05-12
 
 ## 1. 问题定义

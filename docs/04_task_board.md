@@ -1,5 +1,19 @@
 # Task Board
 
+## Captain Override (2026-05-18, T11 Review)
+
+- Captain decision: accept `docs/review/T11_run_screening_on_selected_prompt_candidates_review.md` as `PASS_WITH_WARNINGS`.
+- `T11_run_screening_on_selected_prompt_candidates` is complete at the Captain level.
+- T11 produced a legitimate screening failure on `deepseek-chat`: 0 survivors after frozen E1/E3 gates. This is treated as a model-behavior finding, not a worker defect.
+- Current Unique Task: `T12_rerun_screening_with_alternate_low_cost_model`.
+- Active worker package: `docs/tasks/phase_3_screening_eval/T12_rerun_screening_with_alternate_low_cost_model.md`
+- Warning classification for T11 review:
+- accepted: `N2` (temporary `_run_screening.py` retained as reproducibility aid), `N4` (`.claude/settings.json` noise), `N5` (P0 latency anomaly is explained by relaxed-format long outputs)
+- deferred: `N1`, `N3` (metric naming drift between raw `summary.json` and screening-facing recall terminology)
+- rejected: none
+- T12 supersedes the earlier plan to write a shortlist-facing T12 summary immediately. We need one alternate-model rerun before any shortlist summary is trustworthy.
+- This override supersedes stale "T11 is current" language below.
+
 ## Captain Override (2026-05-18)
 
 - Captain review decision: accept `docs/review/T10_build_screening_evaluation_matrix_review.md` with verdict `PASS`.

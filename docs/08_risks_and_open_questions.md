@@ -1,5 +1,44 @@
 # Risks and Open Questions
 
+## Captain Update (2026-05-18, T11 Review)
+
+- `T11_run_screening_on_selected_prompt_candidates` has been accepted as `PASS_WITH_WARNINGS`.
+- T11 is complete, but it produced a zero-survivor screening failure on `deepseek / deepseek-chat`.
+- The Current Unique Task is now `T12_rerun_screening_with_alternate_low_cost_model`.
+- Deferred T11 review warnings and the new model-specific screening-collapse risk are recorded below.
+
+## T11 Follow-Ups
+
+### R25: DeepSeek screening collapse blocks shortlist formation
+
+Source:
+- T11 execution result
+- T11 review accepted by Captain
+
+Risk:
+- The current Stage A run on `deepseek / deepseek-chat` produced zero surviving prompts.
+- P0 collapsed on parse success, and all 8 strict prompts collapsed on the all-false gate.
+- If this behavior is model-specific, then DeepSeek-based screening cannot support prompt selection and would contaminate downstream shortlist logic.
+
+Mitigation:
+- Run one alternate-model Stage A screening rerun with all non-model settings frozen.
+- Do not write a shortlist-facing summary or advance to recomputed benchmark selection until the alternate-model rerun is reviewed.
+- Preserve the DeepSeek result as a valid model-bias finding even if it is not used for shortlist formation.
+
+### R26: Screening metric naming drifts between raw artifacts and screening-facing reports
+
+Source:
+- T11 review `N1`
+- T11 review `N3`
+
+Risk:
+- Raw `summary.json` artifacts expose `true_accuracy` / `false_accuracy`, while screening manifests and review logic use `true_recall` / `false_recall`.
+- The values are semantically aligned here, but the naming drift can confuse downstream reporting and any future automation that expects one canonical metric key.
+
+Mitigation:
+- Treat the T11 manifest mapping as correct for current governance use.
+- A later tooling/doc-hygiene task should add explicit alias wording or schema normalization so raw artifacts and screening summaries use one stable vocabulary.
+
 ## Captain Update (2026-05-18)
 
 - T10 review verdict `PASS` has been accepted by Captain.

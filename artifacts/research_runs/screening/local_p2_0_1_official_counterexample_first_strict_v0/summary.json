@@ -1,0 +1,29 @@
+{
+  "dataset_path": "D:\\Codes\\Math\\SAIR_Competition\\data\\interim\\splits\\smoke.jsonl",
+  "prompt_path": "D:\\Codes\\Math\\SAIR_Competition\\prompts\\complete\\P2.0.1_official_counterexample_first_strict_v0.txt",
+  "dotenv_path": "D:\\Codes\\Math\\SAIR_Competition\\.env",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "row_count": 64,
+  "parse_counter": {
+    "parsed": 64
+  },
+  "metrics": {
+    "total": 64,
+    "parsed": 64,
+    "parse_success_rate": 1.0,
+    "correct": 33,
+    "accuracy": 0.515625,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "true_accuracy": 0.0,
+    "false_accuracy": 1.0,
+    "by_source": {
+      "hard1": 0.75,
+      "hard2": 0.5,
+      "normal": 0.5
+    }
+  }
+}
