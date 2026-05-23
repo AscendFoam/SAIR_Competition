@@ -1,0 +1,15 @@
+{
+  "screening_phase": "Stage_A_screening_second_model",
+  "prompt_id": "local_p2_0_2_official_fast_filters_strict_v0",
+  "prompt_path": "D:\\Codes\\Math\\SAIR_Competition\\prompts\\complete\\P2.0.2_official_fast_filters_strict_v0.txt",
+  "dataset_path": "D:\\Codes\\Math\\SAIR_Competition\\data\\interim\\splits\\smoke.jsonl",
+  "dataset_version": "smoke_v1_64",
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.0,
+  "max_tokens": 256,
+  "reasoning_mode": "default",
+  "thinking_disabled": true,
+  "repeats": 1,
+  "timestamp": "2026-05-23T02:45:58.510665+00:00"
+}

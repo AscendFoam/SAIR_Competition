@@ -1,5 +1,74 @@
 # Handoff
 
+## Captain Override (2026-05-23, T12 Review)
+
+Current Unique Task:
+- `T12b_run_screening_on_non_deepseek_provider`
+
+Captain decision on review:
+- `docs/review/T12_rerun_screening_with_alternate_low_cost_model_review.md` is accepted as `PASS_WITH_WARNINGS`.
+- `T12_rerun_screening_with_alternate_low_cost_model` is complete and does not require another automatic review cycle.
+
+Accepted T12 outcome:
+- T12 correctly re-ran the frozen Stage A screening on all 9 text-ready local prompts.
+- All 9 second-model run directories completed with required artifacts and matching prompt hashes.
+- T11 (`deepseek-chat`) and T12 (`deepseek-v4-flash`, thinking disabled) both produced zero surviving candidates under the same T10 elimination rules.
+- Shortlist formation is still not allowed.
+
+Warning handling:
+- accepted: `N2`, `N3`, `N4`, `N5`, `N6`
+- deferred: `N1`
+- rejected: none
+
+Current reviewed screening state:
+- reviewed run family 1: `artifacts/research_runs/screening/` on `deepseek-chat`
+- reviewed run family 2: `artifacts/research_runs/screening_second_model/` on `deepseek-v4-flash`
+- confirmed common pattern:
+  - P0 fails E1 through parse collapse on both models
+  - the other 8 prompts fail E3 through all-false collapse on both models
+  - survivor count remains `0/9`
+
+Next worker task:
+- `docs/tasks/phase_3_screening_eval/T12b_run_screening_on_non_deepseek_provider.md`
+- Goal: attempt one genuine non-DeepSeek Stage A rerun under frozen non-model settings, or explicitly document that no such usable route exists locally.
+
+## Captain Override (2026-05-23, T12 Worker Execution)
+
+Current Unique Task:
+- `T12_rerun_screening_with_alternate_low_cost_model`
+
+Worker execution result:
+- Task: `T12_rerun_screening_with_alternate_low_cost_model`
+- Status: Worker executed, pending review.
+- Provider route: `deepseek` (DeepSeek API), model: `deepseek-v4-flash` (thinking disabled)
+- Completed runs: 9/9 (no API failures)
+- Artifacts: all 9 directories under `artifacts/research_runs/screening_second_model/` contain run_config.json, summary.json, predictions.jsonl, prompt_hash_manifest.json
+- SHA256: all 9 prompt hashes match corpus_v1.jsonl
+- Second-model manifest: `reports/research/screening/screening_second_model_manifest_v1.md`
+- Model comparison note: `reports/research/screening/screening_model_comparison_note_v1.md`
+- Run artifacts: `artifacts/research_runs/screening_second_model/<prompt_id>/`
+
+SCREENING FAILURE (confirmed across two models):
+- T11 (deepseek-chat): 0 survivors
+- T12 (deepseek-v4-flash): 0 survivors
+- P0: parse collapse on both models (parse_success_rate 0.27 vs 0.23)
+- 8 strict-format prompts: all-false collapse on both models (true_recall 0.00-0.03, false_recall 0.97-1.00)
+- Results are numerically near-identical between the two models
+- Surviving candidates: 0 on both models
+- Shortlist formation: NOT possible under current T10 elimination rules
+
+Alternate models tested but failed during T12 preparation:
+- MiniMax-M2.7: empty output on all 64 problems per prompt (parse_success_rate 0.00-0.016)
+- deepseek-reasoner: all max_tokens consumed by reasoning_tokens, content empty
+- deepseek-v4-flash (thinking enabled): same as deepseek-reasoner
+
+Captain must decide before any shortlist-facing work:
+1. Test a non-DeepSeek provider (e.g., GPT-4o-mini, Gemini Flash)
+2. Relax E3 all-false collapse threshold (with documented rationale)
+3. Expand screening dataset (add hard_slice_sample)
+4. Accept all-false collapse as finding and redesign shortlist strategy
+5. Redesign screening protocol entirely
+
 ## Captain Override (2026-05-18, T11 Review)
 
 Current Unique Task:
@@ -20,20 +89,6 @@ Warning handling:
 - deferred: `N1`, `N3`
 - rejected: none
 
-Ready-for-worker package:
-- `docs/tasks/phase_3_screening_eval/T12_rerun_screening_with_alternate_low_cost_model.md`
-
-Worker scope for T12:
-- Re-run the frozen Stage A screening with one alternate low-cost model/provider route that is not `deepseek / deepseek-chat`.
-- Keep prompt set, dataset set, repeats, temperature, max tokens, reasoning mode, and elimination rules frozen.
-- Produce a second-model screening manifest and a short comparison note sufficient for Captain to decide whether shortlist formation can resume.
-- Update this handoff only with execution facts, artifact paths, provider/model used, survivor counts, and any rerun failure/escalation facts.
-
-Captain interpretation to preserve:
-- T11 is complete.
-- T11 does not prove the screening protocol is wrong.
-- T11 does show that the chosen DeepSeek screening model is insufficient for shortlist formation on this task unless another model reproduces the same collapse.
-
 ## Captain Override (2026-05-18)
 
 Current Unique Task:
@@ -46,29 +101,18 @@ Captain decision on review:
 Ready-for-worker package:
 - `docs/tasks/phase_3_screening_eval/T11_run_screening_on_selected_prompt_candidates.md`
 
-Worker scope for T11:
-- Execute the frozen Stage A screening on the 9 text-ready local prompts.
-- Produce reproducible run artifacts under `artifacts/research_runs/screening/`.
-- Write `reports/research/screening/screening_execution_manifest_v1.md`.
-- Update this handoff file only with execution facts, artifact paths, provider route, and failed/partial run status.
-
 T11 worker execution result:
 - Task: `T11_run_screening_on_selected_prompt_candidates`
-- Status: Worker executed, pending review.
+- Status: Worker executed, review accepted.
 - Provider route: `deepseek` (DeepSeek API), model: `deepseek-chat`
 - Completed runs: 9/9 (no API failures)
-- Artifacts: all 9 directories contain run_config.json, summary.json, predictions.jsonl, prompt_hash_manifest.json
-- SHA256: all 9 prompt hashes match corpus_v1.jsonl
+- Artifacts: `artifacts/research_runs/screening/<prompt_id>/`
 - Execution manifest: `reports/research/screening/screening_execution_manifest_v1.md`
-- Run artifacts: `artifacts/research_runs/screening/<prompt_id>/`
 
 SCREENING FAILURE:
 - P0: eliminated by E1 (parse_success_rate = 0.27)
 - 8 strict-format prompts: all eliminated by E3 (all-false collapse; false_recall 0.97-1.00, true_recall 0.00-0.03)
 - Surviving candidates: 0
-- Per shortlist rules: "If fewer than 3 candidates survive, flag a screening failure and escalate to Captain."
-- Root finding: deepseek-chat produces systematic all-false bias on the equational-theories task regardless of prompt structure. This is a model-level behavior, not a prompt-level distinction.
-- Captain must decide: change screening model, relax E3 thresholds, or redesign screening protocol before T12 can proceed.
 
 Deferred follow-ups from T10 review:
 - `N1`: wording in `screening_matrix_v1.md` should be aligned with authoritative `prompt_features_v1.jsonl` distributions.
@@ -99,35 +143,39 @@ Accepted non-risk:
 - `docs/07_handoff.md`
 - `docs/08_risks_and_open_questions.md`
 
-截至当前，T01-T09 均已通过 review 并被 Captain 接受。当前已完成：
+截至当前，T01-T11 均已通过 review 并被 Captain 接受。T12 已执行，待 review。当前已完成：
 
 - public prompt corpus v1 与 public/private boundary
 - 9 条 text-ready local prompts 的 manual taxonomy v1
 - 7 个高价值字段的 extractor skeleton 与 focused tests
 - taxonomy self-audit、conflict resolution 与 1 处最小数据校正
+- T10 screening evaluation matrix 设计
+- T11 deepseek-chat screening execution（0 survivors）
+- T12 deepseek-v4-flash screening rerun（0 survivors，与 T11 结果一致）
 
 ## 2. Current Unique Task
 
-`T10_build_screening_evaluation_matrix`
+`T12_rerun_screening_with_alternate_low_cost_model`
 
 任务包：
 
-- `docs/tasks/phase_3_screening_eval/T10_build_screening_evaluation_matrix.md`
+- `docs/tasks/phase_3_screening_eval/T12_rerun_screening_with_alternate_low_cost_model.md`
 
 状态：
 
 - Worker 已执行，待 review。
 
-T10 worker 执行结果：
+T12 worker 执行结果：
 
-- Task: `T10_build_screening_evaluation_matrix`
+- Task: `T12_rerun_screening_with_alternate_low_cost_model`
 - 状态: worker 已执行，待 review。
-- Screening matrix: `reports/research/screening/screening_matrix_v1.md`（候选池 9 条、smoke split、单模型、repeats=1、parse/collapse gates）
-- Candidate registry: `reports/research/screening/screening_candidate_registry_v1.md`（6 core + 3 contrast、excluded records、structural coverage gaps）
-- Shortlist rules: `reports/research/screening/screening_shortlist_rules_v1.md`（elimination E1-E4、inclusion I1-I2、anchor-based assembly、target 3-5）
-- Config 收敛: `evaluation_matrix.example.json` 中 screening phase prompt_set 已替换为 9 条实际 prompt_id；`repeats` 已统一为整数；`"1-3"` 字符串已消除
-- Changed files: `reports/research/screening/screening_matrix_v1.md` (new), `reports/research/screening/screening_candidate_registry_v1.md` (new), `reports/research/screening/screening_shortlist_rules_v1.md` (new), `configs/research/evaluation_matrix.example.json` (updated), `configs/research/README.md` (updated), `reports/research/screening/README.md` (updated), `docs/07_handoff.md` (updated)
-- T11 screening execution 尚未开始。
+- Provider route: `deepseek` (DeepSeek API), model: `deepseek-v4-flash` (thinking disabled)
+- Completed runs: 9/9 (no API failures)
+- Artifacts: all 9 directories under `artifacts/research_runs/screening_second_model/` contain all 4 required artifacts
+- SHA256: all 9 prompt hashes match corpus_v1.jsonl
+- Second-model manifest: `reports/research/screening/screening_second_model_manifest_v1.md`
+- Model comparison note: `reports/research/screening/screening_model_comparison_note_v1.md`
+- Changed files: `artifacts/research_runs/screening_second_model/` (9 run dirs + script + results), `reports/research/screening/screening_second_model_manifest_v1.md` (new), `reports/research/screening/screening_model_comparison_note_v1.md` (new), `reports/research/screening/README.md` (updated), `docs/07_handoff.md` (updated)
 
 ## 3. 已完成任务摘要
 
@@ -161,6 +209,26 @@ T10 worker 执行结果：
 - 10 个低方差字段保留在 schema 中，但排除出统计模型，仅作 descriptive labels
 - reporting boundary 固定为：manual coding = authoritative taxonomy truth；extractor = supporting cross-check
 
+### T10：Screening evaluation matrix
+
+- `reports/research/screening/screening_matrix_v1.md`
+- `reports/research/screening/screening_candidate_registry_v1.md`
+- `reports/research/screening/screening_shortlist_rules_v1.md`
+- 9 条候选、smoke split、单模型、repeats=1、parse/collapse gates
+
+### T11：Screening execution (deepseek-chat)
+
+- `artifacts/research_runs/screening/` — 9 run directories
+- `reports/research/screening/screening_execution_manifest_v1.md`
+- SCREENING FAILURE: 0 survivors (P0 parse collapse, 8 strict prompts all-false collapse)
+
+### T12：Screening rerun (deepseek-v4-flash)
+
+- `artifacts/research_runs/screening_second_model/` — 9 run directories
+- `reports/research/screening/screening_second_model_manifest_v1.md`
+- `reports/research/screening/screening_model_comparison_note_v1.md`
+- SCREENING FAILURE confirmed: 0 survivors, numerically near-identical to T11
+
 ## 4. 下一位 Worker 必读
 
 ```text
@@ -173,6 +241,7 @@ docs/06_eval_protocol.md
 docs/07_handoff.md
 docs/08_risks_and_open_questions.md
 docs/review/T10_build_screening_evaluation_matrix_review.md
+docs/review/T11_run_screening_on_selected_prompt_candidates_review.md
 docs/review/M1_review.md
 data/interim/prompt_corpus/corpus_v1.jsonl
 data/interim/prompt_corpus/prompt_features_v1.jsonl
@@ -190,26 +259,29 @@ reports/research/screening/README.md
 reports/research/screening/screening_matrix_v1.md
 reports/research/screening/screening_candidate_registry_v1.md
 reports/research/screening/screening_shortlist_rules_v1.md
+reports/research/screening/screening_execution_manifest_v1.md
+reports/research/screening/screening_second_model_manifest_v1.md
+reports/research/screening/screening_model_comparison_note_v1.md
 src/sair_competition/analysis/prompt_features.py
 tests/test_prompt_feature_extractor.py
 ```
 
 ## 5. Worker 执行边界
 
-T11 已执行，待 review。下一位 worker 不应重复执行 T11。
+T12 已执行，待 review。下一位 worker 不应重复执行 T12。
 
-- 如 review 为 PASS，但 screening failure 需要 Captain 先处理再决定 T12 方向。
-- T11 执行结果：所有 9 个候选被 elimination gates 淘汰（P0 parse collapse，其余 all-false collapse）。
-- T12 在 Captain 裁决前不应写 shortlist 结论。
+- T12 执行结果：所有 9 个候选再次被 elimination gates 淘汰（P0 parse collapse，其余 all-false collapse），与 T11 结果一致。
+- Shortlist formation 在 Captain 裁决前不应进行。
 - Captain 可能的决策方向：
-  1. 换一个不同的 screening model（如 GPT-4o-mini 或其他模型）
+  1. 换一个非 DeepSeek 的 screening provider（如 GPT-4o-mini 或 Gemini Flash）
   2. 放宽 E3 all-false collapse 的阈值（但需要 documented rationale）
   3. 扩大 screening 数据集（加入 hard_slice_sample）
-  4. 重新设计 screening protocol
+  4. 接受 all-false collapse 为发现并重新设计 shortlist 策略
+  5. 重新设计 screening protocol
 
 允许修改文件：
 
-- `docs/04_task_board.md`（仅 Captain，勾选 T11）
+- `docs/04_task_board.md`（仅 Captain，勾选 T12）
 - 其他文件由后续任务包定义
 
 ## 6. Current corpus / taxonomy facts
@@ -231,48 +303,13 @@ Current taxonomy / extractor summary：
 - low-variance fields excluded from models: `10`
 - authoritative corrected mismatch count: `1` historical mismatch, now resolved
 
-## 7. Reviewer 重点（给 T10）
+## 7. 当前未验证事项
 
-T10 reviewer 类型应为 `normal`。
-
-重点检查：
-
-- screening matrix 是否只使用 T06/T09 允许的候选池（9 条 text-ready）和字段。
-- `repeats` 是否从 `"1-3"` 说明性字符串收敛为正式可执行整数。
-- 是否清楚区分 T10 matrix 设计 与 T11 screening execution。
-- 是否把 10 个低方差字段正确降为 descriptive-only，不作为 shortlist 主决策依据。
-- 是否把 manual coding 设为权威特征来源，而不是把 extractor 输出写成 authoritative truth。
-- shortlist rules 的 elimination/inclusion 条件是否具体、可执行、不会导致 T12 需要做主观判断。
-- candidate registry 是否正确分类 6 core / 3 contrast candidates，以及 excluded records 的排除理由是否充分。
-- 是否没有偷跑实验结论或性能预测。
-
-## 8. Captain 在 T10 review 后要做
-
-如果 review 为 `PASS`：
-
-1. 在 `docs/04_task_board.md` 勾选 `T10`。
-2. 更新本文件的当前状态。
-3. 可以推荐进入 T11，但不直接执行。
-4. 若 screening matrix 候选池不含 9 条 text-ready records、repeats 未收敛为整数、或 shortlist rules 留有模糊主观判断空间，则阻止进入 T11。
-
-如果 `PASS_WITH_WARNINGS`：
-
-1. 把 warning 分类为 accepted / deferred / rejected。
-2. deferred 写入 `docs/08_risks_and_open_questions.md`。
-3. 再判断是否允许进入 T11。
-
-如果 `BLOCK`：
-
-1. 只派修 blocking issue 的小任务。
-2. 同一任务最多自动复审一次。
-3. 第二次仍 `BLOCK`，停止并交给用户裁决。
-
-## 9. 当前未验证事项
-
-- T11 screening execution 已完成，待 review。
-- SCREENING FAILURE: deepseek-chat 对 equational-theories 任务产生系统性全假偏差。8 个 strict-format prompt 的 true_recall 为 0.000-0.032，false_recall 为 0.970-1.000。P0 (relaxed format) 的 parse_success_rate 仅 0.266。
-- Shortlist 为空（0 个候选通过 elimination gates）。
-- T12 在 Captain 裁决前不应写 shortlist 结论。
+- T12 screening rerun 已完成，待 review。
+- SCREENING FAILURE 在两个 DeepSeek 模型间完全一致：deepseek-chat 和 deepseek-v4-flash 均产生 0 个幸存者。
+- Shortlist 为空（0 个候选通过 elimination gates，两个模型结果一致）。
+- Shortlist formation 在 Captain 裁决前不应进行。
+- 非 DeepSeek provider 尚未测试；all-false collapse 可能是 provider 级别的行为模式。
 - external text-ready coverage 仍为 `0`；GitHub MIT source 仍未镜像。
 - contributor-network 占位项仍只有 host-level provenance。
 - screening / recomputed benchmark / post-release analysis 仍需 Captain 决策后才能继续。

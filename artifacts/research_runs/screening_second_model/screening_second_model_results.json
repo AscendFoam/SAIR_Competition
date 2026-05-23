@@ -1,0 +1,183 @@
+[
+  {
+    "prompt_id": "local_p0_official_reconstructed_empty",
+    "status": "completed",
+    "elapsed_seconds": 181.1,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "unparsed": 49,
+      "parsed": 15
+    },
+    "accuracy": 0.15625,
+    "parse_success_rate": 0.234375,
+    "true_recall": 0.1935483870967742,
+    "false_recall": 0.12121212121212122,
+    "true_total": 31,
+    "true_correct": 6,
+    "false_total": 33,
+    "false_correct": 4,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_1_1_strict_first_draft",
+    "status": "completed",
+    "elapsed_seconds": 40.7,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_2_implicit_guardrail_v1",
+    "status": "completed",
+    "elapsed_seconds": 63.2,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.5,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 0.9696969696969697,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 32,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_3_implicit_guardrail_v2",
+    "status": "completed",
+    "elapsed_seconds": 62.4,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.53125,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.03225806451612903,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 1,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_5_minimal_rule_missing_hard_composition",
+    "status": "completed",
+    "elapsed_seconds": 42.8,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.53125,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.03225806451612903,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 1,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_8_narrow_singleton_families",
+    "status": "completed",
+    "elapsed_seconds": 42.0,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p2_0_0_official_balanced_strict_v0",
+    "status": "completed",
+    "elapsed_seconds": 38.8,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.53125,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.03225806451612903,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 1,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p2_0_1_official_counterexample_first_strict_v0",
+    "status": "completed",
+    "elapsed_seconds": 41.0,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p2_0_2_official_fast_filters_strict_v0",
+    "status": "completed",
+    "elapsed_seconds": 39.8,
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  }
+]

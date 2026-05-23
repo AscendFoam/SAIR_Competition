@@ -1,5 +1,12 @@
 # Raw Idea
 
+## Captain Status Update (2026-05-23, T12 Review)
+
+- `T12_rerun_screening_with_alternate_low_cost_model` is accepted by Captain as `PASS_WITH_WARNINGS`.
+- Two frozen Stage A runs have now been completed on two DeepSeek models, and both produced the same screening failure: 0 survivors.
+- This sharpens one of the core research ideas: provider/model behavior can dominate prompt-level structural differences strongly enough to erase shortlist discrimination.
+- The next and only current worker task is `T12b_run_screening_on_non_deepseek_provider`, so we can test whether the collapse is DeepSeek-specific before redesigning Stage A or writing any shortlist-facing summary.
+
 ## Captain Status Update (2026-05-18, T11 Review)
 
 - `T11_run_screening_on_selected_prompt_candidates` is accepted by Captain as `PASS_WITH_WARNINGS`.

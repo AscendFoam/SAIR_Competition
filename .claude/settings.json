@@ -28,7 +28,15 @@
       "Bash(python -m pytest tests/test_prompt_feature_extractor.py -q)",
       "Bash(python -m json.tool configs/research/evaluation_matrix.example.json)",
       "Bash(PYTHONPATH=src python \"artifacts/research_runs/screening/_run_screening.py\")",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(PYTHONPATH=src python -c ' *)",
+      "Bash(PYTHONPATH=src python artifacts/research_runs/screening_second_model/_run_screening_second_model.py)",
+      "Bash(rm -rf d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/local_* d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/screening_second_model_results.json)",
+      "Bash(rm -rf d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/local_* d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/_test_* d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/screening_second_model_results.json 2>/dev/null; echo \"Cleaned\")"
+    ],
+    "additionalDirectories": [
+      "d:\\Codes\\Math\\SAIR_Competition\\artifacts\\research_runs\\screening_second_model"
     ]
   }
 }

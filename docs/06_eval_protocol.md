@@ -1,5 +1,14 @@
 # Evaluation Protocol
 
+## Captain Status Update (2026-05-23, T12 Review)
+
+- `T12_rerun_screening_with_alternate_low_cost_model` is accepted by Captain as `PASS_WITH_WARNINGS`.
+- The frozen Stage A protocol has now been executed twice on DeepSeek routes and produced the same failure pattern both times:
+- P0 parse collapse under relaxed output formatting
+- all-false collapse for the 8 strict-format prompts
+- No shortlist may be formed yet.
+- The next protocol step is `T12b_run_screening_on_non_deepseek_provider`: test one genuinely non-DeepSeek route with the same 9 prompts, `smoke.jsonl`, `temperature=0`, `max_tokens=256`, `repeats=1`, and the same E1-E4 elimination rules.
+
 ## Captain Status Update (2026-05-18, T11 Review)
 
 - `T11_run_screening_on_selected_prompt_candidates` is accepted by Captain as `PASS_WITH_WARNINGS`.

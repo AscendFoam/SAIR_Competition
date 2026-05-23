@@ -1,5 +1,12 @@
 # Risks and Open Questions
 
+## Captain Update (2026-05-23, T12 Review)
+
+- `T12_rerun_screening_with_alternate_low_cost_model` has been accepted as `PASS_WITH_WARNINGS`.
+- T12 is complete, but it confirms the zero-survivor Stage A failure only across two DeepSeek models, not across providers.
+- The Current Unique Task is now `T12b_run_screening_on_non_deepseek_provider`.
+- Deferred T12 review warning `N1` is recorded below as a live risk.
+
 ## Captain Update (2026-05-18, T11 Review)
 
 - `T11_run_screening_on_selected_prompt_candidates` has been accepted as `PASS_WITH_WARNINGS`.
@@ -16,14 +23,15 @@ Source:
 - T11 review accepted by Captain
 
 Risk:
-- The current Stage A run on `deepseek / deepseek-chat` produced zero surviving prompts.
-- P0 collapsed on parse success, and all 8 strict prompts collapsed on the all-false gate.
-- If this behavior is model-specific, then DeepSeek-based screening cannot support prompt selection and would contaminate downstream shortlist logic.
+- Two reviewed Stage A runs on DeepSeek routes now produced zero surviving prompts.
+- P0 collapsed on parse success in both runs, and all 8 strict prompts collapsed on the all-false gate in both runs.
+- Under the current frozen T10 shortlist rules, Milestone 3 cannot exit and downstream prompt selection remains blocked.
 
 Mitigation:
-- Run one alternate-model Stage A screening rerun with all non-model settings frozen.
-- Do not write a shortlist-facing summary or advance to recomputed benchmark selection until the alternate-model rerun is reviewed.
-- Preserve the DeepSeek result as a valid model-bias finding even if it is not used for shortlist formation.
+- Do not write a shortlist-facing summary or advance to recomputed benchmark selection yet.
+- Attempt one genuine non-DeepSeek Stage A rerun with all non-model settings frozen.
+- If a non-DeepSeek route is not locally usable, escalate to a Captain redesign decision rather than silently relaxing thresholds.
+- Preserve the two DeepSeek results as valid model-bias findings even if they do not support shortlist formation.
 
 ### R26: Screening metric naming drifts between raw artifacts and screening-facing reports
 
@@ -38,6 +46,20 @@ Risk:
 Mitigation:
 - Treat the T11 manifest mapping as correct for current governance use.
 - A later tooling/doc-hygiene task should add explicit alias wording or schema normalization so raw artifacts and screening summaries use one stable vocabulary.
+
+### R27: Cross-provider generality is still unresolved after T12
+
+Source:
+- T12 review `N1`
+
+Risk:
+- T11 used `deepseek-chat` and T12 used `deepseek-v4-flash`, but both reviewed runs still used the DeepSeek provider.
+- The near-identical all-false behavior may therefore be provider-specific rather than universal to Stage A or to the prompts themselves.
+- If we redesign shortlist rules before obtaining one true cross-provider contrast, we risk overfitting protocol changes to one provider family.
+
+Mitigation:
+- Run one reviewed non-DeepSeek Stage A probe if a locally usable route exists.
+- If no such route is available, document that limit explicitly and make any later protocol redesign conditional on that evidence gap.
 
 ## Captain Update (2026-05-18)
 

@@ -1,0 +1,7 @@
+{
+  "prompt_id": "local_p2_0_1_official_counterexample_first_strict_v0",
+  "prompt_path": "D:\\Codes\\Math\\SAIR_Competition\\prompts\\complete\\P2.0.1_official_counterexample_first_strict_v0.txt",
+  "expected_sha256": "bf31cdbf08ee37b67ab12dfc4fde0571f6cd58a55dad6c35c0ec692a8a46c136",
+  "actual_sha256": "bf31cdbf08ee37b67ab12dfc4fde0571f6cd58a55dad6c35c0ec692a8a46c136",
+  "sha256_match": true
+}

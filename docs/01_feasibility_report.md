@@ -1,5 +1,13 @@
 # Feasibility Report
 
+## Captain Status Update (2026-05-23, T12 Review)
+
+- `T12_rerun_screening_with_alternate_low_cost_model` is accepted by Captain as `PASS_WITH_WARNINGS`.
+- Feasibility is now split clearly into two questions:
+- the screening pipeline is operational and reproducible across multiple live runs;
+- shortlist formation is not yet feasible under the frozen T10 rules on the currently tested DeepSeek routes.
+- The immediate critical-path task is `T12b_run_screening_on_non_deepseek_provider`: obtain one genuinely non-DeepSeek contrast route, or document that no such route is locally available.
+
 ## Captain Status Update (2026-05-18, T11 Review)
 
 - T11 confirms that the screening pipeline is operational and reproducible on a live provider route.

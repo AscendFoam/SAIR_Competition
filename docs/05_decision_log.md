@@ -1,5 +1,31 @@
 # Decision Log
 
+## D022: Accept T12 review and open a genuine non-DeepSeek screening probe
+
+Date: `2026-05-23`
+
+Decision:
+- Captain accepts `docs/review/T12_rerun_screening_with_alternate_low_cost_model_review.md` as `PASS_WITH_WARNINGS`.
+- `T12_rerun_screening_with_alternate_low_cost_model` is complete.
+- The reviewed evidence now shows the same zero-survivor Stage A outcome on two DeepSeek models.
+- The next and only current worker task is `T12b_run_screening_on_non_deepseek_provider`.
+
+Reason:
+- T12 correctly preserved the frozen T10 protocol and produced complete, hash-matching artifacts for all 9 prompts.
+- The repeated failure is a legitimate experimental finding, not a worker defect.
+- However, both completed reviewed runs are still on the same provider, so we cannot yet distinguish "DeepSeek-specific behavior" from "protocol-wide behavior."
+- Before redesigning E3, reopening shortlist logic, or moving toward full evaluation, we need one genuine non-DeepSeek contrast route if such a route is locally available.
+
+Warning handling:
+- accepted: `N2`, `N3`, `N4`, `N5`, `N6`
+- deferred: `N1`
+- rejected: none
+
+Follow-up:
+- Record the unresolved cross-provider risk in `docs/08_risks_and_open_questions.md`.
+- Do not write a shortlist-facing summary yet.
+- Open a new worker package for a genuine non-DeepSeek rerun, with an explicit stop-and-document path if no such route is locally usable.
+
 ## D021: Accept T11 review and open alternate-model screening rerun
 
 Date: `2026-05-18`

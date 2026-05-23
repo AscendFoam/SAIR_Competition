@@ -1,5 +1,18 @@
 # Task Board
 
+## Captain Override (2026-05-23, T12 Review)
+
+- Captain decision: accept `docs/review/T12_rerun_screening_with_alternate_low_cost_model_review.md` as `PASS_WITH_WARNINGS`.
+- `T12_rerun_screening_with_alternate_low_cost_model` is complete at the Captain level.
+- T12 confirmed the T11 zero-survivor screening failure on a second DeepSeek model, but it did not yet resolve the cross-provider question because both reviewed runs used the DeepSeek provider.
+- Current Unique Task: `T12b_run_screening_on_non_deepseek_provider`.
+- Active worker package: `docs/tasks/phase_3_screening_eval/T12b_run_screening_on_non_deepseek_provider.md`
+- Warning classification for T12 review:
+- accepted: `N2` (`thinking_disabled: true` is a documented execution-level compatibility setting), `N3` (JSON numeric serialization only), `N4` (temporary execution script retained as reproducibility aid), `N5` (`.claude/settings.json` noise), `N6` (handoff length is a hygiene concern but the newest Captain section remains authoritative)
+- deferred: `N1` (the alternate route was a different model but not a different provider, so provider-specificity remains unresolved)
+- rejected: none
+- No blocking issue remains for T12. The next worker task is to attempt one genuine non-DeepSeek Stage A rerun without changing frozen non-model settings.
+
 ## Captain Override (2026-05-18, T11 Review)
 
 - Captain decision: accept `docs/review/T11_run_screening_on_selected_prompt_candidates_review.md` as `PASS_WITH_WARNINGS`.

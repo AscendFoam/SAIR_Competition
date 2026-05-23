@@ -1,5 +1,13 @@
 # Architecture
 
+## Captain Status Update (2026-05-23, T12 Review)
+
+- The Stage A execution layer now contains two reviewed run families:
+- `artifacts/research_runs/screening/` for T11 on `deepseek-chat`
+- `artifacts/research_runs/screening_second_model/` for T12 on `deepseek-v4-flash`
+- The pipeline shape remains unchanged: prompt set, dataset, parser, metrics, and elimination logic stay frozen.
+- The next operational layer to populate is a genuinely non-DeepSeek contrast route under `T12b_run_screening_on_non_deepseek_provider`; no parser or shortlist-rule redesign is opened yet.
+
 ## Captain Status Update (2026-05-18, T11 Review)
 
 - The Stage A screening execution layer is now populated once under `artifacts/research_runs/screening/` with DeepSeek-based run artifacts.

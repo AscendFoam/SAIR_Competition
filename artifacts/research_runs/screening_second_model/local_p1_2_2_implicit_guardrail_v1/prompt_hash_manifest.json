@@ -1,0 +1,7 @@
+{
+  "prompt_id": "local_p1_2_2_implicit_guardrail_v1",
+  "prompt_path": "D:\\Codes\\Math\\SAIR_Competition\\prompts\\complete\\P1.2.2_implicit_guardrail_v1.txt",
+  "expected_sha256": "081d4aa9bb7638a57b9d86ede121b859b13e4cc5cf6c10994781ac084b3f8f2d",
+  "actual_sha256": "081d4aa9bb7638a57b9d86ede121b859b13e4cc5cf6c10994781ac084b3f8f2d",
+  "sha256_match": true
+}
