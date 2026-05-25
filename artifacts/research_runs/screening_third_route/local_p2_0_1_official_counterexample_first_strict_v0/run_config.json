@@ -1,0 +1,15 @@
+{
+  "screening_phase": "Stage_A_screening_third_route",
+  "prompt_id": "local_p2_0_1_official_counterexample_first_strict_v0",
+  "prompt_path": "D:\\Codes\\Math\\SAIR_Competition\\prompts\\complete\\P2.0.1_official_counterexample_first_strict_v0.txt",
+  "dataset_path": "D:\\Codes\\Math\\SAIR_Competition\\data\\interim\\splits\\smoke.jsonl",
+  "dataset_version": "smoke_v1_64",
+  "provider": "zhipuai",
+  "model": "glm-4.7-flash",
+  "temperature": 0.0,
+  "max_tokens": 256,
+  "reasoning_mode": "default",
+  "thinking_disabled": true,
+  "repeats": 1,
+  "timestamp": "2026-05-23T14:54:17.695226+00:00"
+}

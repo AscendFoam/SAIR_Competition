@@ -1,22 +1,4 @@
-# for minimax-2.7
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.chat.completions.create(
-    model="MiniMax-M2.7",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Hi, how are you?"},
-    ],
-    # 设置 reasoning_split=True 将思考内容分离到 reasoning_details 字段
-    extra_body={"reasoning_split": True},
-)
-
-print(f"Thinking:\n{response.choices[0].message.reasoning_details[0]['text']}\n")
-print(f"Text:\n{response.choices[0].message.content}\n")
-
-# for deepseek-v3.2
+# for deepseek-v4
 import os
 from openai import OpenAI
 
@@ -25,13 +7,14 @@ client = OpenAI(
     base_url="https://api.deepseek.com")
 
 response = client.chat.completions.create(
-    model="deepseek-reasoner",
-    # model = "deepseek-chat"
+    model="deepseek-v4-pro", # pro是更贵的模型，可以换成deepseek-v4-flash，这个更快。或者用deepseek-chat，这个是无深度思考的deepseek-v4-flash。
     messages=[
         {"role": "system", "content": "You are a helpful assistant"},
         {"role": "user", "content": "Hello"},
     ],
-    stream=False
+    stream=False,
+    reasoning_effort="high",
+    extra_body={"thinking": {"type": "enabled"}}
 )
 
 print(response.choices[0].message.content)
@@ -48,3 +31,56 @@ response = client.models.generate_content(
     contents="Explain how AI works in a few words"
 )
 print(response.text)
+
+
+# for glm-4.7-flash basic
+from zai import ZhipuAiClient
+
+client = ZhipuAiClient(api_key="your-api-key")  # 请填写您自己的 API Key
+
+response = client.chat.completions.create(
+    model="glm-4.7-flash",
+    messages=[
+        {"role": "user", "content": "作为一名营销专家，请为我的产品创作一个吸引人的口号"},
+        {"role": "assistant", "content": "当然，要创作一个吸引人的口号，请告诉我一些关于您产品的信息"},
+        {"role": "user", "content": "智谱开放平台"}
+    ],
+    thinking={
+        "type": "enabled",    # 启用深度思考模式
+    },
+    max_tokens=65536,          # 最大输出 tokens
+    temperature=1.0           # 控制输出的随机性
+)
+
+# 获取完整回复
+print(response.choices[0].message)
+
+
+
+# for glm-4.7-flash stream
+from zai import ZhipuAiClient
+
+client = ZhipuAiClient(api_key="your-api-key")  # 请填写您自己的 API Key
+
+response = client.chat.completions.create(
+    model="glm-4.7-flash",
+    messages=[
+        {"role": "user", "content": "作为一名营销专家，请为我的产品创作一个吸引人的口号"},
+        {"role": "assistant", "content": "当然，要创作一个吸引人的口号，请告诉我一些关于您产品的信息"},
+        {"role": "user", "content": "智谱开放平台"}
+        ],
+    thinking={
+        "type": "enabled",    # 启用深度思考模式
+    },
+    stream=True,              # 启用流式输出
+    max_tokens=65536,          # 最大输出tokens
+    temperature=1.0           # 控制输出的随机性
+)
+
+# 流式获取回复
+for chunk in response:
+    if chunk.choices[0].delta.reasoning_content:
+        print(chunk.choices[0].delta.reasoning_content, end='', flush=True)
+
+    if chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end='', flush=True)

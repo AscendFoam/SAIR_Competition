@@ -1,5 +1,12 @@
 # Raw Idea
 
+## Captain Status Update (2026-05-25, T12b Review)
+
+- `T12b_run_screening_on_non_deepseek_provider` is accepted by Captain as `PASS_WITH_WARNINGS`.
+- The core Stage A research idea is now sharper: the earlier all-false collapse was not a universal screening failure but a DeepSeek-specific provider behavior.
+- A genuine non-DeepSeek route, `ZhipuAI / glm-4.7-flash`, yields 8 surviving prompts under the same frozen protocol, so shortlist formation is now justified.
+- The next and only current worker task is `T12c_write_screening_summary_and_shortlist_report`.
+
 ## Captain Status Update (2026-05-23, T12 Review)
 
 - `T12_rerun_screening_with_alternate_low_cost_model` is accepted by Captain as `PASS_WITH_WARNINGS`.

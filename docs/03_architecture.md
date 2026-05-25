@@ -1,5 +1,14 @@
 # Architecture
 
+## Captain Status Update (2026-05-25, T12b Review)
+
+- The Stage A execution layer now contains three reviewed run families:
+- `artifacts/research_runs/screening/` for T11 on `deepseek-chat`
+- `artifacts/research_runs/screening_second_model/` for T12 on `deepseek-v4-flash`
+- `artifacts/research_runs/screening_third_route/` for T12b on `glm-4.7-flash`
+- The architecture conclusion is now different from T12: the screening pipeline shape is sound, and the primary variable exposed by Stage A is provider/model behavior rather than protocol breakage.
+- The next operational layer to populate is the shortlist-reporting layer under `T12c_write_screening_summary_and_shortlist_report`; no parser or gate redesign is opened at this point.
+
 ## Captain Status Update (2026-05-23, T12 Review)
 
 - The Stage A execution layer now contains two reviewed run families:

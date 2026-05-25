@@ -1,0 +1,28 @@
+{
+  "dataset_path": "D:\\Codes\\Math\\SAIR_Competition\\data\\interim\\splits\\smoke.jsonl",
+  "prompt_id": "local_p1_2_3_implicit_guardrail_v2",
+  "provider": "zhipuai",
+  "model": "glm-4.7-flash",
+  "row_count": 64,
+  "parse_counter": {
+    "parsed": 64
+  },
+  "metrics": {
+    "total": 64,
+    "parsed": 64,
+    "parse_success_rate": 1.0,
+    "correct": 35,
+    "accuracy": 0.546875,
+    "true_total": 31,
+    "true_correct": 18,
+    "false_total": 33,
+    "false_correct": 17,
+    "true_accuracy": 0.5806451612903226,
+    "false_accuracy": 0.5151515151515151,
+    "by_source": {
+      "hard1": 0.75,
+      "hard2": 0.5,
+      "normal": 0.54
+    }
+  }
+}

@@ -33,7 +33,12 @@
       "Bash(PYTHONPATH=src python -c ' *)",
       "Bash(PYTHONPATH=src python artifacts/research_runs/screening_second_model/_run_screening_second_model.py)",
       "Bash(rm -rf d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/local_* d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/screening_second_model_results.json)",
-      "Bash(rm -rf d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/local_* d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/_test_* d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/screening_second_model_results.json 2>/dev/null; echo \"Cleaned\")"
+      "Bash(rm -rf d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/local_* d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/_test_* d:/Codes/Math/SAIR_Competition/artifacts/research_runs/screening_second_model/screening_second_model_results.json 2>/dev/null; echo \"Cleaned\")",
+      "Bash(pip list *)",
+      "Bash(python -c \"import google.genai; print\\('google-genai available'\\)\")",
+      "Bash(python -c \"from zai import ZhipuAiClient; print\\('zai available'\\)\")",
+      "Bash(conda env *)",
+      "Bash(conda info *)"
     ],
     "additionalDirectories": [
       "d:\\Codes\\Math\\SAIR_Competition\\artifacts\\research_runs\\screening_second_model"

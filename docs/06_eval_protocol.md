@@ -1,5 +1,15 @@
 # Evaluation Protocol
 
+## Captain Status Update (2026-05-25, T12b Review)
+
+- `T12b_run_screening_on_non_deepseek_provider` is accepted by Captain as `PASS_WITH_WARNINGS`.
+- The frozen Stage A protocol has now been validated across providers:
+- `DeepSeek / deepseek-chat`: 0 survivors
+- `DeepSeek / deepseek-v4-flash`: 0 survivors
+- `ZhipuAI / glm-4.7-flash`: 8 survivors
+- The protocol conclusion is now stable: the Stage A gates are usable, and the earlier collapse is treated as provider-specific rather than protocol-wide.
+- The next protocol step is `T12c_write_screening_summary_and_shortlist_report`: apply the reviewed shortlist rules to the reviewed ZhipuAI survivor pool, write the screening summary, and select `3-5` prompts for Stage B.
+
 ## Captain Status Update (2026-05-23, T12 Review)
 
 - `T12_rerun_screening_with_alternate_low_cost_model` is accepted by Captain as `PASS_WITH_WARNINGS`.

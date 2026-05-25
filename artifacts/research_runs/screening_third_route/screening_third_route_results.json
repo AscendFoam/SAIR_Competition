@@ -1,0 +1,182 @@
+[
+  {
+    "prompt_id": "local_p0_official_reconstructed_empty",
+    "status": "completed",
+    "elapsed_seconds": 1194.2,
+    "model": "glm-4.7-flash",
+    "provider": "zhipuai",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.12903225806451613,
+    "false_recall": 0.8787878787878788,
+    "true_total": 31,
+    "true_correct": 4,
+    "false_total": 33,
+    "false_correct": 29,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_1_1_strict_first_draft",
+    "status": "completed",
+    "elapsed_seconds": 100.9,
+    "model": "glm-4.7-flash",
+    "provider": "zhipuai",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.515625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.0,
+    "false_recall": 1.0,
+    "true_total": 31,
+    "true_correct": 0,
+    "false_total": 33,
+    "false_correct": 33,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_2_implicit_guardrail_v1",
+    "status": "completed",
+    "elapsed_seconds": 174.6,
+    "model": "glm-4.7-flash",
+    "provider": "zhipuai",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.59375,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.5483870967741935,
+    "false_recall": 0.6363636363636364,
+    "true_total": 31,
+    "true_correct": 17,
+    "false_total": 33,
+    "false_correct": 21,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_3_implicit_guardrail_v2",
+    "status": "completed",
+    "elapsed_seconds": 197.6,
+    "model": "glm-4.7-flash",
+    "provider": "zhipuai",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.546875,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.5806451612903226,
+    "false_recall": 0.5151515151515151,
+    "true_total": 31,
+    "true_correct": 18,
+    "false_total": 33,
+    "false_correct": 17,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_5_minimal_rule_missing_hard_composition",
+    "status": "completed",
+    "elapsed_seconds": 111.3,
+    "model": "glm-4.7-flash",
+    "provider": "zhipuai",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.5625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.7096774193548387,
+    "false_recall": 0.42424242424242425,
+    "true_total": 31,
+    "true_correct": 22,
+    "false_total": 33,
+    "false_correct": 14,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p1_2_8_narrow_singleton_families",
+    "status": "completed",
+    "elapsed_seconds": 83.2,
+    "model": "glm-4.7-flash",
+    "provider": "zhipuai",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.5625,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.6451612903225806,
+    "false_recall": 0.48484848484848486,
+    "true_total": 31,
+    "true_correct": 20,
+    "false_total": 33,
+    "false_correct": 16,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p2_0_0_official_balanced_strict_v0",
+    "status": "completed",
+    "elapsed_seconds": 265.2,
+    "model": "glm-4.7-flash",
+    "provider": "zhipuai",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.59375,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.8387096774193549,
+    "false_recall": 0.36363636363636365,
+    "true_total": 31,
+    "true_correct": 26,
+    "false_total": 33,
+    "false_correct": 12,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p2_0_1_official_counterexample_first_strict_v0",
+    "status": "completed",
+    "elapsed_seconds": 726.5,
+    "model": "glm-4.7-flash",
+    "provider": "zhipuai",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.671875,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.7096774193548387,
+    "false_recall": 0.6363636363636364,
+    "true_total": 31,
+    "true_correct": 22,
+    "false_total": 33,
+    "false_correct": 21,
+    "sha256_match": true
+  },
+  {
+    "prompt_id": "local_p2_0_2_official_fast_filters_strict_v0",
+    "status": "completed",
+    "elapsed_seconds": 303.4,
+    "model": "glm-4.7-flash",
+    "provider": "zhipuai",
+    "row_count": 64,
+    "parse_counter": {
+      "parsed": 64
+    },
+    "accuracy": 0.59375,
+    "parse_success_rate": 1.0,
+    "true_recall": 0.6451612903225806,
+    "false_recall": 0.5454545454545454,
+    "true_total": 31,
+    "true_correct": 20,
+    "false_total": 33,
+    "false_correct": 18,
+    "sha256_match": true
+  }
+]

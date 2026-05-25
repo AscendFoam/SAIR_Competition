@@ -1,5 +1,13 @@
 # Feasibility Report
 
+## Captain Status Update (2026-05-25, T12b Review)
+
+- `T12b_run_screening_on_non_deepseek_provider` is accepted by Captain as `PASS_WITH_WARNINGS`.
+- The feasibility question is now resolved in two parts:
+- the screening pipeline is operational across multiple real provider routes;
+- shortlist formation is feasible when the route is not trapped in the DeepSeek-specific collapse mode.
+- The next critical-path task is `T12c_write_screening_summary_and_shortlist_report`, which should convert the reviewed ZhipuAI screening results into a 3-5 prompt shortlist for Stage B.
+
 ## Captain Status Update (2026-05-23, T12 Review)
 
 - `T12_rerun_screening_with_alternate_low_cost_model` is accepted by Captain as `PASS_WITH_WARNINGS`.

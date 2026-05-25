@@ -1,11 +1,25 @@
 # Risks and Open Questions
 
+## Captain Update (2026-05-25, T12b Review)
+
+- `T12b_run_screening_on_non_deepseek_provider` has been accepted as `PASS_WITH_WARNINGS`.
+- T12b is complete and resolves the earlier cross-provider evidence gap.
+- The Current Unique Task is now `T12c_write_screening_summary_and_shortlist_report`.
+- Deferred T12b review warning `N8` is recorded below as a live planning risk for Stage B.
+
+## Captain Update (2026-05-23, T12b Execution)
+
+- `T12b_run_screening_on_non_deepseek_provider` has been executed and is now review-backed.
+- A non-DeepSeek provider route was found and used successfully: ZhipuAI glm-4.7-flash (thinking disabled) via zai-sdk.
+- **8/9 candidates survive elimination on ZhipuAI**, confirming that the all-false collapse was DeepSeek-specific.
+- Cross-provider evidence gap (R27) is now resolved.
+- Shortlist formation is now possible based on the ZhipuAI screening results.
+
 ## Captain Update (2026-05-23, T12 Review)
 
 - `T12_rerun_screening_with_alternate_low_cost_model` has been accepted as `PASS_WITH_WARNINGS`.
 - T12 is complete, but it confirms the zero-survivor Stage A failure only across two DeepSeek models, not across providers.
 - The Current Unique Task is now `T12b_run_screening_on_non_deepseek_provider`.
-- Deferred T12 review warning `N1` is recorded below as a live risk.
 
 ## Captain Update (2026-05-18, T11 Review)
 
@@ -16,22 +30,22 @@
 
 ## T11 Follow-Ups
 
-### R25: DeepSeek screening collapse blocks shortlist formation
+### R25: DeepSeek screening collapse is a model-bias finding, not a remaining shortlist blocker (RESOLVED AS BLOCKER)
 
 Source:
 - T11 execution result
 - T11 review accepted by Captain
+- T12b execution result (ZhipuAI glm-4.7-flash, 8 survivors)
 
 Risk:
-- Two reviewed Stage A runs on DeepSeek routes now produced zero surviving prompts.
+- Two reviewed Stage A runs on DeepSeek routes produced zero surviving prompts.
 - P0 collapsed on parse success in both runs, and all 8 strict prompts collapsed on the all-false gate in both runs.
-- Under the current frozen T10 shortlist rules, Milestone 3 cannot exit and downstream prompt selection remains blocked.
+- If this effect were protocol-wide, Milestone 3 could not exit.
 
-Mitigation:
-- Do not write a shortlist-facing summary or advance to recomputed benchmark selection yet.
-- Attempt one genuine non-DeepSeek Stage A rerun with all non-model settings frozen.
-- If a non-DeepSeek route is not locally usable, escalate to a Captain redesign decision rather than silently relaxing thresholds.
-- Preserve the two DeepSeek results as valid model-bias findings even if they do not support shortlist formation.
+Resolution:
+- **T12b confirms the collapse is DeepSeek-specific.** On ZhipuAI glm-4.7-flash, 8/9 candidates survive elimination, including P0 (100% parse rate).
+- Shortlist formation is now possible based on ZhipuAI results.
+- The DeepSeek collapse remains a valid model-bias finding for the paper, but it no longer blocks Milestone 3 exit.
 
 ### R26: Screening metric naming drifts between raw artifacts and screening-facing reports
 
@@ -47,19 +61,31 @@ Mitigation:
 - Treat the T11 manifest mapping as correct for current governance use.
 - A later tooling/doc-hygiene task should add explicit alias wording or schema normalization so raw artifacts and screening summaries use one stable vocabulary.
 
-### R27: Cross-provider generality is still unresolved after T12
+### ~~R27: Cross-provider generality is still unresolved after T12b~~ (RESOLVED)
 
 Source:
 - T12 review `N1`
+- T12b execution result (ZhipuAI glm-4.7-flash screening completed)
+
+Resolution:
+- T12b successfully ran the frozen Stage A screening on ZhipuAI glm-4.7-flash (thinking disabled).
+- **8/9 candidates survive elimination on ZhipuAI**, confirming the all-false collapse was DeepSeek-specific, not protocol-wide.
+- P0 achieves 100% parse rate on ZhipuAI (was 23-27% on DeepSeek), showing parse collapse was also DeepSeek-specific.
+- Cross-provider generality is no longer an open question. The shortlist can now be formed from ZhipuAI survivors.
+
+### R28: ZhipuAI latency may materially expand Stage B runtime
+
+Source:
+- T12b review `N8`
 
 Risk:
-- T11 used `deepseek-chat` and T12 used `deepseek-v4-flash`, but both reviewed runs still used the DeepSeek provider.
-- The near-identical all-false behavior may therefore be provider-specific rather than universal to Stage A or to the prompts themselves.
-- If we redesign shortlist rules before obtaining one true cross-provider contrast, we risk overfitting protocol changes to one provider family.
+- The reviewed ZhipuAI screening run took about `52.6` minutes for 9 prompts on the 64-problem smoke split, materially slower than the reviewed DeepSeek runs.
+- If Stage B uses larger datasets, multiple shortlisted prompts, and multiple models, wall-clock latency could become the dominant operational constraint even if API quality is acceptable.
 
 Mitigation:
-- Run one reviewed non-DeepSeek Stage A probe if a locally usable route exists.
-- If no such route is available, document that limit explicitly and make any later protocol redesign conditional on that evidence gap.
+- Treat Stage B prompt count as a hard budgeted decision, not an open-ended expansion.
+- Prefer a shortlist of `3-5` prompts rather than carrying all `8` survivors forward.
+- Require the shortlist report to note latency/time implications when recommending which prompts advance.
 
 ## Captain Update (2026-05-18)
 

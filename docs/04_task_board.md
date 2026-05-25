@@ -1,5 +1,18 @@
 # Task Board
 
+## Captain Override (2026-05-25, T12b Review)
+
+- Captain decision: accept `docs/review/T12b_run_screening_on_non_deepseek_provider_review.md` as `PASS_WITH_WARNINGS`.
+- `T12b_run_screening_on_non_deepseek_provider` is complete at the Captain level.
+- T12b resolved the cross-provider evidence gap: the frozen Stage A protocol produces `8/9` survivors on `ZhipuAI / glm-4.7-flash`, so the earlier all-false collapse is treated as DeepSeek-specific.
+- Current Unique Task: `T12c_write_screening_summary_and_shortlist_report`.
+- Active worker package: `docs/tasks/phase_3_screening_eval/T12c_write_screening_summary_and_shortlist_report.md`
+- Warning classification for T12b review:
+- accepted: `N1` (the worker-updated risk state was accurate and is now superseded by Captain-owned governance updates), `N3` (`.claude/settings.json` noise), `N4` (`thinking_disabled: true` is a documented execution-level compatibility setting), `N5` (JSON numeric serialization only), `N6` (temporary execution script retained as reproducibility aid), `N7` (handoff length is a hygiene concern but the newest Captain section remains authoritative)
+- deferred: `N8` (ZhipuAI latency is materially higher than DeepSeek and must be tracked for Stage B planning)
+- rejected: `N2` (`llm_api_example.py` is unrelated to the research deliverable scope and should stay out of the research commit)
+- No blocking issue remains for T12b. The next worker task is to write the screening summary and mechanically form the shortlist from the reviewed cross-provider evidence.
+
 ## Captain Override (2026-05-23, T12 Review)
 
 - Captain decision: accept `docs/review/T12_rerun_screening_with_alternate_low_cost_model_review.md` as `PASS_WITH_WARNINGS`.

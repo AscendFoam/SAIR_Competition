@@ -4,13 +4,20 @@
 
 ## 当前状态
 
-T11 + T12 screening execution 已完成。9 条 text-ready local prompts 分别在 smoke split 上使用 `deepseek-chat` 和 `deepseek-v4-flash` 完成了两轮 screening。
+三轮 screening 执行已完成，跨越三个 provider：
 
-**SCREENING FAILURE**: 两个模型的结果完全一致——所有 9 个候选均被 elimination gates 淘汰。0 个候选进入 shortlist。需 Captain 裁决。
+| Run | Provider | Model | Survivors | 结论 |
+|---|---|---|---|---|
+| T11 | DeepSeek | deepseek-chat | 0 | all-false collapse |
+| T12 | DeepSeek | deepseek-v4-flash | 0 | 确认 collapse 不依赖模型架构 |
+| **T12b** | **ZhipuAI** | **glm-4.7-flash** | **8** | **collapse 是 DeepSeek 特有** |
 
-- P0 (relaxed format): parse collapse，两个模型 parse_success_rate 分别为 0.27 和 0.23
-- 其余 8 个 strict-format prompts: all-false collapse，两个模型的 true_recall (0.00-0.03) 和 false_recall (0.97-1.00) 几乎完全相同
-- 替代模型（MiniMax-M2.7, deepseek-reasoner）在 max_tokens=256 下无法产生可解析输出，已记录但不作为正式 screening run
+**关键发现：all-false collapse 和 parse collapse 是 DeepSeek-specific 的 provider 级别行为模式，不是 screening protocol 的设计缺陷。** 在 ZhipuAI glm-4.7-flash 上，9 个候选中有 8 个通过 elimination gates。
+
+- P0 (relaxed format): DeepSeek 上 parse collapse（0.23-0.27），ZhipuAI 上 100% parse
+- 其余 8 个 strict-format prompts: DeepSeek 上 all-false collapse（true_recall 0.00-0.03），ZhipuAI 上正常分布（true_recall 0.55-0.84）
+- 仅 P1.1.1（minimal first draft）在两个 provider 上均被 E3 淘汰
+- Shortlist formation 现已在 ZhipuAI 结果上可行
 
 ## 文件清单
 
@@ -22,17 +29,21 @@ T11 + T12 screening execution 已完成。9 条 text-ready local prompts 分别�
 | `screening_execution_manifest_v1.md` | T11 执行 manifest（deepseek-chat） |
 | `screening_second_model_manifest_v1.md` | T12 执行 manifest（deepseek-v4-flash） |
 | `screening_model_comparison_note_v1.md` | T11 vs T12 模型对比笔记 |
+| `screening_provider_route_availability_v1.md` | T12b provider 路由可用性评估 |
+| `screening_third_route_manifest_v1.md` | T12b 执行 manifest（glm-4.7-flash） |
+| `screening_cross_provider_note_v1.md` | T12b cross-provider 对比笔记 |
 
 ## 已完成
 
 - T10: Build screening evaluation matrix
 - T11: Run screening on 9 prompt candidates using smoke split with deepseek-chat
 - T12: Rerun screening with alternate model (deepseek-v4-flash), write comparison note
+- T12b: Run screening on non-DeepSeek provider (ZhipuAI glm-4.7-flash), 8/9 survivors
 
 ## 待完成
 
-- Shortlist formation（需 Captain 先处理 screening failure）
-- 非 DeepSeek 提供商的 screening 测试（如 Captain 决定需要）
+- Shortlist formation（基于 ZhipuAI 结果，8 survivors 可用）
+- 如需更稳定 shortlist，可考虑在 ZhipuAI 上重复运行
 
 ## 设计原则
 

@@ -1,0 +1,7 @@
+{
+  "prompt_id": "local_p1_2_5_minimal_rule_missing_hard_composition",
+  "prompt_path": "D:\\Codes\\Math\\SAIR_Competition\\prompts\\complete\\P1.2.5_minimal_rule_missing_hard_composition.txt",
+  "expected_sha256": "44c882227e88906ed393f4aa1a0dfdbbf17862d683c58fc7029054aa062000b5",
+  "actual_sha256": "44c882227e88906ed393f4aa1a0dfdbbf17862d683c58fc7029054aa062000b5",
+  "sha256_match": true
+}

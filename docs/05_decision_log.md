@@ -1,5 +1,30 @@
 # Decision Log
 
+## D023: Accept T12b review and reopen the original shortlist path
+
+Date: `2026-05-25`
+
+Decision:
+- Captain accepts `docs/review/T12b_run_screening_on_non_deepseek_provider_review.md` as `PASS_WITH_WARNINGS`.
+- `T12b_run_screening_on_non_deepseek_provider` is complete.
+- The cross-provider evidence gap is now resolved: the frozen Stage A protocol yields `8/9` surviving prompts on `ZhipuAI / glm-4.7-flash`.
+- The next and only current worker task is `T12c_write_screening_summary_and_shortlist_report`.
+
+Reason:
+- T12b preserved the frozen T10 design and produced complete, hash-matching artifacts for all 9 prompts on a genuinely non-DeepSeek route.
+- The earlier DeepSeek-only zero-survivor outcome is now interpreted as a provider-specific behavior finding rather than a protocol-wide screening failure.
+- Milestone 3 can now progress to its intended reporting step: write the screening summary and shortlist report, and select `3-5` prompts for Stage B.
+
+Warning handling:
+- accepted: `N1`, `N3`, `N4`, `N5`, `N6`, `N7`
+- deferred: `N8`
+- rejected: `N2`
+
+Follow-up:
+- Record the Stage B latency-planning risk in `docs/08_risks_and_open_questions.md`.
+- Exclude `llm_api_example.py` from the research commit because it is unrelated to the task scope.
+- Open a new worker package for the shortlist-writing task and do not start Stage B execution yet.
+
 ## D022: Accept T12 review and open a genuine non-DeepSeek screening probe
 
 Date: `2026-05-23`
